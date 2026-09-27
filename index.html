@@ -31,6 +31,25 @@
         мгновенная сверка.
      (v1.3.2: рейтинг с очередью dalil_voteq; промо-ивент «1 месяц бесплатно»
      до 17.10.2026 с автоснятием — сторож каждую минуту + при загрузке.)
+     v1.4.2 — МОДЕЛЬ «БЕСПЛАТНО НАВСЕГДА» + VIP-СТАТУС:
+     1) ТАБЛО С ТАРИФАМИ УДАЛЕНО из мастера заявки: «Оставить заявку»
+        открывает сразу правила → анкета → готово. Срок размещения
+        выбирает только админ в панели (поле «Срок» + VIP-блок).
+     2) «ممول» переименован в VIP: золотой светящийся бейдж «VIP»,
+        VIP-карточка всегда первая; между несколькими VIP — по
+        популярности (просмотры), при равенстве — случайно.
+     3) Галочка «موثّق» (Проверено) — бесплатно, включается в админ-форме.
+     4) Фирменная золотая лупа SEARCH_BRAND в шапке и в админке.
+     5) Тарифы $0.00 навсегда, промо-ивент v1.3.2 снят полностью.
+     6) Баннерный слот AD_BANNER над списком + блок «أعلن معنا» в футере.
+     7) ТЕСТОВАЯ АНКЕТА В 1 КЛИК (админ -> Инструменты): выбрал город и
+        категорию/подкатегорию — одна кнопка создаёт готовую карточку
+        штатным POST /api/admin/providers. Телефон — поддержка проекта,
+        срок 24 ч (сгорает сама, каталог посетителей не засоряет),
+        VIP/«Проверено» выключены — включаются тумблерами в форме.
+        ХОТФИКС vc13: адрес тестовой карточки — всегда арабское
+        название города (раньше брался язык интерфейса админа,
+        в арабской карточке оказывалась кириллица).
 
      ХОТФИКС v1.3.1 (скролл на телефонах): причина блокировки свайпов —
      связка body{overflow-x:hidden} (делает body отдельным scroll-контейнером)
@@ -834,6 +853,53 @@
     animation: fadeUp .3s backwards;
   }
   .req-top{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+  /* ===== v1.4.2 · VIP-статус, верификация, реклама ===== */
+  .vip-badge{
+    display:inline-flex; align-items:center; gap:3px;
+    padding:2px 9px; border-radius:999px;
+    font-weight:800; font-size:11px; letter-spacing:.08em; line-height:1.5;
+    color:#3B2500; border:1px solid rgba(255,193,7,.75);
+    background:linear-gradient(135deg,#FFE082 0%,#FFC107 45%,#FFA000 100%);
+    box-shadow:0 0 10px rgba(255,193,7,.55), inset 0 0 4px rgba(255,255,255,.6);
+    white-space:nowrap; vertical-align:middle;
+  }
+  .vrf-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:16px; height:16px; border-radius:50%;
+    color:#3B2500; border:1.5px solid #FFC107;
+    background:linear-gradient(135deg,#FFE082,#FFB300);
+    box-shadow:0 0 6px rgba(255,193,7,.5); vertical-align:middle;
+  }
+  article.row.vip-card{
+    border-color:rgba(255,193,7,.55);
+    background:linear-gradient(180deg,rgba(255,193,7,.10),rgba(255,193,7,.03));
+    box-shadow:0 0 0 1px rgba(255,193,7,.22), 0 6px 18px rgba(255,193,7,.10);
+  }
+  .ad-slot{ margin:0 0 12px; position:relative; }
+  .ad-slot a{ display:block; position:relative; border-radius:14px; overflow:hidden;
+    border:1px solid rgba(255,193,7,.4); box-shadow:0 4px 16px rgba(0,0,0,.25); }
+  .ad-slot img{ display:block; width:100%; height:auto; }
+  .ad-slot .ad-tag{ position:absolute; top:8px; inset-inline-end:8px; padding:2px 8px;
+    border-radius:999px; font-size:10px; font-weight:700; letter-spacing:.06em;
+    color:#3B2500; background:linear-gradient(135deg,#FFE082,#FFC107); }
+  .foot-ad{ margin:16px 0 12px; padding:14px; border-radius:14px; text-align:center;
+    border:1px dashed rgba(255,193,7,.5); background:rgba(255,193,7,.06); }
+  .foot-ad h4{ margin:0 0 6px; font-size:15px; color:#FFD54F; }
+  .foot-ad p{ margin:0 0 10px; font-size:12.5px; opacity:.85; }
+  .foot-ad-btns{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .vip-block{ border:1px solid rgba(255,193,7,.45); border-radius:14px;
+    padding:12px 14px; background:rgba(255,193,7,.06); margin-top:14px; }
+  .vip-block > label{ display:block; font-weight:700; font-size:12.5px;
+    color:#FFD54F; margin-bottom:10px; letter-spacing:.02em; }
+  .vip-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .vip-toggle{ display:flex; align-items:center; gap:8px; cursor:pointer;
+    padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.04); font-size:13px; user-select:none; }
+  .vip-toggle input{ accent-color:#FFC107; width:16px; height:16px; }
+  .vip-toggle.on{ border-color:rgba(255,193,7,.7); background:rgba(255,193,7,.12);
+    box-shadow:0 0 8px rgba(255,193,7,.25); }
+  .vip-hint{ margin:8px 0 0; font-size:11.5px; opacity:.65; }
+
   .req-plan{
     font-size:.72rem; font-weight:800; color:var(--accent-hi);
     background:rgba(194,146,79,.14); border:1px solid rgba(194,146,79,.4);
@@ -995,6 +1061,15 @@
   .tool-btn .tt{ font-weight:800; font-size:.84rem; line-height:1.3; }
   .tool-btn .td{ font-size:.7rem; color:var(--muted); line-height:1.4; }
   .tool-btn.danger .tt{ color:#E07A6C; }
+
+  /* v1.4.2 · Тестовая анкета одним кликом (админ -> Инструменты) */
+  .test-block{ background:var(--surface); border:1px solid var(--line-soft); border-radius:16px; padding:14px; margin-bottom:12px; }
+  .test-head{ display:flex; align-items:center; gap:8px; font-weight:800; font-size:.84rem; color:var(--panel-text); }
+  .test-head svg{ color:var(--accent-hi); flex:none; }
+  .test-block .test-desc{ font-size:.7rem; color:var(--muted); line-height:1.45; margin:6px 0 10px; }
+  .test-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .test-grid .field{ margin:0; }
+  .test-make{ width:100%; margin-top:10px; }
 
   /* ============ Избранное и сортировка в списке ============ */
   .list-tools{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 0 2px; }
@@ -1868,11 +1943,6 @@
   </h1>
   <div class="hero-alt" id="heroAlt"></div>
   <p class="hero-desc" data-i18n="heroDesc"></p>
-  <!-- v1.3.2 · Промо-ивент «1 месяц бесплатно»: красный баннер, сам скроется после 17.10.2026 -->
-  <button class="promo-bar" id="promoBar" type="button" hidden>
-    <span class="p-tag" data-i18n="promoTag"></span>
-    <span class="p-text" data-i18n="promoText"></span>
-  </button>
   <div class="search" id="searchBox">
     <span id="searchIcon"></span>
     <input id="searchInput" type="search" inputmode="search" data-i18n-ph="searchPh">
@@ -1917,6 +1987,8 @@
   </div>
   <div class="dest-filter" id="destFilter" hidden></div>
   <div class="list-tools" id="listTools" hidden></div>
+  <!-- v1.4.2 · рекламный баннер (виден, когда продан: константа AD_BANNER) -->
+  <div class="ad-slot" id="adSlot" hidden></div>
   <div class="sheet">
     <div id="list"></div>
     <div id="empty" class="empty" hidden>
@@ -1945,6 +2017,15 @@
       <span dir="ltr">+963 939 481 984</span>
     </a>
     <div class="fa-line fa-addr" data-i18n="footerAddress"></div>
+  </div>
+  <!-- v1.4.2 · «أعلن معنا»: монетизация бесплатного каталога -->
+  <div class="foot-ad" id="footAd">
+    <h4 data-i18n="adTitle"></h4>
+    <p data-i18n="adText"></p>
+    <div class="foot-ad-btns">
+      <a class="btn btn-solid" id="footAdWa" href="#" target="_blank" rel="noopener"><span id="footAdWaIc"></span><span data-i18n="adWaBtn"></span></a>
+      <a class="btn btn-outline" href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener"><span id="footAdTgIc"></span><span data-i18n="tgBtn"></span></a>
+    </div>
   </div>
   <div class="footer-note" data-i18n="footer"></div>
   <div class="ver-line" dir="ltr"><span class="ver-badge" id="verBadge"></span></div>
@@ -2100,7 +2181,7 @@
   <div class="modal" id="detailBody"></div>
 </div>
 
-<!-- Модальное окно: мастер заявки (цена → правила → анкета → готово) -->
+<!-- Модальное окно: мастер заявки (правила → анкета → готово) · v1.4.2: табло с тарифами удалено -->
 <div class="overlay" id="subOverlay" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -2115,31 +2196,8 @@
     <div class="steps-cap" id="appStepsCap"></div>
     <div class="err-banner" id="appErr" role="alert"></div>
 
-    <!-- Шаг 1: цена (тарифы те же: $2.50 / $7.00 / $15.00) -->
-    <div class="app-pane" id="appPane1">
-      <p class="modal-desc" data-i18n="appDesc1"></p>
-      <div class="plans">
-        <button type="button" class="plan" data-plan="m1" style="animation-delay:0ms">
-          <span class="plan-name" data-i18n="subM1"></span>
-          <span class="plan-price" dir="ltr">$2.50</span>
-          <span class="plan-note" data-i18n="subPer1"></span>
-        </button>
-        <button type="button" class="plan" data-plan="m3" style="animation-delay:80ms">
-          <span class="plan-name" data-i18n="subM3"></span>
-          <span class="plan-price" dir="ltr">$7.00</span>
-          <span class="plan-note" data-i18n="subPer3"></span>
-        </button>
-        <button type="button" class="plan" data-plan="y1" style="animation-delay:160ms">
-          <span class="plan-name" data-i18n="subY1"></span>
-          <span class="plan-price" dir="ltr">$15.00</span>
-          <span class="plan-note" data-i18n="subPer12"></span>
-        </button>
-      </div>
-      <button class="btn btn-solid modal-submit" type="button" id="appNext1" disabled data-i18n="appNext"></button>
-    </div>
-
-    <!-- Шаг 2: правила + галочка согласия -->
-    <div class="app-pane" id="appPane2" hidden>
+    <!-- Шаг 1: правила + галочка согласия (v1.4.2: шаг «Цена» удалён — срок выбирает админ) -->
+    <div class="app-pane" id="appPane2">
       <div class="rules-list">
         <div class="rule"><span class="rule-num">1</span><p data-i18n="appRule1"></p></div>
         <div class="rule"><span class="rule-num">2</span><p data-i18n="appRule2"></p></div>
@@ -2162,7 +2220,6 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-outline" type="button" id="appBack2" data-i18n="back"></button>
         <button class="btn btn-solid" type="button" id="appNext2" disabled data-i18n="appNext"></button>
       </div>
     </div>
@@ -2296,6 +2353,18 @@
         <div class="reqs-list" id="admDocsList"></div>
       </div>
       <div class="adm-view" id="admViewTools" hidden>
+        <!-- v1.4.2 · Тестовая анкета одним кликом: город + подкатегория -> карточка -->
+        <div class="test-block" id="testBlock">
+          <div class="test-head"><span id="testIc"></span><span data-i18n="testTool"></span></div>
+          <p class="test-desc" data-i18n="testToolD"></p>
+          <div class="test-grid">
+            <div class="field"><label data-i18n="fCity"></label><select id="tCity"></select></div>
+            <div class="field"><label data-i18n="fCategory"></label><select id="tCat"></select></div>
+            <div class="field" id="tLevelField" hidden><label data-i18n="level"></label><select id="tLevel"></select></div>
+            <div class="field"><label data-i18n="fSub"></label><select id="tSub"></select></div>
+          </div>
+          <button type="button" class="btn btn-solid test-make" id="tMakeBtn" data-i18n="testMake"></button>
+        </div>
         <div class="tool-grid">
           <button type="button" class="tool-btn" id="toolExportBtn">
             <span id="toolExportIc"></span>
@@ -2395,6 +2464,22 @@
         <option value="7776000000" data-i18n="exp3m"></option>
         <option value="31536000000" data-i18n="exp12m"></option>
       </select>
+    </div>
+    <!-- v1.4.2 · VIP-статус: продвижение и верификация (только админ) -->
+    <div class="vip-block" id="fVipBlock">
+      <label data-i18n="vipBlockLbl"></label>
+      <div class="vip-row">
+        <label class="vip-toggle" id="fFeatWrap">
+          <input type="checkbox" id="fFeat">
+          <span class="vip-badge">VIP</span>
+        </label>
+        <label class="vip-toggle" id="fVerWrap">
+          <input type="checkbox" id="fVer">
+          <span class="vrf-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <span data-i18n="verBadge"></span>
+        </label>
+      </div>
+      <p class="vip-hint" data-i18n="vipHint"></p>
     </div>
     <div class="field">
       <label data-i18n="fTitleAr"></label>
@@ -2564,12 +2649,11 @@
      уровень/подкатегория переключаются на анкету, экран — к списку. Раньше анкета
      падала в город/категорию ЗАЯВКИ, а админ смотрел на свой открытый раздел —
      казалось, что «анкета не появилась» (например: заявка из Манбиджа, а открыт Ракка);
-     ОПЛАТА В WHATSAPP v1.2.6: шаг «Готово» мастера заявок больше не «уточняет»,
-     а требует оплату — заголовок «Анкета отправлена на рассмотрение!», описание
-     «Чтобы вашу анкету приняли, заплатите в WhatsApp», кнопка «Заплатить в WhatsApp».
-     Ссылка открывает чат с Аммаром уже с готовым сообщением, собранным из анкеты:
-     приветствие + тариф (срок · цена $2.50/$7.00/$15.00) + имя как в анкете +
-     категория/подкатегория + город + номер телефона — на языке интерфейса заявителя;
+     WHATSAPP v1.2.6 → v1.4.2: шаг «Готово» мастера заявок — заголовок
+     «Анкета отправлена на рассмотрение!», кнопка «Написать нам в WhatsApp».
+     Ссылка открывает чат с готовым сообщением, собранным из анкеты:
+     приветствие + имя как в анкете + категория/подкатегория + город + номер
+     телефона — на языке интерфейса заявителя (модель бесплатная, цены нет);
      НАПОМИНАНИЯ v1.2.7: за 3 дня до истечения expiresAt анкета попадает в панель
      «Напоминания». Панель сама открывается раз в сессию при входе админа;
      «Напомнить» = wa.me чат с владельцем с готовым сообщением (имя, город, дата,
@@ -2592,12 +2676,12 @@
      СОРТИРОВКА — чипы «Новые / По имени / Популярные» (dalil_sort);
      СКАЧАТЬ КОНТАКТ — vCard .vcf файл (имя, телефон, категория, город)
      одним нажатием сохраняется в телефонную книгу;
-     МАСТЕР ЗАЯВКИ: кнопка «Оставить заявку» (шапка + плавающая) открывает 4 шага:
-     1) цена (те же $2.50 / $7.00 / $15.00) → 2) правила размещения (имя должно совпадать
-     с именем, данным Аммару аль-Мустафе при оплате; правильная категория; действующий
-     номер) + галочка согласия, без неё «Далее» не загорается → 3) анкета (город,
+     МАСТЕР ЗАЯВКИ: кнопка «Оставить заявку» (шапка + плавающая) открывает шаги:
+     1) правила размещения (настоящее имя; правильная категория; действующий
+     номер) + галочка согласия, без неё «Далее» не загорается → 2) анкета (город,
      категория, подкатегория, название, телефон, локация, маршруты, описание) →
-     4) «Анкета отправлена на рассмотрение» + кнопка оплаты. Заявка пишется в коллекцию applications со статусом pending
+     3) «Анкета отправлена на рассмотрение» + кнопка WhatsApp. Табло с тарифами
+     удалено (v1.4.2) — срок и VIP выбирает админ. Заявка пишется в коллекцию applications со статусом pending
      и НЕ видна в справочнике, пока админ в очереди заявок (плавающая кнопка «Заявки»
      с бейджем количества) не нажмёт «Одобрить» — тогда анкета переносится в providers
      и публикуется (или «Отклонить»). Сервер принимает заявку только в pending;
@@ -2619,7 +2703,24 @@
      просмотры и админ-панель работают через НАШ сервер dalil-api
      (Cloudflare Worker + D1). Аккаунты — email+пароль (PBKDF2 на сервере). */
   /* ВЕРСИЯ (её называет пользователь в чате; видна внизу страницы и в диагностике входа) */
-  const APP_VERSION = "1.4.1";
+  /* ===== v1.4.2 · ФИРМЕННАЯ ЛУПА SEARCH_BRAND =====
+     Золотой обод, внутри — луна и дюна. Единый знак поиска
+     в шапке сайта и в админ-панели. */
+  const lensSVG = (sz) => `
+    <svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="dalilGold${sz}" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#FFE9A8"/>
+          <stop offset=".45" stop-color="#FFC94D"/>
+          <stop offset="1" stop-color="#E8A020"/>
+        </linearGradient>
+      </defs>
+      <circle cx="10.2" cy="10.2" r="7.2" stroke="url(#dalilGold${sz})" stroke-width="2.4"/>
+      <path d="M15.8 15.8 L21 21" stroke="url(#dalilGold${sz})" stroke-width="2.8" stroke-linecap="round"/>
+      <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
+      <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
+    </svg>`;
+  const APP_VERSION = "1.4.2";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -2873,6 +2974,16 @@
       subWaMsg: "Здравствуйте! Хочу разместить карточку в «دليلك في سوريا».",
       subContact: "Ответственный за приём анкет: عمّار المصطفى الحسن",
       footer: "DALIL SURIYA — народный справочник городов Сирии. Данные хранятся на нашем сервере.",
+      /* v1.4.2 · бесплатная модель + VIP-статус */
+      featBadge: "VIP",
+      verBadge: "Проверено",
+      adTitle: "Реклама у нас",
+      adText: "Тысячи людей из всех городов Сирии открывают каталог каждый день. Разместите рекламный баннер или VIP-карточку.",
+      adWaBtn: "Написать в WhatsApp",
+      adWaMsg: "Здравствуйте! Хочу рекламу в DALIL SURIYA (баннер / VIP-карточка).",
+      adTag: "Реклама",
+      vipBlockLbl: "VIP-статус и продвижение",
+      vipHint: "VIP — карточка всегда первая в списке. «Проверено» — золотая галочка доверия.",
       brandSub: "Справочник Сирии",
       tgBtn: "Telegram",
       citiesTitle: "Выберите город",
@@ -2887,23 +2998,23 @@
       langLabel: "Язык",
       applyBtn: "Оставить заявку",
       applyTitle: "Заявка на размещение",
-      appCap1: "Шаг 1 · Цена",
-      appCap2: "Шаг 2 · Правила",
-      appCap3: "Шаг 3 · Анкета",
+      appCap1: "Шаг 1 · Правила",
+      appCap2: "Шаг 2 · Анкета",
+      appCap3: "Шаг 3",
       appDesc1: "Выберите срок размещения карточки в справочнике — цены те же, что при оплате Аммару.",
       appNext: "Далее",
       appClose: "Готово",
       appSending: "Отправка…",
       appSend: "Отправить заявку",
-      appRule1: "Имя в анкете должно совпадать с именем, которое вы дали Аммару аль-Мустафе при оплате, — иначе анкета не будет одобрена.",
+      appRule1: "Имя в анкете должно быть вашим настоящим именем — так карточке доверяют клиенты, и заявку легко проверить.",
       appRule2: "Выберите правильную категорию и подкатегорию — анкета попадёт в нужный раздел справочника.",
       appRule3: "Укажите действующий номер телефона — по нему с вами свяжутся клиенты.",
       appRule4: "Заявка появится в справочнике только после проверки администратором.",
       appAgree: "Я прочитал правила и согласен с ними",
       appSentToast: "Заявка отправлена на проверку",
       appDoneTitle: "Анкета отправлена на рассмотрение!",
-      appDoneDesc: "Чтобы вашу анкету приняли, заплатите в WhatsApp — сообщение со всеми данными соберётся автоматически.",
-      appDoneWaBtn: "Заплатить в WhatsApp",
+      appDoneDesc: "Заявка уходит на проверку администратору. Публикация обычно занимает до 24 часов.",
+      appDoneWaBtn: "Написать нам в WhatsApp",
       appDoneWaMsg: "Здравствуйте! Я подал анкету в справочник DALIL SURIYA.",
       waLblPlan: "Тариф",
       waLblName: "Имя в анкете",
@@ -2921,7 +3032,7 @@
       remNoPhone: "Нет номера — свяжитесь вручную",
       remOpenedToast: "WhatsApp открыт — отправьте сообщение",
       remSkippedToast: "Скрыто до завтра",
-      remWaMsg: "Здравствуйте! Ваша анкета «{name}» ({city}) размещена в справочнике DALIL SURIYA. Она истекает {date} — через {n} дн. Чтобы продлить ({plan} · {price}), ответьте на это сообщение.",
+      remWaMsg: "Здравствуйте! Ваша анкета «{name}» ({city}) размещена в справочнике DALIL SURIYA. Она истекает {date} — через {n} дн. Продление бесплатное — просто ответьте на это сообщение.",
       reqsBtn: "Заявки",
       reqsTitle: "Заявки на размещение",
       reqsPending: "ожидают проверки",
@@ -2964,6 +3075,10 @@
       toolSweepDone: "Удалено просроченных: {n}",
       toolLogout: "Выйти",
       toolLogoutD: "Завершить сеанс админа",
+      testTool: "Тестовая анкета · 1 клик",
+      testToolD: "Выбери город и подкатегорию — карточка создастся сразу и сгорит через 24 часа.",
+      testMake: "Создать тестовую анкету",
+      toastTestAdded: "Тестовая анкета создана (сгорит через 24 ч)",
       repDescShort: "Жалобы от посетителей на размещённые анкеты.",
       repBtn: "Пожаловаться",
       repTitle: "Пожаловаться на анкету",
@@ -3212,6 +3327,16 @@
       subWaMsg: "مرحباً! أريد إدراج بطاقة في دليلك في سوريا.",
       subContact: "المسؤول عن استقبال الطلبات: عمّار المصطفى الحسن",
       footer: "دليلك في سوريا — دليل شعبي لمدن سوريا. تُخزَّن البيانات على خادمنا.",
+      /* v1.4.2 · النموذج المجاني + حالة VIP */
+      featBadge: "VIP",
+      verBadge: "موثّق",
+      adTitle: "أعلن معنا",
+      adText: "آلاف الأشخاص من كل مدن سوريا يفتحون الدليل يومياً. ضع بانر إعلانك أو بطاقة VIP.",
+      adWaBtn: "اكتب لنا واتساب",
+      adWaMsg: "مرحباً! أريد إعلاناً في دليل سوريا (بانر / بطاقة VIP).",
+      adTag: "إعلان",
+      vipBlockLbl: "حالة VIP والترقية",
+      vipHint: "VIP — البطاقة تبقى دائماً في الأعلى. «موثّق» — علامة ذهبية للثقة.",
       brandSub: "دليل سوريا",
       tgBtn: "تيليجرام",
       citiesTitle: "اختر المدينة",
@@ -3226,23 +3351,23 @@
       langLabel: "اللغة",
       applyBtn: "قدّم طلب",
       applyTitle: "طلب نشر في الدليل",
-      appCap1: "الخطوة 1 · السعر",
-      appCap2: "الخطوة 2 · القواعد",
-      appCap3: "الخطوة 3 · الاستمارة",
+      appCap1: "الخطوة 1 · القواعد",
+      appCap2: "الخطوة 2 · الاستمارة",
+      appCap3: "الخطوة 3",
       appDesc1: "اختر مدة نشر البطاقة في الدليل — الأسعار نفسها المقدّمة لعمّار.",
       appNext: "التالي",
       appClose: "تم",
       appSending: "جارٍ الإرسال…",
       appSend: "إرسال الطلب",
-      appRule1: "يجب أن يتطابق الاسم في الاستمارة مع الاسم الذي أعطيته لعمّار المصطفى عند الدفع — وإلا لن يُعتمد الطلب.",
+      appRule1: "يجب أن يكون الاسم في الاستمارة اسمك الحقيقي — هكذا يثق العملاء بالبطاقة ويسهل التحقق من الطلب.",
       appRule2: "اختر التصنيف والتصنيف الفرعي الصحيحين — لتظهر الاستمارة في القسم المناسب من الدليل.",
       appRule3: "اكتب رقم هاتف فعّال — من خلاله سيتواصل معك العملاء.",
       appRule4: "لن تظهر الاستمارة في الدليل إلا بعد مراجعة المشرف.",
       appAgree: "قرأت القواعد وأوافق عليها",
       appSentToast: "تم إرسال الطلب للمراجعة",
       appDoneTitle: "تم إرسال النموذج للمراجعة!",
-      appDoneDesc: "لكي يُقبل النموذج، قم بالدفع عبر واتساب — ستُجمَّع الرسالة ببياناتك تلقائياً.",
-      appDoneWaBtn: "الدفع عبر واتساب",
+      appDoneDesc: "يُرسل النموذج إلى المسؤول للمراجعة. تستغرق الموافقة عادةً حتى 24 ساعة.",
+      appDoneWaBtn: "اكتب لنا واتساب",
       appDoneWaMsg: "مرحباً! أرسلت نموذجاً إلى دليل DALIL SURIYA.",
       waLblPlan: "الباقة",
       waLblName: "الاسم في النموذج",
@@ -3260,7 +3385,7 @@
       remNoPhone: "لا يوجد رقم — تواصل يدوياً",
       remOpenedToast: "تم فتح واتساب — أرسل الرسالة",
       remSkippedToast: "تم الإخفاء حتى الغد",
-      remWaMsg: "مرحباً! أنتم أصحاب الاستمارة «{name}» ({city}) في دليل DALIL SURIYA. تنبيه: تنتهي صلاحيتها في {date} — بعد {n} يوم. لتجديد النشر ({plan} · {price}) ردّوا على هذه الرسالة.",
+      remWaMsg: "مرحباً! بطاقتكم «{name}» ({city}) منشورة في دليل DALIL SURIYA. تنتهي صلاحيتها في {date} — بعد {n} يوم. التجديد مجاني — ردّوا على هذه الرسالة فقط.",
       reqsBtn: "الطلبات",
       reqsTitle: "طلبات النشر",
       reqsPending: "في انتظار المراجعة",
@@ -3303,6 +3428,10 @@
       toolSweepDone: "تم حذف المنتهية: {n}",
       toolLogout: "خروج",
       toolLogoutD: "إنهاء جلسة المشرف",
+      testTool: "بطاقة تجريبية بنقرة واحدة",
+      testToolD: "اختر المدينة والفئة الفرعية — تُنشأ البطاقة فوراً وتُحذف تلقائياً بعد 24 ساعة.",
+      testMake: "إنشاء بطاقة تجريبية",
+      toastTestAdded: "تم إنشاء البطاقة التجريبية (تُحذف بعد 24 ساعة)",
       repDescShort: "شكاوى الزوار من الاستمارات المنشورة.",
       repBtn: "إبلاغ",
       repTitle: "الإبلاغ عن استمارة",
@@ -3551,6 +3680,16 @@
       subWaMsg: "Silav! Ez dixwazim karta xwe di «Rêbera te li Sûriyê» de tomar bikim.",
       subContact: "Berkarê wergirtina forman: عمّار المصطفى الحسن",
       footer: "Rêznama Sûriyê — rêznenameya gelêrî ya bajarên Sûriyê. Dane li ser servera me tên hilanîn.",
+      /* v1.4.2 · modela belaş + VIP */
+      featBadge: "VIP",
+      verBadge: "Verîfkirî",
+      adTitle: "Reklam li cem me",
+      adText: "Hesarên mirovan ji hemû bajarên Sûriyê rojane rêbername vedikin. Banera xwe an karta VIP bicîh bikin.",
+      adWaBtn: "Bi WhatsAppê ji me re binivîsin",
+      adWaMsg: "Silav! Ez dixwazim di DALIL SURIYA de reklam bikim (baner / karta VIP).",
+      adTag: "Reklam",
+      vipBlockLbl: "Statûya VIP û pêşxistin",
+      vipHint: "VIP — kart her tim li jor e. «Verîfkirî» — tîka zêrîn a baweriyê.",
       brandSub: "Rêznama Sûriyê",
       tgBtn: "تێلێگرام",
       citiesTitle: "Bajarê xwe hilbijêre",
@@ -3565,23 +3704,23 @@
       langLabel: "Ziman",
       applyBtn: "Daxwazê bihêle",
       applyTitle: "Daxwaza cîhkirinê",
-      appCap1: "Gav 1 · Biha",
-      appCap2: "Gav 2 · Rêbaz",
-      appCap3: "Gav 3 · Forma",
+      appCap1: "Gav 1 · Rêbaz",
+      appCap2: "Gav 2 · Forma",
+      appCap3: "Gav 3",
       appDesc1: "Demê nîşandina kartê di rêbernameyê de hilbijêre — bihayên wekî hene.",
       appNext: "Pêş",
       appClose: "Qediya",
       appSending: "Tê şandin…",
       appSend: "Daxwazê bişîne",
-      appRule1: "Nav di forma de divê bi navê ku te daye Ammar Al-Mostafa di dema dayînê de re wekhev be — wekî na daxwaz neyê pejirandin.",
+      appRule1: "Nav di forma de divê navê rastîn yê we be — wisa xerîdar li kartê bawer dikin û kontrol hêsan dibe.",
       appRule2: "Kategorî û bin-kategoriya rast hilbijêre — dê forma di beşa guncav a rêbernameyê de xuya bibe.",
       appRule3: "Hejmara telefona derbasdar binivîse — bi rêya wê kes bi te re dikin.",
       appRule4: "Forma tenê piştî kontrola rêveber di rêbernameyê de xuya dibe.",
       appAgree: "Ez rêbazan xwendin û qebûl dikim",
       appSentToast: "Daxwaz ji bo kontrolê hate şandin",
       appDoneTitle: "Form ji bo kontrolê hate şandin!",
-      appDoneDesc: "Ji bo ku formê were pejirandin, pere bidin bi rêya WhatsAppê — peyam bi xweber ji agahiyên we tê çêkirin.",
-      appDoneWaBtn: "Pere dayin bi WhatsAppê",
+      appDoneDesc: "Form ji bo kontrolê diçe rêveber. Pejirandin bi gelemperî heta 24 saetan digire.",
+      appDoneWaBtn: "Bi WhatsAppê ji me re binivîsin",
       appDoneWaMsg: "Silav! Min forme ji bo rêbernameya DALIL SURIYA şand.",
       waLblPlan: "Tarîf",
       waLblName: "Nav di formê de",
@@ -3599,7 +3738,7 @@
       remNoPhone: "Hejmar tune — bi destê xwe biwanê",
       remOpenedToast: "WhatsApp vebû — peyamê bişîne",
       remSkippedToast: "Heta sibê veşartî",
-      remWaMsg: "Silav! Hûn xwediyê formê «{name}» ({city}) ne di rêbernameya DALIL SURIYA de. Dema wê di {date} de diqede — piştî {n} rojan. Ji bo nûkirinê ({plan} · {price}) bersiva vê peyamê bidin.",
+      remWaMsg: "Silav! Karta we «{name}» ({city}) di DALIL SURIYA de weşandî ye. Dema wê di {date} de diqede — piştî {n} rojan. Nûkirin belâş e — tenê bersiva vê peyamê bidin.",
       reqsBtn: "Daxwaz",
       reqsTitle: "Daxwazên cîhkirinê",
       reqsPending: "li benda kontrolê",
@@ -3642,6 +3781,10 @@
       toolSweepDone: "Hate jêbirin: {n}",
       toolLogout: "Derkeve",
       toolLogoutD: "Dawîkirina rûniştina admin",
+      testTool: "Karta testa bi yek klîk",
+      testToolD: "Bajar û binbezigê hilbijêre — karta tavilê tê afirandin û piştî 24 saetan xwe jê dike.",
+      testMake: "Çêkirina karta testa",
+      toastTestAdded: "Karta testa hat afirandin (piştî 24 saetan tê jêbirin)",
       repDescShort: "Gilîyên mirovan li ser formên weşandî.",
       repBtn: "Gilî bike",
       repTitle: "Gilî li ser formê",
@@ -3891,6 +4034,16 @@
       subWaMsg: "Hello! I want to list my card on Dalil Suriya.",
       subContact: "Applications manager: Ammar Al-Mustafa Al-Hasan",
       footer: "Dalil Suriya — the people's directory of Syrian cities. Data is stored on our own server.",
+      /* v1.4.2 · free model + VIP status */
+      featBadge: "VIP",
+      verBadge: "Verified",
+      adTitle: "Advertise with us",
+      adText: "Thousands of people from all Syrian cities open the directory every day. Place your banner or a VIP card.",
+      adWaBtn: "Message us on WhatsApp",
+      adWaMsg: "Hello! I want to advertise in DALIL SURIYA (banner / VIP card).",
+      adTag: "Ad",
+      vipBlockLbl: "VIP status & promotion",
+      vipHint: "VIP — the card is always first in the list. «Verified» — golden trust badge.",
       brandSub: "Directory of Syria",
       tgBtn: "Telegram",
       citiesTitle: "Choose a city",
@@ -3905,23 +4058,23 @@
       langLabel: "Language",
       applyBtn: "Apply for listing",
       applyTitle: "Listing application",
-      appCap1: "Step 1 · Price",
-      appCap2: "Step 2 · Rules",
-      appCap3: "Step 3 · Form",
+      appCap1: "Step 1 · Rules",
+      appCap2: "Step 2 · Form",
+      appCap3: "Step 3",
       appDesc1: "Choose how long your card stays in the directory — same prices as when paying Ammar.",
       appNext: "Next",
       appClose: "Done",
       appSending: "Sending…",
       appSend: "Send application",
-      appRule1: "The name in the form must match the name you gave to Ammar Al-Mostafa when paying — otherwise the application will not be approved.",
+      appRule1: "The name in the form must be your real name — this builds customer trust and makes verification easy.",
       appRule2: "Choose the correct category and subcategory — your card will appear in the right section.",
       appRule3: "Provide a working phone number — clients will contact you through it.",
       appRule4: "Your card appears in the directory only after the administrator approves it.",
       appAgree: "I have read the rules and agree with them",
       appSentToast: "Application sent for review",
       appDoneTitle: "Application submitted for review!",
-      appDoneDesc: "For your application to be accepted, pay via WhatsApp — the message with your details is composed automatically.",
-      appDoneWaBtn: "Pay via WhatsApp",
+      appDoneDesc: "Your application goes to the administrator for review. Approval usually takes up to 24 hours.",
+      appDoneWaBtn: "Message us on WhatsApp",
       appDoneWaMsg: "Hello! I have submitted an application to the DALIL SURIYA directory.",
       waLblPlan: "Plan",
       waLblName: "Name in the form",
@@ -3939,7 +4092,7 @@
       remNoPhone: "No number — contact manually",
       remOpenedToast: "WhatsApp opened — send the message",
       remSkippedToast: "Hidden until tomorrow",
-      remWaMsg: "Hello! Your listing «{name}» ({city}) in the DALIL SURIYA directory expires on {date} — in {n} days. To renew ({plan} · {price}), just reply to this message.",
+      remWaMsg: "Hello! Your listing «{name}» ({city}) in the DALIL SURIYA directory expires on {date} — in {n} days. Renewal is free — just reply to this message.",
       reqsBtn: "Requests",
       reqsTitle: "Listing requests",
       reqsPending: "pending review",
@@ -3982,6 +4135,10 @@
       toolSweepDone: "Deleted expired: {n}",
       toolLogout: "Log out",
       toolLogoutD: "End the admin session",
+      testTool: "1-click test entry",
+      testToolD: "Pick a city and a subcategory — the card is created at once and expires in 24 hours.",
+      testMake: "Create test entry",
+      toastTestAdded: "Test entry created (expires in 24 h)",
       repDescShort: "Visitor reports about published listings.",
       repBtn: "Report",
       repTitle: "Report this listing",
@@ -4231,6 +4388,16 @@
       subWaMsg: "Hallo! Ich möchte meine Karte bei Dalil Suriya eintragen.",
       subContact: "Antragsverwaltung: Ammar Al-Mustafa Al-Hasan",
       footer: "Dalil Suriya — das Volksverzeichnis der Städte Syriens. Daten werden auf unserem eigenen Server gespeichert.",
+      /* v1.4.2 · kostenloses Modell + VIP-Status */
+      featBadge: "VIP",
+      verBadge: "Verifiziert",
+      adTitle: "Werben Sie bei uns",
+      adText: "Tausende Menschen aus allen Städten Syriens öffnen täglich das Verzeichnis. Platzieren Sie Ihr Banner oder eine VIP-Karte.",
+      adWaBtn: "Schreiben Sie uns per WhatsApp",
+      adWaMsg: "Hallo! Ich möchte in DALIL SURIYA werben (Banner / VIP-Karte).",
+      adTag: "Werbung",
+      vipBlockLbl: "VIP-Status & Werbung",
+      vipHint: "VIP — die Karte ist immer ganz oben. «Verifiziert» — goldenes Vertrauenssymbol.",
       brandSub: "Verzeichnis Syriens",
       tgBtn: "Telegram",
       citiesTitle: "Stadt wählen",
@@ -4245,23 +4412,23 @@
       langLabel: "Sprache",
       applyBtn: "Eintrag beantragen",
       applyTitle: "Antrag auf Eintrag",
-      appCap1: "Schritt 1 · Preis",
-      appCap2: "Schritt 2 · Regeln",
-      appCap3: "Schritt 3 · Formular",
+      appCap1: "Schritt 1 · Regeln",
+      appCap2: "Schritt 2 · Formular",
+      appCap3: "Schritt 3",
       appDesc1: "Wählen Sie die Laufzeit Ihres Eintrags im Verzeichnis — dieselben Preise wie bei Ammar.",
       appNext: "Weiter",
       appClose: "Fertig",
       appSending: "Wird gesendet…",
       appSend: "Antrag senden",
-      appRule1: "Der Name im Formular muss mit dem Namen übereinstimmen, den Sie Ammar Al-Mostafa bei der Zahlung genannt haben — sonst wird der Antrag nicht genehmigt.",
+      appRule1: "Der Name im Formular muss Ihr echter Name sein — so vertrauen Ihnen Kunden und die Prüfung fällt leicht.",
       appRule2: "Wählen Sie die richtige Kategorie und Unterkategorie — Ihr Eintrag erscheint im richtigen Bereich.",
       appRule3: "Geben Sie eine gültige Telefonnummer an — die Kunden erreichen Sie darüber.",
       appRule4: "Ihr Eintrag erscheint erst nach der Prüfung durch den Administrator im Verzeichnis.",
       appAgree: "Ich habe die Regeln gelesen und akzeptiere sie",
       appSentToast: "Antrag zur Prüfung gesendet",
       appDoneTitle: "Antrag zur Prüfung gesendet!",
-      appDoneDesc: "Damit Ihr Antrag angenommen wird, zahlen Sie per WhatsApp — die Nachricht mit Ihren Daten wird automatisch erstellt.",
-      appDoneWaBtn: "Per WhatsApp bezahlen",
+      appDoneDesc: "Ihr Antrag geht zur Prüfung an den Administrator. Die Freigabe dauert meist bis zu 24 Stunden.",
+      appDoneWaBtn: "Schreiben Sie uns per WhatsApp",
       appDoneWaMsg: "Hallo! Ich habe einen Antrag ans DALIL SURIYA-Verzeichnis gesendet.",
       waLblPlan: "Tarif",
       waLblName: "Name im Antrag",
@@ -4279,7 +4446,7 @@
       remNoPhone: "Keine Nummer — manuell kontaktieren",
       remOpenedToast: "WhatsApp geöffnet — Nachricht senden",
       remSkippedToast: "Bis morgen ausgeblendet",
-      remWaMsg: "Hallo! Ihr Eintrag «{name}» ({city}) im Verzeichnis DALIL SURIYA läuft am {date} ab — in {n} Tagen. Zur Verlängerung ({plan} · {price}) antworten Sie einfach auf diese Nachricht.",
+      remWaMsg: "Hallo! Ihr Eintrag «{name}» ({city}) im Verzeichnis DALIL SURIYA läuft am {date} ab — in {n} Tagen. Die Verlängerung ist kostenlos — antworten Sie einfach auf diese Nachricht.",
       reqsBtn: "Anträge",
       reqsTitle: "Eintragsanträge",
       reqsPending: "ausstehend",
@@ -4322,6 +4489,10 @@
       toolSweepDone: "Gelöscht: {n}",
       toolLogout: "Abmelden",
       toolLogoutD: "Admin-Sitzung beenden",
+      testTool: "Testeintrag · 1 Klick",
+      testToolD: "Stadt und Unterkategorie wählen — die Karte wird sofort erstellt und läuft nach 24 Stunden ab.",
+      testMake: "Testeintrag erstellen",
+      toastTestAdded: "Testeintrag erstellt (läuft in 24 Std. ab)",
       repDescShort: "Meldungen von Besuchern über veröffentlichte Einträge.",
       repBtn: "Melden",
       repTitle: "Eintrag melden",
@@ -4571,6 +4742,16 @@
       subWaMsg: "Merhaba! Kartımı Dalil Suriya'ya kaydetmek istiyorum.",
       subContact: "Başvuru sorumlusu: Ammar Al-Mustafa Al-Hasan",
       footer: "Dalil Suriya — Suriye şehirlerinin halk rehberi. Veriler kendi sunucumuzda saklanır.",
+      /* v1.4.2 · ücretsiz model + VIP durumu */
+      featBadge: "VIP",
+      verBadge: "Doğrulandı",
+      adTitle: "Bize reklam verin",
+      adText: "Suriye'nin tüm şehirlerinden binlerce insan her gün rehbere giriyor. Banerinizi veya VIP kartınızı yerleştirin.",
+      adWaBtn: "WhatsApp'tan bize yazın",
+      adWaMsg: "Merhaba! DALIL SURIYA'da reklam vermek istiyorum (banner / VIP kart).",
+      adTag: "Reklam",
+      vipBlockLbl: "VIP durumu ve tanıtım",
+      vipHint: "VIP — kart her zaman listenin başında. «Doğrulandı» — altın güven işareti.",
       brandSub: "Suriye Rehberi",
       tgBtn: "Telegram",
       citiesTitle: "Şehir seçin",
@@ -4585,23 +4766,23 @@
       langLabel: "Dil",
       applyBtn: "Kayıt talebi",
       applyTitle: "Rehbere kayıt talebi",
-      appCap1: "Adım 1 · Fiyat",
-      appCap2: "Adım 2 · Kurallar",
-      appCap3: "Adım 3 · Form",
+      appCap1: "Adım 1 · Kurallar",
+      appCap2: "Adım 2 · Form",
+      appCap3: "Adım 3",
       appDesc1: "Kaydınızın rehberde kalma süresini seçin — fiyatlar Ammar'a ödemeyle aynı.",
       appNext: "İleri",
       appClose: "Tamam",
       appSending: "Gönderiliyor…",
       appSend: "Talebi gönder",
-      appRule1: "Formdaki ad, ödeme yaparken Ammar Al-Mostafa'ya verdiğiniz adla aynı olmalıdır — aksi hâlde talep onaylanmaz.",
+      appRule1: "Formdaki ad gerçek adınız olmalıdır — böylece müşteriler kartınıza güvenir ve onay kolaylaşır.",
       appRule2: "Doğru kategoriyi ve alt kategoriyi seçin — kaydınız doğru bölümde görünür.",
       appRule3: "Çalışan bir telefon numarası yazın — müşteriler bu numaradan size ulaşır.",
       appRule4: "Kayıt, yönetici onayından sonra rehberde görünür.",
       appAgree: "Kuralları okudum ve kabul ediyorum",
       appSentToast: "Talep incelemeye gönderildi",
       appDoneTitle: "Form incelemeye gönderildi!",
-      appDoneDesc: "Formunuzun kabul edilmesi için WhatsApp'tan ödeme yapın — bilgilerinizle mesaj otomatik hazırlanır.",
-      appDoneWaBtn: "WhatsApp'tan öde",
+      appDoneDesc: "Talebiniz onay için yöneticiye gider. Onay genellikle 24 saate kadar sürer.",
+      appDoneWaBtn: "WhatsApp'tan bize yazın",
       appDoneWaMsg: "Merhaba! DALIL SURIYA rehberine başvuru gönderdim.",
       waLblPlan: "Paket",
       waLblName: "Formdaki isim",
@@ -4619,7 +4800,7 @@
       remNoPhone: "Numara yok — elle iletişim",
       remOpenedToast: "WhatsApp açıldı — mesajı gönder",
       remSkippedToast: "Yarına kadar gizlendi",
-      remWaMsg: "Merhaba! DALIL SURIYA rehberindeki «{name}» ({city}) kaydınız {date} tarihinde doluyor — {n} gün sonra. Yenilemek için ({plan} · {price}) bu mesajı yanıtlayın.",
+      remWaMsg: "Merhaba! DALIL SURIYA rehberindeki «{name}» ({city}) kaydınız {date} tarihinde doluyor — {n} gün sonra. Yenileme ücretsizdir — bu mesajı yanıtlayın yeter.",
       reqsBtn: "Talepler",
       reqsTitle: "Kayıt talepleri",
       reqsPending: "onay bekliyor",
@@ -4662,6 +4843,10 @@
       toolSweepDone: "Silinen: {n}",
       toolLogout: "Çıkış",
       toolLogoutD: "Yönetici oturumunu kapat",
+      testTool: "Tek tıkla test kaydı",
+      testToolD: "Şehir ve alt kategori seç — kart hemen oluşur ve 24 saat sonra silinir.",
+      testMake: "Test kaydı oluştur",
+      toastTestAdded: "Test kaydı oluşturuldu (24 sa sonra silinir)",
       repDescShort: "Ziyaretçilerin yayımlanan kayıtlar hakkındaki şikâyetleri.",
       repBtn: "Şikâyet et",
       repTitle: "Kaydı şikâyet et",
@@ -5165,6 +5350,9 @@
       const sb = (b.createdAt && b.createdAt.seconds) || 0;
       return sb - sa;
     });
+    /* v1.4.2: VIP-карточки всегда первые; между собой — по популярности
+       (просмотры), при равных просмотрах — случайно */
+    vipPinSort(state.docs);
     renderAll();
     updateReminders();   /* v1.2.7: пересчёт истекающих анкет на каждой загрузке */
     updateNotifications();   /* v1.3.0: три сценария уведомлений */
@@ -5434,7 +5622,27 @@
       items.sort((a, b) => rateAvgNum(b) - rateAvgNum(a));
     if (state.sort === "near" && myPos)
       items.sort((a, b) => distTo(a) - distTo(b));
+    /* v1.4.2: VIP всегда вверху любого списка (внутри VIP — по просмотрам,
+       при равных — случайно) */
+    vipPinSort(items);
     return items;
+  }
+  /* v1.4.2: VIP-карточки поднимаются наверх; порядок остальных сохраняется.
+     Случайные ключи выдаются один раз на вызов — сортировка не «дрожит» */
+  function vipPinSort(arr) {
+    if (!arr.some(x => x && x.feat)) return arr;
+    const rk = new Map(arr.map(x => [x.id, Math.random()]));
+    arr.sort((a, b) => {
+      const va = a.feat ? 1 : 0, vb = b.feat ? 1 : 0;
+      if (va !== vb) return vb - va;
+      if (va === 1) {
+        const dif = (Number(b.views) || 0) - (Number(a.views) || 0);
+        if (dif !== 0) return dif;
+        return (rk.get(a.id) || 0) - (rk.get(b.id) || 0);
+      }
+      return 0;
+    });
+    return arr;
   }
   /* v1.3.0: строка инструментов списка — чип «Избранное» + сортировка */
   function renderListTools() {
@@ -5463,9 +5671,26 @@
     el.hidden = false;
   }
 
+  /* ================= v1.4.2 · Баннерная реклама (монетизация) =================
+     AD_BANNER = null — слот скрыт (заглушек на сайте нет). Когда баннер
+     продан, вписывается { img, href } — баннер видят все над списком,
+     честная метка «إعلان» ставится автоматически. */
+  const AD_BANNER = null;   /* пример: { img: "https://.../banner.png", href: "https://..." } */
+  function renderAdBanner() {
+    const el = $("adSlot");
+    if (!el) return;
+    if (!AD_BANNER) { el.hidden = true; el.innerHTML = ""; return; }
+    el.hidden = false;
+    el.innerHTML = `<a href="${esc(AD_BANNER.href)}" target="_blank" rel="noopener">
+      <img src="${esc(AD_BANNER.img)}" alt="ad">
+      <span class="ad-tag">${esc(t("adTag"))}</span>
+    </a>`;
+  }
+
   function renderList() {
     renderDestFilter();
     renderListTools();
+    renderAdBanner();
     const cat = catById(state.cat);
     const lvls = levelsOf(cat);
     const cur = lvls.find(l => l.id === state.level) || lvls[0];
@@ -5484,11 +5709,11 @@
       const tel = (p.phone || "").replace(/[^\d+]/g, "");
       const wa = tel.replace(/\D/g, "");
       return `
-      <article class="row" data-id="${esc(p.id)}" style="animation-delay:${Math.min(i * 45, 400)}ms">
+      <article class="row${p.feat ? " vip-card" : ""}" data-id="${esc(p.id)}" style="animation-delay:${Math.min(i * 45, 400)}ms">
         <div class="num">${String(i + 1).padStart(2, "0")}</div>
         <div class="row-body">
           <div class="row-top">
-            <h3>${esc(pname(p))}</h3>
+            <h3>${esc(pname(p))}${p.feat ? ' <span class="vip-badge">VIP</span>' : ""}${p.ver ? ` <span class="vrf-badge" title="${esc(t("verBadge"))}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>` : ""}</h3>
             <span class="tag">${esc(subName(p.group, p.subcategory))}</span>
           </div>
           ${p.description ? `<p class="row-desc">${esc(p.description)}</p>` : ""}
@@ -5554,12 +5779,18 @@
     /* v1.5.0: кнопка аккаунта в шапке и видимость экрана приветствия */
     if (typeof renderAuthUI === "function") renderAuthUI();
     $("heroAlt").textContent = t("heroTag");
+    /* v1.4.2: WhatsApp кнопка блока «أعلن معنا» — сообщение на языке интерфейса */
+    {
+      const faw = $("footAdWa");
+      if (faw) faw.href = "https://wa.me/" + WA_SUPPORT.replace(/\D/g, "") +
+        "?text=" + encodeURIComponent(t("adWaMsg"));
+    }
     $("addModalTitle").textContent = t(editingId ? "editTitle" : "addTitle");
     const sc = document.getElementById("subContactName");
     if (sc) sc.textContent = t("subContact");
     /* Мастер заявки: подпись шага и селекты на текущем языке */
     if (applyOpened) {
-      $("appStepsCap").textContent = t(appStep >= 4 ? "appClose" : "appCap" + Math.min(appStep, 3));
+      $("appStepsCap").textContent = t(appStep >= 3 ? "appClose" : "appCap" + appStep);
       fillApplySelects();
     }
     if (state.admin && $("admOverlay").classList.contains("show")) { renderAdmStats(); renderAdmPane(); }
@@ -5578,7 +5809,7 @@
     return `
       <button type="button" class="modal-back" data-close="detailOverlay">${icon("back", 15)}<span>${esc(t("back"))}</span></button>
       <div class="modal-head">
-        <h3>${esc(pname(p))}</h3>
+        <h3>${esc(pname(p))}${p.feat ? ' <span class="vip-badge">VIP</span>' : ""}${p.ver ? ` <span class="vrf-badge" title="${esc(t("verBadge"))}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>` : ""}</h3>
       </div>
       <span class="tag detail-tag">${esc(subName(p.group, p.subcategory))}</span>
       ${p.description ? `<p class="detail-desc">${esc(p.description)}</p>` : ""}
@@ -6507,94 +6738,43 @@
   document.querySelectorAll("#setLangs [data-lang]").forEach(b =>
     b.addEventListener("click", () => setLang(b.dataset.lang)));
 
-  /* ================= v1.2.3 · Мастер заявки: цена → правила → анкета =================
-     Публичная форма: после личной оплаты человек сам подаёт заявку.
-     Заявка уходит в коллекцию applications со статусом pending и НЕ попадает
-     в справочник, пока админ не одобрит её в очереди заявок.
-     ЦЕНЫ НЕ МЕНЯТЬ: m1 = $2.50 · m3 = $7.00 · y1 = $15.00 */
-  const PLAN_PRICE = { m1: "$2.50", m3: "$7.00", y1: "$15.00" };
+  /* ================= v1.4.2 · МОДЕЛЬ «БЕСПЛАТНО НАВСЕГДА» =================
+     Тарифы = $0.00 (бесплатно навсегда). Табло с тарифами из мастера
+     заявки удалено: срок размещения выбирает только админ в панели
+     (поле «Срок» + VIP-блок). Заявка уходит в applications (pending)
+     и публикуется админом. */
+  const PLAN_PRICE = { m1: "$0.00", m3: "$0.00", y1: "$0.00" };
   const PLAN_TTL  = { m1: 2592000000, m3: 7776000000, y1: 31536000000 }; /* 1 / 3 / 12 мес */
   const planName = (p) => t(p === "m1" ? "subM1" : p === "m3" ? "subM3" : "subY1");
 
-  /* ================= v1.3.2 · ПРОМО-ИВЕНТ «1 месяц бесплатно» =================
-     Акция действует ДО 17.10.2026 включительно (локальное время устройства).
-     Постоянные ЦЕНЫ НЕ ТРОНУТЫ (PLAN_PRICE выше) — после даты всё возвращается
-     само: красный баннер на главной скроется, тариф m1 снова будет $2.50, в
-     WhatsApp и в заявку уйдёт обычная цена. Затронут ТОЛЬКО тариф «1 месяц» (m1).
-     АВТОСНЯТИЕ: promoActive() проверяется при каждой загрузке, плюс ежеминутный
-     сторож и проверка при возврате на вкладку — акция снимается даже если
-     приложение простояло открытым через момент истечения (без перезагрузки). */
-  const PROMO_END = new Date(2026, 9, 17, 23, 59, 59, 999);   /* 17.10.2026, конец дня */
-  const promoActive = () => Date.now() <= PROMO_END.getTime();
-  const planPriceStr = (p) => (promoActive() && p === "m1") ? "$0.00" : PLAN_PRICE[p];
-  let promoApplied = false;   /* промо-оформление сейчас на экране */
+  /* v1.4.2: промо-ивент v1.3.2 («1 месяц бесплатно» до 17.10.2026) удалён
+     полностью — размещение бесплатно навсегда, красный баннер на главной убран */
+  const planPriceStr = (p) => PLAN_PRICE[p] || "$0.00";
 
-  function applyPromo(){
-    const bar = $("promoBar");
-    if (bar) bar.hidden = !promoActive();
-    if (!promoActive()) return;
-    const m1 = document.querySelector('#subOverlay .plan[data-plan="m1"]');
-    if (m1) {
-      m1.classList.add("promo");
-      const pr = m1.querySelector(".plan-price");
-      if (pr) pr.innerHTML = '<s>$2.50</s>&nbsp;<b>$0.00</b>';
-      const badge = document.createElement("span");
-      badge.className = "plan-free";
-      badge.setAttribute("data-i18n", "promoFree");
-      badge.textContent = t("promoFree");
-      m1.appendChild(badge);
-    }
-    promoApplied = true;
-  }
-
-  /* Сторож автоснятия: после 17.10.2026 гасит баннер и возвращает цены на лету */
-  function expirePromo(){
-    if (!promoApplied) return;
-    promoApplied = false;
-    const bar = $("promoBar");
-    if (bar) bar.hidden = true;
-    const m1 = document.querySelector('#subOverlay .plan[data-plan="m1"]');
-    if (m1) {
-      m1.classList.remove("promo");
-      const pr = m1.querySelector(".plan-price");
-      if (pr) pr.textContent = "$2.50";
-      const badge = m1.querySelector(".plan-free");
-      if (badge) badge.remove();
-    }
-  }
-  applyPromo();
-  setInterval(() => { if (!promoActive()) expirePromo(); }, 60000);
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && !promoActive()) expirePromo();
-  });
-
-  let selectedPlan = null;   /* тариф, выбранный на шаге 1 */
-  let appStep = 1;           /* текущий шаг мастера (4 = «Готово») */
+  let selectedPlan = "m1";   /* v1.4.2: публичный выбор тарифа удалён — всегда m1 ($0.00) */
+  let appStep = 1;           /* текущий шаг мастера (1 правила · 2 анкета · 3 готово) */
   let applyOpened = false;   /* анкета уже открывалась — селекты заполнены */
   let appOpenedAt = 0;       /* v1.2.7: когда открыт мастер — для антиспам-ловушки времени */
   let appRoutes = [];        /* пункты Б (перевозки) в заявке */
 
   function goAppStep(n) {
     appStep = n;
-    [1, 2, 3, 4].forEach(i => { $("appPane" + i).hidden = i !== n; });
-    const cur = Math.min(n, 3);
+    [2, 3, 4].forEach((pane, i) => { $("appPane" + pane).hidden = i !== n - 1; });
     [1, 2, 3].forEach(i => {
       const b = $("appStepBar" + i);
-      b.classList.toggle("on", i === cur && n <= 3);
-      b.classList.toggle("done", i < cur || n === 4);
+      b.classList.toggle("on", i === n && n < 3);
+      b.classList.toggle("done", i < n || n === 3);
     });
-    $("appStepsCap").textContent = t(n >= 4 ? "appClose" : "appCap" + n);
+    $("appStepsCap").textContent = t(n >= 3 ? "appClose" : "appCap" + n);
     $("appErr").classList.remove("show");
-    if (n === 3) fillApplySelects();
+    if (n === 2) fillApplySelects();
   }
 
   function openApply() {
-    selectedPlan = null;
+    selectedPlan = "m1";
     appRoutes = [];
     applyOpened = true;
     appOpenedAt = Date.now();   /* v1.2.7: антиспам — старт отсчёта заполнения */
-    document.querySelectorAll("#subOverlay .plan").forEach(x => x.classList.remove("on"));
-    $("appNext1").disabled = true;
     $("appAgree").checked = false;
     $("appAgreeWrap").classList.remove("on");
     $("appNext2").disabled = true;
@@ -6615,31 +6795,15 @@
   }
   $("subBtn").addEventListener("click", guardedApply);
   $("subFab").addEventListener("click", guardedApply);
-  /* v1.3.2: тап по красному промо-баннеру на главной → мастер заявки */
-  if ($("promoBar")) $("promoBar").addEventListener("click", () => { if (promoActive()) guardedApply(); });
-
-  document.querySelectorAll("#subOverlay .plan").forEach(b => {
-    b.addEventListener("click", () => {
-      selectedPlan = b.dataset.plan;
-      document.querySelectorAll("#subOverlay .plan").forEach(x => x.classList.toggle("on", x === b));
-      $("appNext1").disabled = false;
-      $("appErr").classList.remove("show");
-    });
-  });
-
-  $("appNext1").addEventListener("click", () => {
-    if (!selectedPlan) { banner($("appErr"), "subSelectPlan"); return; }
-    goAppStep(2);
-  });
+  /* v1.4.2: шаг «Цена» удалён — мастер начинается сразу с правил */
 
   /* Галочка «прочитал правила»: без неё кнопка «Далее» не загорается */
   $("appAgree").addEventListener("change", e => {
     $("appAgreeWrap").classList.toggle("on", e.target.checked);
     $("appNext2").disabled = !e.target.checked;
   });
-  $("appBack2").addEventListener("click", () => goAppStep(1));
-  $("appNext2").addEventListener("click", () => { if ($("appAgree").checked) goAppStep(3); });
-  $("appBack3").addEventListener("click", () => goAppStep(2));
+  $("appNext2").addEventListener("click", () => { if ($("appAgree").checked) goAppStep(2); });
+  $("appBack3").addEventListener("click", () => goAppStep(1));
 
   /* ===== Анкета заявки (зеркало админ-формы, id с префиксом a) ===== */
   function fillApplySelects() {
@@ -6719,7 +6883,7 @@
   /* Отправка заявки: пишем в applications (pending), публикует админ */
   $("appForm").addEventListener("submit", async e => {
     e.preventDefault();
-    if (!selectedPlan) { goAppStep(1); banner($("appErr"), "subSelectPlan"); return; }
+    /* v1.4.2: тариф фиксируется автоматически (m1 · $0.00) */
     const cat = catById($("aCat").value);
     const groupId = cat.levels ? $("aLevel").value : cat.id;
     const subcat = $("aSub").value;
@@ -6756,8 +6920,8 @@
 
     try {
       const payload = {
-        plan: selectedPlan,
-        planPrice: planPriceStr(selectedPlan),   /* v1.3.2: в промо m1 = $0.00 */
+        plan: selectedPlan || "m1",
+        planPrice: planPriceStr(selectedPlan || "m1"),   /* v1.4.2: всегда $0.00 */
         type: cat.base === "stores" || cat.base === "pharmacies" ? "store"
              : cat.base === "services" || cat.base === "repair" ? "service" : "person",
         category: cat.base,
@@ -6792,13 +6956,11 @@
         store.set("dalil_sentphones", JSON.stringify(sentPhones.slice(-20)));
       } catch {}
 
-      /* v1.2.6: кнопка = «Заплатить в WhatsApp»; текст чата собирается
-         автоматически из анкеты — тариф (срок), имя как в анкете,
-         категория, город, номер — Аммару ничего не нужно переспрашивать */
+      /* v1.4.2: модель бесплатная — кнопка = «Написать нам в WhatsApp»;
+         текст чата собирается из анкеты (имя, категория, город, номер) */
       const waNum = WA_SUPPORT.replace(/\D/g, "");
       const msg = encodeURIComponent(
         `${t("appDoneWaMsg")}\n` +
-        `${t("waLblPlan")}: ${planName(selectedPlan)} · ${planPriceStr(selectedPlan)}\n` +
         `${t("waLblName")}: ${title}\n` +
         `${t("waLblCat")}: ${subName(groupId, subcat)}\n` +
         `${t("waLblCity")}: ${cityName(city)}\n` +
@@ -7064,6 +7226,8 @@
     fPick.reset();
     $("addModalTitle").textContent = t("addTitle");
     $("addForm").reset();
+    $("fFeatWrap").classList.remove("on");
+    $("fVerWrap").classList.remove("on");
     $("addErr").classList.remove("show");
     $("descCounter").textContent = "0 / 600";
     $("descCounter").classList.remove("over");
@@ -7109,9 +7273,19 @@
     $("fLoc").value = d.location || "";
     if (d.subcategory === "transport") $("fCar").value = d.carMake || "";
     $("fDesc").value = d.description || "";
+    /* v1.4.2: VIP-статус и верификация из карточки */
+    $("fFeat").checked = !!d.feat;
+    $("fVer").checked = !!d.ver;
+    $("fFeatWrap").classList.toggle("on", !!d.feat);
+    $("fVerWrap").classList.toggle("on", !!d.ver);
     $("descCounter").textContent = `${$("fDesc").value.length} / 600`;
     openOv("addOverlay");
   }
+
+  /* v1.4.2: VIP-блок — подсветка включённых тумблеров */
+  [["fFeat", "fFeatWrap"], ["fVer", "fVerWrap"]].forEach(([inp, wrap]) => {
+    $(inp).addEventListener("change", e => $(wrap).classList.toggle("on", e.target.checked));
+  });
 
   $("addForm").addEventListener("submit", async e => {
     e.preventDefault();
@@ -7159,6 +7333,9 @@
          старые автоматические переводы (ru/ku) удаляются вместе с ней */
       payload.names = { ar: title };
       if (titleEn) payload.names.en = titleEn;
+      /* v1.4.2: VIP-статус и верификация */
+      payload.feat = $("fFeat").checked;
+      payload.ver = $("fVer").checked;
       /* v1.3.0: метка на карте */
       const fCoord = fPick.get();
       payload.lat = (fCoord.lat != null) ? fCoord.lat : null;
@@ -7357,6 +7534,100 @@
     closeOv("admOverlay");
     toast(t("toastLoggedOut"));
   });
+
+  /* ================= v1.4.2 · Тестовая анкета одним кликом =================
+     Админ выбирает город + категорию/подкатегорию и жмёт ОДНУ кнопку —
+     карточка создаётся штатным dbAdd (POST /api/admin/providers).
+     Телефон — поддержка проекта; срок 24 ч — тест сам удаляется из
+     каталога посетителей (или кнопкой «Удалить» в анкетах). */
+  $("testIc").innerHTML = icon("plus", 20);
+  function fillTestSelects() {
+    $("tCity").innerHTML = CITIES.map(c =>
+      `<option value="${c.id}">${esc(nm(c))}</option>`).join("");
+    $("tCat").innerHTML = CATS.map(c =>
+      `<option value="${c.id}">${esc(catName(c))}</option>`).join("");
+    syncTestLevel();
+  }
+  function syncTestLevel() {
+    const cat = catById($("tCat").value);
+    if (cat && cat.levels) {
+      $("tLevelField").hidden = false;
+      $("tLevel").innerHTML = cat.levels.map(l =>
+        `<option value="${l.id}">${esc(levelName(l))}</option>`).join("");
+    } else {
+      $("tLevelField").hidden = true;
+      $("tLevel").innerHTML = "";
+    }
+    syncTestSub();
+  }
+  function syncTestSub() {
+    const cat = catById($("tCat").value);
+    if (!cat) return;
+    const lv = cat.levels
+      ? (cat.levels.find(l => l.id === $("tLevel").value) || cat.levels[0])
+      : levelsOf(cat)[0];
+    $("tSub").innerHTML = lv.subs.map(s =>
+      `<option value="${s.id}">${esc(nm(s))}</option>`).join("");
+  }
+  $("tCat").addEventListener("change", syncTestLevel);
+  $("tLevel").addEventListener("change", syncTestSub);
+  let testBusy = false;
+  $("tMakeBtn").addEventListener("click", async () => {
+    if (testBusy) return;
+    const cat = catById($("tCat").value);
+    if (!cat) return;
+    testBusy = true;
+    const btn = $("tMakeBtn");
+    btn.disabled = true; btn.textContent = t("saving");
+    try {
+      const groupId = cat.levels ? $("tLevel").value : cat.id;
+      const subcat = $("tSub").value;
+      const city = $("tCity").value;
+      const lv = cat.levels
+        ? (cat.levels.find(l => l.id === $("tLevel").value) || cat.levels[0])
+        : levelsOf(cat)[0];
+      const subObj = lv.subs.find(s => s.id === subcat);
+      const subAr = subObj ? (subObj.ar || nm(subObj)) : subcat;
+      const cityObj = cityById(city);
+      const cityAr = cityObj ? (cityObj.ar || nm(cityObj)) : city;
+      const titleAr = "تجربة · " + subAr + " · " + cityAr;
+      const isTransport = subcat === "transport";
+      /* у перевозчиков обязательны маршрут и марка машины — подставляем,
+         чтобы «1 клик» не отказывал ни в одной подкатегории */
+      const routes = isTransport
+        ? CITIES.map(c => c.id).filter(id => id !== city).slice(0, 1) : [];
+      const payload = {
+        type: cat.base === "stores" || cat.base === "pharmacies" ? "store"
+             : cat.base === "services" || cat.base === "repair" ? "service" : "person",
+        category: cat.base,
+        group: groupId,
+        subcategory: subcat,
+        city,
+        carMake: isTransport ? "تجربة" : "",
+        routes,
+        title: titleAr,
+        phone: "+963939481984",
+        location: cityAr,   /* v1.4.2 vc13: всегда арабское название — как в заголовке */
+        description: "بطاقة تجريبية أنشئت من لوحة الإدارة لاختبار الموقع — تُحذف تلقائياً بعد 24 ساعة أو يدوياً. | Тестовая анкета, создана одной кнопкой в админ-панели: удалится сама через 24 часа.",
+        names: { ar: titleAr },
+        feat: false,
+        ver: false,
+        lat: null,
+        lng: null,
+        expiresAt: Date.now() + 86400000   /* 24 часа — самоочистка */
+      };
+      await dbAdd(payload);
+      toast(t("toastTestAdded"));
+    } catch (err) {
+      console.error(err);
+      toast(writeErrText(err), "err", 7000);
+    } finally {
+      testBusy = false;
+      btn.disabled = false;
+      btn.textContent = t("testMake");
+    }
+  });
+  fillTestSelects();
 
   /* ================= v1.2.3 · Очередь заявок (только админ) =================
      Публичная форма пишет в applications со статусом pending.
@@ -8260,7 +8531,7 @@
       $("setWarnIc").innerHTML = icon("trash", 13);   /* v1.4.0: удаление аккаунта */
       $("accDelIc").innerHTML = icon("trash", 16);
       $("delAccIc").innerHTML = icon("trash", 30);
-      $("searchIcon").innerHTML = icon("search", 18);
+      $("searchIcon").innerHTML = lensSVG(18);   /* v1.4.2: фирменная золотая лупа */
       /* v1.3.0: иконки новых блоков */
       $("notifBtnIc").innerHTML = icon("bell", 18);
       $("mapIc").innerHTML = icon("map", 20);
@@ -8274,11 +8545,13 @@
       $("panelIc").innerHTML = icon("gear", 16);
       $("citiesIcon").innerHTML = icon("city", 22);
       $("admGearIc").innerHTML = icon("gear", 20);
-      $("admSearchIc").innerHTML = icon("search", 17);
+      $("admSearchIc").innerHTML = lensSVG(17);   /* v1.4.2: фирменная золотая лупа */
       $("agentIc2").innerHTML = icon("user", 20);
       $("appAgreeBox").innerHTML = icon("check", 14);
       $("appDoneIc").innerHTML = icon("check", 30);
       $("appDoneWaIc").innerHTML = icon("chat", 15);
+      $("footAdWaIc").innerHTML = icon("chat", 15);      /* v1.4.2: блок «أعلن معنا» */
+      $("footAdTgIc").innerHTML = icon("send", 15);
       document.querySelectorAll(".modal-close").forEach(b => b.innerHTML = icon("x", 18));
 
       state.levelSelected = !catById(state.cat).levels;
