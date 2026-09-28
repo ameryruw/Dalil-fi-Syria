@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1.5 21.5 7v10L12 22.5 2.5 17V7z' fill='none' stroke='%23AF7F42' stroke-width='2'/><path d='M12 7l4.5 2.6v5.2L12 17.5l-4.5-2.7V9.6z' fill='%23AF7F42'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=Noto+Sans:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&family=Noto+Sans:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   /* ================================================================
      DALIL SURIYA · v1.3.4 — Midnight Gold + промо + рейтинг через REST
@@ -2207,6 +2207,111 @@
   @media (prefers-reduced-motion:reduce){
     *{ animation:none !important; }
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     v1.4.2 · ART DIRECTOR POLISH — доводка системы Swiss Paper.
+     Шрифты: Golos Text 900 (дисплей) + IBM Plex Mono (лейблы/цифры).
+     Дисциплина цвета: бумага, чернила, золото — единственное пятно.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* — Типографическая система — */
+  body{ font-weight:450; letter-spacing:.002em; }
+  .hero h1{
+    font-weight:900; letter-spacing:-.035em; line-height:.96;
+    font-size:clamp(3rem, 7vw, 4.8rem);
+  }
+  /* «Syria»: чернила + золотой маркер — один акцент вместо двух */
+  .hero h1 em{
+    color:var(--panel-text); -webkit-text-fill-color:currentColor;
+    background:linear-gradient(180deg, transparent 58%, rgba(176,137,90,.42) 58%, rgba(176,137,90,.42) 94%, transparent 94%);
+    padding:0 .06em; margin:0 -.02em;
+  }
+  .hero-meta, .hc-title, .cities-head h2::after, .list-head h2::after, .ft-tile::after{
+    font-family:'IBM Plex Mono','Golos Text',monospace;
+  }
+  .hero-meta{ font-size:10.5px; letter-spacing:.34em; }
+  .hc-title{ letter-spacing:.32em; font-size:10.5px; }
+  .cities-head h2::after, .list-head h2::after{
+    font-size:.42em; font-weight:600; letter-spacing:.24em; color:var(--muted);
+  }
+  .ft-tile::after{
+    font-size:24px; font-weight:600;
+    -webkit-text-stroke:1px rgba(16,19,20,.32); color:transparent;
+  }
+  .hero-desc{ font-size:1.05rem; line-height:1.72; letter-spacing:.002em; }
+  .hero-alt{ font-size:.95rem; letter-spacing:.01em; }
+
+  /* — Мастхед: двойная линейка газеты + монохромные кнопки — */
+  .topbar{ padding-top:10px; padding-bottom:10px; }
+  .topbar::after{
+    content:""; position:absolute; left:0; right:0; bottom:-5px; height:1px;
+    background:var(--panel-text); opacity:.55;
+  }
+  .brand{ font-weight:900; letter-spacing:.16em; font-size:15px; }
+  .btn-login, .btn-tg, .btn-sub, .btn-admin{
+    border-radius:0 !important; text-transform:uppercase;
+    font-weight:800; letter-spacing:.06em; font-size:11.5px;
+    border:1.5px solid var(--panel-text) !important;
+    background:var(--panel) !important; color:var(--panel-text) !important;
+    box-shadow:none !important; backdrop-filter:none !important;
+  }
+  .btn-login:hover, .btn-tg:hover, .btn-sub:hover, .btn-admin:hover{
+    background:var(--panel-text) !important; color:var(--bg) !important;
+    transform:translateY(-1px); box-shadow:none !important;
+  }
+  .btn-tg svg{ color:currentColor !important; }
+  .btn-vip{
+    border-radius:0 !important; border:1.5px solid var(--accent2) !important;
+    background:var(--accent2) !important; color:var(--bg) !important;
+    font-weight:900; letter-spacing:.1em; text-transform:uppercase; font-size:11.5px;
+    box-shadow:3px 3px 0 rgba(16,19,20,.8) !important;
+  }
+  .btn-vip:hover{ transform:translate(-1px,-1px);
+    box-shadow:5px 5px 0 rgba(16,19,20,.8) !important; }
+
+  /* — FAB: чернильный квадрат вместо золотого круга — */
+  .bn-fab .fab-disc{
+    border-radius:0 !important;
+    background:var(--panel-text) !important;
+    border:2px solid var(--panel-text) !important;
+    box-shadow:4px 4px 0 rgba(16,19,20,.55) !important;
+  }
+  .bn-fab .bn-t{ color:var(--panel-text) !important; font-weight:800;
+    letter-spacing:.04em; text-transform:uppercase; font-size:10.5px; }
+  .bn-fab .fab-disc svg, .subFab .fab-disc svg{ color:var(--bg) !important; }
+  .bottom-nav{ border-radius:0 !important; }
+
+  /* — Поиск: моно-плейсхолдер, чернильная иконка — */
+  .search input{ font-size:1rem; }
+  #searchIcon{ color:var(--panel-text); }
+  #searchIcon svg{ color:var(--accent2); }
+
+  /* — Плитки: моно-номера, воздух — */
+  .ft-grid{ gap:16px; }
+  .ft-tile{ padding:22px 20px; }
+  .ft-tile b{ font-weight:800; letter-spacing:-.01em; font-size:15px; }
+  .ft-tile:hover::after{ -webkit-text-stroke-color:rgba(176,137,90,.7); }
+
+  /* — Статистика: моно-подписи, золото только у $0 — */
+  .hc-stat b{ font-family:'Golos Text',sans-serif; }
+  .hc-stat span{ font-family:'IBM Plex Mono','Golos Text',monospace;
+    font-size:11px; letter-spacing:.12em; }
+
+  /* — Анкеты: типографика карточки — */
+  .row h3{ font-weight:800; letter-spacing:-.01em; }
+  .row .tag{ font-size:11px; letter-spacing:.04em; text-transform:uppercase; }
+
+  /* — Селект и чипы — */
+  .chip{ border-radius:0 !important; border:1.5px solid var(--line);
+    text-transform:uppercase; font-size:11px; letter-spacing:.05em; font-weight:800; }
+  .chip.on{ background:var(--panel-text); color:var(--bg); border-color:var(--panel-text); }
+
+  /* — Мелкая типографика UI — */
+  ::selection{ background:rgba(176,137,90,.35); }
+  .modal-head h3{ font-weight:900; letter-spacing:-.015em; }
+
+  /* — Футер: чернильная линейка сверху — */
+  footer{ border-top:2px solid var(--panel-text); margin-top:34px; }
 </style>
 </head>
 <body>
