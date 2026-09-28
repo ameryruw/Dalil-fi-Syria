@@ -2128,6 +2128,145 @@
     .btn-solid::after{ display:none; }
     .row, .ft-tile, .city-card{ transition:none; }
   }
+
+  /* ===================================================================
+     v1.4.2 · NEO-BRUTAL GOLD v2 — полная пересборка визуальной оболочки.
+     Карбон #05080F · золото #E2B169/#C2924F · электрический акцент
+     #2DD4BF. Жёсткие тени без размытия, 2px границы, гигантский
+     uppercase, бегущая строка. Логика не тронута.
+     =================================================================== */
+  :root{
+    --acid:#2DD4BF;
+    --carbon:#05080F;
+    --edge:rgba(232,237,244,.13);
+    --edge-gold:rgba(226,177,105,.5);
+    --hard-sh:6px 6px 0 rgba(0,0,0,.55);
+    --hard-sh-big:10px 10px 0 rgba(0,0,0,.5);
+  }
+  body{
+    background:var(--carbon);
+    background-image:
+      radial-gradient(900px 420px at 85% -10%, rgba(226,177,105,.13), transparent 60%),
+      radial-gradient(800px 500px at -10% 30%, rgba(45,212,191,.09), transparent 55%);
+    background-attachment:fixed;
+  }
+  body::before{ opacity:.35; filter:blur(90px); }
+  body::after{ opacity:.4; filter:blur(90px); }
+
+  /* — Типографика: гигантский uppercase — */
+  .hero{ padding-top:64px; }
+  .hero h1{
+    font-size:clamp(2.9rem, 8vw, 5rem);
+    font-weight:900; line-height:.98; letter-spacing:-.02em;
+    text-transform:uppercase;
+  }
+  .hero h1 em{ background:linear-gradient(100deg,#FFE082 0%,#E2B169 40%,#2DD4BF 110%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .hero-meta{ color:var(--acid); letter-spacing:.4em; font-weight:700; }
+  .hero-desc{ font-size:1.02rem; max-width:640px; }
+  .cities-head h2, .list-head h2, .map-head h2{
+    text-transform:uppercase; letter-spacing:.015em;
+    font-size:clamp(1.5rem, 4vw, 2.2rem) !important;
+  }
+  .cities-head h2::after, .list-head h2::after{
+    -webkit-text-stroke:1.4px var(--acid); color:transparent; opacity:.9;
+  }
+  .cities-head h2::before, .list-head h2::before, .map-head h2::before{
+    background:var(--acid); box-shadow:0 0 12px rgba(45,212,191,.6);
+  }
+
+  /* — Бегущая строка — */
+  .ticker{ overflow:hidden; margin-top:26px;
+    border-top:2px solid var(--edge); border-bottom:2px solid var(--edge);
+    background:rgba(2,5,10,.85); }
+  .ticker-track{ display:flex; width:max-content; animation:tickMove 30s linear infinite; }
+  .ticker:hover .ticker-track{ animation-play-state:paused; }
+  .ticker-group{ display:flex; }
+  .ticker-item{ display:inline-flex; align-items:center; gap:16px; padding:12px 26px;
+    font-size:12.5px; font-weight:900; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--card); white-space:nowrap; }
+  .tdot{ width:8px; height:8px; border-radius:2px; background:var(--acid);
+    box-shadow:0 0 10px rgba(45,212,191,.8); display:inline-block; transform:rotate(45deg); }
+  @keyframes tickMove{ to{ transform:translateX(-50%); } }
+  @media (prefers-reduced-motion:reduce){ .ticker-track{ animation:none; } }
+
+  /* — Кнопки: чанки с пресс-эффектом — */
+  .btn{ border-radius:14px !important; font-weight:900; letter-spacing:.05em;
+    text-transform:uppercase; font-size:12.5px;
+    border:2px solid var(--edge) !important;
+    box-shadow:var(--hard-sh);
+    transition:transform .13s ease, box-shadow .13s ease, border-color .13s ease, background .13s ease; }
+  .btn:hover{ transform:translate(-2px,-2px); box-shadow:9px 9px 0 rgba(0,0,0,.55); }
+  .btn:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 rgba(0,0,0,.55); }
+  .btn-solid{ background:linear-gradient(135deg,#FFE082,#E2B169 45%,#C2924F) !important;
+    color:#14100A !important; border-color:rgba(255,213,79,.75) !important;
+    box-shadow:var(--hard-sh-big); }
+  .btn-outline{ background:rgba(220,228,238,.05) !important; }
+  .btn-outline:hover{ border-color:var(--acid) !important; background:rgba(45,212,191,.08) !important; }
+  .btn-solid::after{ display:none; }
+  .btn-vip{ border:2px solid var(--edge-gold) !important; border-radius:14px !important;
+    box-shadow:4px 4px 0 rgba(0,0,0,.5); letter-spacing:.08em; }
+  .btn-login.gold, .btn-sub, .btn-admin{ border-radius:14px !important; }
+  .btn-sub{ box-shadow:var(--hard-sh); }
+  .btn-tg{ border-radius:14px !important; }
+
+  /* — Карточки: чанки с жёсткой тенью — */
+  .row, .ft-tile, .city-card{
+    background:rgba(9,14,25,.86) !important;
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border:2px solid var(--edge) !important;
+    border-radius:18px;
+    box-shadow:var(--hard-sh);
+    transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+  }
+  .row:hover, .city-card:hover, .ft-tile:hover{
+    transform:translate(-3px,-3px);
+    box-shadow:11px 11px 0 rgba(0,0,0,.5);
+    border-color:rgba(45,212,191,.55) !important;
+  }
+  article.row.vip-card{
+    border-color:var(--edge-gold) !important;
+    box-shadow:var(--hard-sh), 0 0 26px rgba(226,177,105,.16);
+    background:
+      linear-gradient(180deg,rgba(226,177,105,.10),rgba(226,177,105,.02)),
+      rgba(9,14,25,.86) !important;
+  }
+  article.row.vip-card:hover{ border-color:rgba(255,213,79,.8) !important;
+    box-shadow:11px 11px 0 rgba(0,0,0,.5), 0 0 34px rgba(226,177,105,.28); }
+  .ft-ic{ border-radius:12px; color:var(--acid);
+    background:rgba(45,212,191,.1); border-color:rgba(45,212,191,.4);
+    box-shadow:0 0 12px rgba(45,212,191,.2); }
+  .h-badge{ border-radius:12px; border:2px solid var(--edge) !important;
+    background:rgba(9,14,25,.8) !important; box-shadow:4px 4px 0 rgba(0,0,0,.5);
+    font-weight:900; text-transform:uppercase; letter-spacing:.04em; font-size:11.5px;
+    transition:transform .13s ease, box-shadow .13s ease, border-color .13s ease; }
+  .h-badge svg{ color:var(--acid); }
+  .h-badge:hover{ transform:translate(-2px,-2px); box-shadow:7px 7px 0 rgba(0,0,0,.5);
+    border-color:rgba(45,212,191,.5) !important; }
+
+  /* — Чипы-сортировки — */
+  .chip{ border-radius:12px !important; font-weight:800; }
+  .chip.on{ box-shadow:3px 3px 0 rgba(0,0,0,.5); }
+
+  /* — Поиск и инпуты — */
+  .search{ border-radius:18px !important; border:2px solid var(--edge) !important;
+    box-shadow:var(--hard-sh); background:rgba(9,14,25,.86) !important; }
+  .search:focus-within{ border-color:var(--acid) !important;
+    box-shadow:var(--hard-sh), 0 0 0 3px rgba(45,212,191,.15); }
+  input, select, textarea{ border:1px solid var(--edge); }
+
+  /* — Модалки и док — */
+  .modal{ border-radius:20px !important; border:2px solid var(--edge) !important;
+    box-shadow:14px 14px 0 rgba(0,0,0,.45), 0 30px 80px -30px rgba(0,0,0,.8) !important; }
+  .topbar{ background:rgba(4,7,13,.82) !important; border-bottom:2px solid var(--edge) !important; }
+  .bottom-nav{ background:rgba(4,7,13,.85) !important; border:2px solid var(--edge) !important;
+    border-radius:22px; box-shadow:var(--hard-sh-big); }
+  .vip-modal{ border-color:var(--edge-gold) !important;
+    box-shadow:14px 14px 0 rgba(0,0,0,.45), 0 0 40px rgba(226,177,105,.14) !important; }
+
+  /* — Тосты — */
+  .toast{ border:2px solid var(--edge) !important; border-radius:14px !important;
+    box-shadow:var(--hard-sh); font-weight:700; }
 </style>
 </head>
 <body>
@@ -2201,7 +2340,27 @@
   </div>
 </section>
 
-<!-- v1.4.2 · Плитки преимуществ на главной (в стиле Collider: иконка + короткий текст) -->
+<!-- v1.4.2 · Бегущая строка (нео-брутализм): бесшовный дубль, пауза при наведении.
+     Тексты — переиспользование существующих i18n-ключей, новых переводов не требуется. -->
+<div class="ticker" aria-hidden="false">
+  <div class="ticker-track">
+    <span class="ticker-group">
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="wTag"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="heroB1"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="heroB2"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="heroB3"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="featBadge"></span>&nbsp;·&nbsp;<span data-i18n="verBadge"></span></span>
+    </span>
+    <span class="ticker-group" aria-hidden="true">
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="wTag"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="heroB1"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="heroB2"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="heroB3"></span></span>
+      <span class="ticker-item"><i class="tdot"></i><span data-i18n="featBadge"></span>&nbsp;·&nbsp;<span data-i18n="verBadge"></span></span>
+    </span>
+  </div>
+</div>
+
 <section class="ft-sec reveal" aria-label="Features">
   <div class="ft-grid">
     <div class="ft-tile"><span class="ft-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 11-14h-7l0-6z"/></svg></span><b data-i18n="ftT1"></b><span data-i18n="ftD1"></span></div>
