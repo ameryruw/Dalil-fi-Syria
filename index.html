@@ -913,7 +913,20 @@
   .vip-orn.tl{ top:3px; inset-inline-start:3px; }
   .vip-orn.br{ bottom:3px; inset-inline-end:3px; transform:scaleX(-1) scaleY(-1); }
   article.row.vip-card .row-body, .detail-card .vip-orn-zone{ position:relative; }
-  article.row.vip-card{ position:relative; overflow:hidden; }
+  article.row.vip-card{ position:relative; overflow:hidden; padding-block-start:17px; padding-block-end:17px; }
+  /* v1.4.2 · Римский меандр: полноразмерные узорные полосы на VIP-анкетах */
+  article.row.vip-card::before, article.row.vip-card::after{
+    content:""; position:absolute; left:0; right:0; height:12px; z-index:1; pointer-events:none;
+    background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='14' viewBox='0 0 26 14'><path d='M1 13H25V1H7V9H19V5H11' fill='none' stroke='%23FFC107' stroke-width='1.5' opacity='.62'/></svg>") repeat-x;
+    background-size:26px 14px; background-position:center;
+  }
+  article.row.vip-card::before{ top:0; }
+  article.row.vip-card::after{ bottom:0; }
+  .vip-strip{ position:absolute; left:0; right:0; height:12px; z-index:1; pointer-events:none;
+    background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='14' viewBox='0 0 26 14'><path d='M1 13H25V1H7V9H19V5H11' fill='none' stroke='%23FFC107' stroke-width='1.5' opacity='.62'/></svg>") repeat-x;
+    background-size:26px 14px; background-position:center; }
+  .vip-strip.t{ top:0; border-radius:22px 22px 0 0; }
+  .vip-strip.b{ bottom:0; border-radius:0 0 22px 22px; }
   /* v1.4.2 · Кнопка VIP в шапке */
   .btn-vip{ display:inline-flex; align-items:center; gap:6px; cursor:pointer;
     padding:7px 13px; border-radius:999px; border:1px solid rgba(255,193,7,.65);
@@ -925,16 +938,15 @@
   .btn-vip svg{ width:17px; height:13px; }
   /* v1.4.2 · Раздел подписок (vipOverlay): фирменный тёмный + золото/бирюза */
   .overlay .modal{ position:relative; }
-  .vip-sect{ position:relative; overflow:hidden; margin:18px 0 6px; padding:22px 18px; scroll-margin-top:74px;
-    border-radius:22px;
+  .vip-modal{ position:relative; overflow:hidden;
     background:
       radial-gradient(120% 90% at 50% -20%, rgba(64,126,140,.28), transparent 60%),
       radial-gradient(90% 70% at 50% 115%, rgba(255,193,7,.12), transparent 55%),
       var(--panel);
     border:1px solid rgba(255,193,7,.38);
-    box-shadow:0 0 34px rgba(255,193,7,.08); }
-  .vip-sect .vip-plans{ max-width:520px; margin-left:auto; margin-right:auto; }
-  .vip-sect .vip-bens, .vip-sect .vip-steps{ max-width:520px; margin-left:auto; margin-right:auto; }
+    box-shadow:var(--shadow-pop), 0 0 34px rgba(255,193,7,.10); }
+  .vip-modal .modal-close{ position:absolute; top:14px; inset-inline-end:14px; z-index:2; }
+  .vip-modal .vip-plans, .vip-modal .vip-bens, .vip-modal .vip-steps{ max-width:100%; }
   .vip-hero{ text-align:center; padding:4px 0 14px; }
   .vip-crown{ width:52px; height:37px; filter:drop-shadow(0 0 10px rgba(255,193,7,.45)); }
   .vip-h-title{ margin:6px 0 4px; font-size:1.65rem; font-weight:800; letter-spacing:.08em; color:var(--panel-text); }
@@ -1970,6 +1982,26 @@
     html{ scroll-behavior:auto; }
   }
 
+  /* ═══════ v1.4.2 · РЕДИЗАЙН: фирменная полировка (те же цвета, логика не тронута) ═══════ */
+  body{
+    background:
+      radial-gradient(1100px 480px at 88% -120px, rgba(255,193,7,.075), transparent 60%),
+      radial-gradient(900px 520px at -120px 25%, rgba(64,126,140,.12), transparent 55%),
+      var(--bg);
+  }
+  .topbar{ backdrop-filter: blur(12px) saturate(1.15); -webkit-backdrop-filter: blur(12px) saturate(1.15);
+    border-bottom:1px solid rgba(255,193,7,.16); box-shadow:0 8px 30px rgba(0,0,0,.22); }
+  .cities-head h2::before, .list-head h2::before, .map-head h2::before{
+    content:""; display:inline-block; width:26px; height:3px; border-radius:3px;
+    margin-inline-end:10px; vertical-align:.24em;
+    background:linear-gradient(90deg,#FFE082,#FFC107 45%,#FF8F00);
+    box-shadow:0 0 8px rgba(255,193,7,.5);
+  }
+  article.row{ transition:transform .16s ease, box-shadow .16s ease; }
+  article.row:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(0,0,0,.26); }
+  article.row.vip-card:hover{ box-shadow:0 10px 30px rgba(255,193,7,.22); }
+  .city-card, .btn, .chip{ will-change:transform; }
+  .modal{ scrollbar-color: rgba(255,193,7,.35) transparent; }
 </style>
 </head>
 <body>
@@ -2046,67 +2078,7 @@
   <div class="city-grid" id="cityGrid"></div>
 </section>
 
-<!-- v1.4.2 · Подписки VIP — на главной, сразу после городов (по приказу владельца: не внизу).
-     Кнопка VIP в шапке прокручивает к этому разделу; пакеты ведут в WhatsApp. -->
-<section class="vip-sect reveal" id="vipSection" aria-label="VIP subscriptions">
-  <div class="vip-hero">
-    <svg class="vip-crown" viewBox="0 0 48 34" fill="none" aria-hidden="true">
-      <defs><linearGradient id="vgold" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#FFE082"/><stop offset=".5" stop-color="#FFC107"/><stop offset="1" stop-color="#FF8F00"/>
-      </linearGradient></defs>
-      <path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="url(#vgold)" stroke="url(#vgold)" stroke-width="1.4" stroke-linejoin="round"/>
-      <rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="url(#vgold)" opacity=".92"/>
-    </svg>
-    <h3 class="vip-h-title">DALIL <b>VIP</b></h3>
-    <p class="vip-h-sub" data-i18n="vipSub"></p>
-    <svg class="orn-line" viewBox="0 0 240 16" fill="none" stroke="url(#vgold)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-      <path d="M6 8 H96" opacity=".45"/><path d="M144 8 H234" opacity=".45"/>
-      <path d="M120 1 L127 8 L120 15 L113 8 Z" fill="url(#vgold)" stroke="none"/>
-      <circle cx="104" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/><circle cx="136" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/>
-    </svg>
-  </div>
-  <div class="vip-plans">
-    <a class="vip-plan" data-pack="vipm" href="#" target="_blank" rel="noopener">
-      <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
-      <span class="vip-plan-per" data-i18n="vipPerM"></span>
-      <span class="vip-plan-price" dir="ltr">$10</span>
-      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-    </a>
-    <a class="vip-plan best" data-pack="vipy" href="#" target="_blank" rel="noopener">
-      <span class="vip-ribbon" data-i18n="vipPopular"></span>
-      <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
-      <span class="vip-plan-per" data-i18n="vipPerY"></span>
-      <span class="vip-plan-price" dir="ltr">$70</span>
-      <span class="vip-save" data-i18n="vipSave42"></span>
-      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-    </a>
-    <a class="vip-plan" data-pack="verm" href="#" target="_blank" rel="noopener">
-      <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
-      <span class="vip-plan-per" data-i18n="vipPerM"></span>
-      <span class="vip-plan-price" dir="ltr">$5</span>
-      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-    </a>
-    <a class="vip-plan" data-pack="very" href="#" target="_blank" rel="noopener">
-      <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
-      <span class="vip-plan-per" data-i18n="vipPerY"></span>
-      <span class="vip-plan-price" dir="ltr">$39</span>
-      <span class="vip-save" data-i18n="vipSave35"></span>
-      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-    </a>
-  </div>
-  <div class="vip-bens">
-    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB1"></span></div>
-    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB2"></span></div>
-    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB3"></span></div>
-    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV1"></span></div>
-    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV2"></span></div>
-  </div>
-  <div class="vip-steps">
-    <div class="vip-step"><span class="n">1</span><span data-i18n="vipS1"></span></div>
-    <div class="vip-step"><span class="n">2</span><span data-i18n="vipS2"></span></div>
-    <div class="vip-step"><span class="n">3</span><span data-i18n="vipS3"></span></div>
-  </div>
-</section>
+
 
 <nav class="cats reveal" id="cats" aria-label="Категории"></nav>
 <div class="subs reveal" id="subs"></div>
@@ -2185,6 +2157,70 @@
   <button type="button" class="bn-item" id="bnNotif"><span class="bn-ic" id="bnNotifIc"></span><span class="bn-badge" id="notifBadge" hidden></span><span class="bn-t" data-i18n="notifTab"></span></button>
   <button type="button" class="bn-item" id="bnFav"><span class="bn-ic" id="bnFavIc"></span><span class="bn-t" data-i18n="favChip"></span></button>
 </nav>
+
+<!-- v1.4.2 · Раздел подписок DALIL VIP — оверлей как окно входа: одна кнопка открывает, крестик закрывает -->
+<div class="overlay" id="vipOv" role="dialog" aria-modal="true">
+  <div class="modal vip-modal">
+    <button class="modal-close" type="button" data-close="vipOv" aria-label="Close"></button>
+<div class="vip-hero">
+  <svg class="vip-crown" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+    <defs><linearGradient id="vgold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE082"/><stop offset=".5" stop-color="#FFC107"/><stop offset="1" stop-color="#FF8F00"/>
+    </linearGradient></defs>
+    <path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="url(#vgold)" stroke="url(#vgold)" stroke-width="1.4" stroke-linejoin="round"/>
+    <rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="url(#vgold)" opacity=".92"/>
+  </svg>
+  <h3 class="vip-h-title">DALIL <b>VIP</b></h3>
+  <p class="vip-h-sub" data-i18n="vipSub"></p>
+  <svg class="orn-line" viewBox="0 0 240 16" fill="none" stroke="url(#vgold)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+    <path d="M6 8 H96" opacity=".45"/><path d="M144 8 H234" opacity=".45"/>
+    <path d="M120 1 L127 8 L120 15 L113 8 Z" fill="url(#vgold)" stroke="none"/>
+    <circle cx="104" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/><circle cx="136" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/>
+  </svg>
+</div>
+<div class="vip-plans">
+  <a class="vip-plan" data-pack="vipm" href="#" target="_blank" rel="noopener">
+    <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
+    <span class="vip-plan-per" data-i18n="vipPerM"></span>
+    <span class="vip-plan-price" dir="ltr">$10</span>
+    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+  </a>
+  <a class="vip-plan best" data-pack="vipy" href="#" target="_blank" rel="noopener">
+    <span class="vip-ribbon" data-i18n="vipPopular"></span>
+    <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
+    <span class="vip-plan-per" data-i18n="vipPerY"></span>
+    <span class="vip-plan-price" dir="ltr">$70</span>
+    <span class="vip-save" data-i18n="vipSave42"></span>
+    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+  </a>
+  <a class="vip-plan" data-pack="verm" href="#" target="_blank" rel="noopener">
+    <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
+    <span class="vip-plan-per" data-i18n="vipPerM"></span>
+    <span class="vip-plan-price" dir="ltr">$5</span>
+    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+  </a>
+  <a class="vip-plan" data-pack="very" href="#" target="_blank" rel="noopener">
+    <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
+    <span class="vip-plan-per" data-i18n="vipPerY"></span>
+    <span class="vip-plan-price" dir="ltr">$39</span>
+    <span class="vip-save" data-i18n="vipSave35"></span>
+    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+  </a>
+</div>
+<div class="vip-bens">
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB1"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB2"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB3"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV1"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV2"></span></div>
+</div>
+<div class="vip-steps">
+  <div class="vip-step"><span class="n">1</span><span data-i18n="vipS1"></span></div>
+  <div class="vip-step"><span class="n">2</span><span data-i18n="vipS2"></span></div>
+  <div class="vip-step"><span class="n">3</span><span data-i18n="vipS3"></span></div>
+</div>
+  </div>
+</div>
 
 <div id="toastWrap"></div>
 
@@ -6104,7 +6140,7 @@
 
     return `
       <button type="button" class="modal-back" data-close="detailOverlay">${icon("back", 15)}<span>${esc(t("back"))}</span></button>
-      ${p.feat ? vipOrnHTML() : ""}
+      ${p.feat ? '<span class="vip-strip t" aria-hidden="true"></span><span class="vip-strip b" aria-hidden="true"></span>' + vipOrnHTML() : ""}
       <div class="modal-head">
         <h3>${esc(pname(p))}${p.feat ? ' <span class="vip-badge">VIP</span>' : ""}${p.ver ? ` <span class="vrf-badge" title="${esc(t("verBadge"))}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>` : ""}</h3>
       </div>
@@ -7093,11 +7129,8 @@
 
   /* ================= Настройки: шестерёнка → тема + языки ================= */
   $("settingsBtn").addEventListener("click", () => openOv("settingsOverlay"));
-  /* v1.4.2: кнопка VIP в шапке — плавная прокрутка к разделу подписок на главной */
-  $("vipBtn").addEventListener("click", () => {
-    const el = document.getElementById("vipSection");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
+  /* v1.4.2: кнопка VIP в шапке — открывает раздел подписок (закрытие — крестик, как у входа) */
+  $("vipBtn").addEventListener("click", () => openOv("vipOv"));
 
   /* Динамический переключатель темы: тёмная (как была) и светлая
      (фон #e5e1dd, бирюза #407e8c, бронза #a58d66, тёмно-синий #083a4f).
