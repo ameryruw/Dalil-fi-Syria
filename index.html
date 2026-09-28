@@ -38,10 +38,13 @@
      2) «ممول» переименован в VIP: золотой светящийся бейдж «VIP»,
         VIP-карточка всегда первая; между несколькими VIP — по
         популярности (просмотры), при равенстве — случайно.
-     3) Галочка «موثّق» (Проверено) — бесплатно, включается в админ-форме.
+     3) Галочка «موثّق» (Проверено) — включается админом; платный статус
+        (1 мес $5 / 1 год $39) по приказу владельца 28.09.2026.
      4) Фирменная золотая лупа SEARCH_BRAND в шапке и в админке.
-     5) Тарифы $0.00 навсегда, промо-ивент v1.3.2 снят полностью.
-     6) Баннерный слот AD_BANNER над списком + блок «أعلن معنا» в футере.
+     5) Базовое размещение $0.00 навсегда; платные VIP-пакеты (по приказу
+        владельца 28.09.2026): VIP 1 мес $10 · VIP 1 год $70 (выгода 42%) ·
+        موثّق 1 мес $5 · موثّق 1 год $39 (выгода 35%). Заказ — WhatsApp.
+     6) Блок «VIP-пакеты» в футере (заменил «أعلن معنا» по приказу владельца).
      7) ТЕСТОВАЯ АНКЕТА В 1 КЛИК (админ -> Инструменты): выбрал город и
         категорию/подкатегорию — одна кнопка создаёт готовую карточку
         штатным POST /api/admin/providers. Телефон — поддержка проекта,
@@ -887,6 +890,22 @@
   .foot-ad h4{ margin:0 0 6px; font-size:15px; color:#FFD54F; }
   .foot-ad p{ margin:0 0 10px; font-size:12.5px; opacity:.85; }
   .foot-ad-btns{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  /* v1.4.2 · VIP-пакеты в футере (вместо «أعلن معنا») — заказ через WhatsApp */
+  .vip-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:10px 0; }
+  @media (max-width:560px){ .vip-grid{ grid-template-columns:1fr 1fr; } }
+  .vip-pack{ display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding:10px 8px; border-radius:12px; text-decoration:none;
+    border:1px solid rgba(255,193,7,.45); background:rgba(255,193,7,.05);
+    color:inherit; transition:transform .12s ease, box-shadow .12s ease; }
+  .vip-pack:hover{ transform:translateY(-2px); box-shadow:0 4px 14px rgba(255,193,7,.18); }
+  .vip-pack-name{ font-weight:800; font-size:12px; letter-spacing:.04em; color:#FFD54F; }
+  .vip-pack-per{ font-size:11px; opacity:.75; }
+  .vip-pack-price{ font-weight:800; font-size:20px; color:#FFC107; line-height:1.2; }
+  .vip-save{ display:inline-block; padding:1px 8px; border-radius:999px; font-size:10.5px;
+    font-weight:700; color:#1B5E20; background:linear-gradient(135deg,#C8E6C9,#A5D6A7);
+    border:1px solid rgba(102,187,106,.6); }
+  .vip-pack-cta{ margin-top:4px; font-size:11px; font-weight:700; color:#FFD54F; text-decoration:underline; }
+  .vip-benefits{ margin:10px 0 0; font-size:11.5px; opacity:.85; line-height:1.55; text-align:start; }
   .vip-block{ border:1px solid rgba(255,193,7,.45); border-radius:14px;
     padding:12px 14px; background:rgba(255,193,7,.06); margin-top:14px; }
   .vip-block > label{ display:block; font-weight:700; font-size:12.5px;
@@ -2018,12 +2037,42 @@
     </a>
     <div class="fa-line fa-addr" data-i18n="footerAddress"></div>
   </div>
-  <!-- v1.4.2 · «أعلن معنا»: монетизация бесплатного каталога -->
+  <!-- v1.4.2 · VIP-пакеты (вместо «أعلن معنا» — по приказу владельца):
+       VIP 1 мес $10 · VIP 1 год $70 (выгода 42%) · موثّق 1 мес $5 · موثّق 1 год $39 (выгода 35%).
+       Базовое размещение остаётся бесплатным навсегда; заказ — WhatsApp, активирует админ. -->
   <div class="foot-ad" id="footAd">
-    <h4 data-i18n="adTitle"></h4>
-    <p data-i18n="adText"></p>
+    <h4 data-i18n="vipTitle"></h4>
+    <p data-i18n="vipSub"></p>
+    <div class="vip-grid">
+      <a class="vip-pack vip-pack-vipm" href="#" target="_blank" rel="noopener">
+        <span class="vip-pack-name"><span class="vip-badge">VIP</span></span>
+        <span class="vip-pack-per" data-i18n="vipPerM"></span>
+        <span class="vip-pack-price" dir="ltr">$10</span>
+        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
+      </a>
+      <a class="vip-pack vip-pack-vipy" href="#" target="_blank" rel="noopener">
+        <span class="vip-pack-name"><span class="vip-badge">VIP</span></span>
+        <span class="vip-pack-per" data-i18n="vipPerY"></span>
+        <span class="vip-pack-price" dir="ltr">$70</span>
+        <span class="vip-save" data-i18n="vipSave42"></span>
+        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
+      </a>
+      <a class="vip-pack vip-pack-verm" href="#" target="_blank" rel="noopener">
+        <span class="vip-pack-name" data-i18n="verBadge"></span>
+        <span class="vip-pack-per" data-i18n="vipPerM"></span>
+        <span class="vip-pack-price" dir="ltr">$5</span>
+        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
+      </a>
+      <a class="vip-pack vip-pack-very" href="#" target="_blank" rel="noopener">
+        <span class="vip-pack-name" data-i18n="verBadge"></span>
+        <span class="vip-pack-per" data-i18n="vipPerY"></span>
+        <span class="vip-pack-price" dir="ltr">$39</span>
+        <span class="vip-save" data-i18n="vipSave35"></span>
+        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
+      </a>
+    </div>
+    <p class="vip-benefits" data-i18n="vipBenefits"></p>
     <div class="foot-ad-btns">
-      <a class="btn btn-solid" id="footAdWa" href="#" target="_blank" rel="noopener"><span id="footAdWaIc"></span><span data-i18n="adWaBtn"></span></a>
       <a class="btn btn-outline" href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener"><span id="footAdTgIc"></span><span data-i18n="tgBtn"></span></a>
     </div>
   </div>
@@ -2974,6 +3023,14 @@
       adText: "Тысячи людей из всех городов Сирии открывают каталог каждый день. Разместите рекламный баннер или VIP-карточку.",
       adWaBtn: "Написать в WhatsApp",
       adWaMsg: "Здравствуйте! Хочу рекламу в DALIL SURIYA (баннер / VIP-карточка).",
+      vipTitle: "VIP-пакеты",
+      vipSub: "Подними карточку наверх и вызови доверие клиентов — базовое размещение остаётся бесплатным навсегда.",
+      vipPerM: "1 месяц",
+      vipPerY: "1 год",
+      vipOrder: "Заказать в WhatsApp",
+      vipSave42: "выгода 42%",
+      vipSave35: "выгода 35%",
+      vipBenefits: "VIP — карточка всегда первая в списке и с золотым бейджем: больше просмотров и звонков. موثّق (Проверено) — значок доверия: админ подтвердил, что бизнес настоящий. Оплата переводом, активация после подтверждения.",
       adTag: "Реклама",
       vipBlockLbl: "VIP-статус и продвижение",
       vipHint: "VIP — карточка всегда первая в списке. «Проверено» — золотая галочка доверия.",
@@ -3332,6 +3389,14 @@
       adText: "آلاف الأشخاص من كل مدن سوريا يفتحون الدليل يومياً. ضع بانر إعلانك أو بطاقة VIP.",
       adWaBtn: "اكتب لنا واتساب",
       adWaMsg: "مرحباً! أريد إعلاناً في دليل سوريا (بانر / بطاقة VIP).",
+      vipTitle: "باقات VIP",
+      vipSub: "ارفع بطاقتك إلى الأعلى وازد ثقة العملاء — الإدراج الأساسي مجاني للأبد.",
+      vipPerM: "شهر واحد",
+      vipPerY: "سنة كاملة",
+      vipOrder: "اطلب عبر واتساب",
+      vipSave42: "وفّر 42%",
+      vipSave35: "وفّر 35%",
+      vipBenefits: "حالة VIP: بطاقتك دائماً الأولى في القائمة مع شارة ذهبية — مشاهدات واتصالات أكثر. موثّق: شارة ثقة تؤكد أن نشاطك حقيقي. الدفع بالحوالة وتُفعَّل الحالة بعد التأكيد.",
       adTag: "إعلان",
       vipBlockLbl: "حالة VIP والترقية",
       vipHint: "VIP — البطاقة تبقى دائماً في الأعلى. «موثّق» — علامة ذهبية للثقة.",
@@ -3690,6 +3755,14 @@
       adText: "Hesarên mirovan ji hemû bajarên Sûriyê rojane rêbername vedikin. Banera xwe an karta VIP bicîh bikin.",
       adWaBtn: "Bi WhatsAppê ji me re binivîsin",
       adWaMsg: "Silav! Ez dixwazim di DALIL SURIYA de reklam bikim (baner / karta VIP).",
+      vipTitle: "Paketên VIP",
+      vipSub: "Karta xwe di serê lîsteyê de bigire û baweriya xerîdaran bi dest bixe — kardana bingehîn her tim belaş e.",
+      vipPerM: "1 meh",
+      vipPerY: "1 sal",
+      vipOrder: "Bi WhatsAppê bisipâre",
+      vipSave42: "%42 kêmtir",
+      vipSave35: "%35 kêmtir",
+      vipBenefits: "VIP: karta te her tim a yekem e bi nîşana zêrîn — lîstin û gazinkirin zêdetir. موثّق: nîşana baweriyê ku distîre ku kara we ya rastîn e. Pere bi hawîldanê tê kirin û piştî piştrastkirinê çalak dibe.",
       adTag: "Reklam",
       vipBlockLbl: "Statûya VIP û pêşxistin",
       vipHint: "VIP — kart her tim li jor e. «Verîfkirî» — tîka zêrîn a baweriyê.",
@@ -4049,6 +4122,14 @@
       adText: "Thousands of people from all Syrian cities open the directory every day. Place your banner or a VIP card.",
       adWaBtn: "Message us on WhatsApp",
       adWaMsg: "Hello! I want to advertise in DALIL SURIYA (banner / VIP card).",
+      vipTitle: "VIP packages",
+      vipSub: "Lift your card to the top and win customer trust — basic listings stay free forever.",
+      vipPerM: "1 month",
+      vipPerY: "1 year",
+      vipOrder: "Order on WhatsApp",
+      vipSave42: "save 42%",
+      vipSave35: "save 35%",
+      vipBenefits: "VIP — your card is always first in the list with a golden badge: more views and calls. Verified — a trust badge confirming the business is real. Payment by transfer; the status is activated after confirmation.",
       adTag: "Ad",
       vipBlockLbl: "VIP status & promotion",
       vipHint: "VIP — the card is always first in the list. «Verified» — golden trust badge.",
@@ -4408,6 +4489,14 @@
       adText: "Tausende Menschen aus allen Städten Syriens öffnen täglich das Verzeichnis. Platzieren Sie Ihr Banner oder eine VIP-Karte.",
       adWaBtn: "Schreiben Sie uns per WhatsApp",
       adWaMsg: "Hallo! Ich möchte in DALIL SURIYA werben (Banner / VIP-Karte).",
+      vipTitle: "VIP-Pakete",
+      vipSub: "Bring deinen Eintrag nach oben und gewinne das Vertrauen deiner Kunden — normale Einträge bleiben für immer kostenlos.",
+      vipPerM: "1 Monat",
+      vipPerY: "1 Jahr",
+      vipOrder: "Per WhatsApp bestellen",
+      vipSave42: "42 % sparen",
+      vipSave35: "35 % sparen",
+      vipBenefits: "VIP — dein Eintrag ist immer an erster Stelle, mit goldenem Abzeichen: mehr Aufrufe und Anrufe. Verifiziert — Vertrauensabzeichen, das bestätigt, dass das Geschäft echt ist. Zahlung per Überweisung, Aktivierung nach Bestätigung.",
       adTag: "Werbung",
       vipBlockLbl: "VIP-Status & Werbung",
       vipHint: "VIP — die Karte ist immer ganz oben. «Verifiziert» — goldenes Vertrauenssymbol.",
@@ -4767,6 +4856,14 @@
       adText: "Suriye'nin tüm şehirlerinden binlerce insan her gün rehbere giriyor. Banerinizi veya VIP kartınızı yerleştirin.",
       adWaBtn: "WhatsApp'tan bize yazın",
       adWaMsg: "Merhaba! DALIL SURIYA'da reklam vermek istiyorum (banner / VIP kart).",
+      vipTitle: "VIP paketler",
+      vipSub: "Kartını en üste taşı ve müşteri güvenini kazan — temel kayıt sonsuza kadar ücretsiz.",
+      vipPerM: "1 ay",
+      vipPerY: "1 yıl",
+      vipOrder: "WhatsApp'tan sipariş ver",
+      vipSave42: "%42 tasarruf",
+      vipSave35: "%35 tasarruf",
+      vipBenefits: "VIP — kartın her zaman listenin başında, altın rozetle: daha çok görüntüleme ve arama. Doğrulanmış — işletmenin gerçek olduğunu onaylayan güven rozeti. Ödeme havale ile, onaydan sonra etkinleştirilir.",
       adTag: "Reklam",
       vipBlockLbl: "VIP durumu ve tanıtım",
       vipHint: "VIP — kart her zaman listenin başında. «Doğrulandı» — altın güven işareti.",
@@ -5802,11 +5899,22 @@
     /* v1.5.0: кнопка аккаунта в шапке и видимость экрана приветствия */
     if (typeof renderAuthUI === "function") renderAuthUI();
     $("heroAlt").textContent = t("heroTag");
-    /* v1.4.2: WhatsApp кнопка блока «أعلن معنا» — сообщение на языке интерфейса */
+    /* v1.4.2: VIP-пакеты в футере — WhatsApp-заказ с готовым сообщением
+       (сообщение по-арабски для всех языков: читает владелец проекта) */
     {
-      const faw = $("footAdWa");
-      if (faw) faw.href = "https://wa.me/" + WA_SUPPORT.replace(/\D/g, "") +
-        "?text=" + encodeURIComponent(t("adWaMsg"));
+      const wa = "https://wa.me/" + WA_SUPPORT.replace(/\D/g, "") + "?text=";
+      const msgs = {
+        vipm: "مرحباً! أريد تفعيل حالة VIP لبطاقتي لمدة شهر — 10$",
+        vipy: "مرحباً! أريد تفعيل حالة VIP لبطاقتي لمدة سنة كاملة — 70$",
+        verm: "مرحباً! أريد علامة موثّق لبطاقتي لمدة شهر — 5$",
+        very: "مرحباً! أريد علامة موثّق لبطاقتي لمدة سنة كاملة — 39$"
+      };
+      const set = (cls, key) => {
+        const el = document.querySelector(".vip-pack-" + cls);
+        if (el) el.href = wa + encodeURIComponent(msgs[key]);
+      };
+      set("vipm", "vipm"); set("vipy", "vipy");
+      set("verm", "verm"); set("very", "very");
     }
     $("addModalTitle").textContent = t(editingId ? "editTitle" : "addTitle");
     const sc = document.getElementById("subContactName");
@@ -8649,8 +8757,7 @@
       $("appAgreeBox").innerHTML = icon("check", 14);
       $("appDoneIc").innerHTML = icon("check", 30);
       $("appDoneWaIc").innerHTML = icon("chat", 15);
-      $("footAdWaIc").innerHTML = icon("chat", 15);      /* v1.4.2: блок «أعلن معنا» */
-      $("footAdTgIc").innerHTML = icon("send", 15);
+      $("footAdTgIc").innerHTML = icon("send", 15);      /* v1.4.2: Telegram в блоке VIP-пакетов */
       document.querySelectorAll(".modal-close").forEach(b => b.innerHTML = icon("x", 18));
 
       state.levelSelected = !catById(state.cat).levels;
