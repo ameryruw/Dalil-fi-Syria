@@ -925,14 +925,16 @@
   .btn-vip svg{ width:17px; height:13px; }
   /* v1.4.2 · Раздел подписок (vipOverlay): фирменный тёмный + золото/бирюза */
   .overlay .modal{ position:relative; }
-  .vip-modal{ position:relative; overflow:hidden;
+  .vip-sect{ position:relative; overflow:hidden; margin:18px 0 6px; padding:22px 18px; scroll-margin-top:74px;
+    border-radius:22px;
     background:
       radial-gradient(120% 90% at 50% -20%, rgba(64,126,140,.28), transparent 60%),
-      radial-gradient(90% 70% at 50% 115%, rgba(255,193,7,.10), transparent 55%),
+      radial-gradient(90% 70% at 50% 115%, rgba(255,193,7,.12), transparent 55%),
       var(--panel);
     border:1px solid rgba(255,193,7,.38);
-    box-shadow:var(--shadow-pop), 0 0 34px rgba(255,193,7,.10); }
-  .vip-modal .modal-close{ position:absolute; top:14px; inset-inline-end:14px; z-index:2; }
+    box-shadow:0 0 34px rgba(255,193,7,.08); }
+  .vip-sect .vip-plans{ max-width:520px; margin-left:auto; margin-right:auto; }
+  .vip-sect .vip-bens, .vip-sect .vip-steps{ max-width:520px; margin-left:auto; margin-right:auto; }
   .vip-hero{ text-align:center; padding:4px 0 14px; }
   .vip-crown{ width:52px; height:37px; filter:drop-shadow(0 0 10px rgba(255,193,7,.45)); }
   .vip-h-title{ margin:6px 0 4px; font-size:1.65rem; font-weight:800; letter-spacing:.08em; color:var(--panel-text); }
@@ -2044,6 +2046,68 @@
   <div class="city-grid" id="cityGrid"></div>
 </section>
 
+<!-- v1.4.2 · Подписки VIP — на главной, сразу после городов (по приказу владельца: не внизу).
+     Кнопка VIP в шапке прокручивает к этому разделу; пакеты ведут в WhatsApp. -->
+<section class="vip-sect reveal" id="vipSection" aria-label="VIP subscriptions">
+  <div class="vip-hero">
+    <svg class="vip-crown" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+      <defs><linearGradient id="vgold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#FFE082"/><stop offset=".5" stop-color="#FFC107"/><stop offset="1" stop-color="#FF8F00"/>
+      </linearGradient></defs>
+      <path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="url(#vgold)" stroke="url(#vgold)" stroke-width="1.4" stroke-linejoin="round"/>
+      <rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="url(#vgold)" opacity=".92"/>
+    </svg>
+    <h3 class="vip-h-title">DALIL <b>VIP</b></h3>
+    <p class="vip-h-sub" data-i18n="vipSub"></p>
+    <svg class="orn-line" viewBox="0 0 240 16" fill="none" stroke="url(#vgold)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 8 H96" opacity=".45"/><path d="M144 8 H234" opacity=".45"/>
+      <path d="M120 1 L127 8 L120 15 L113 8 Z" fill="url(#vgold)" stroke="none"/>
+      <circle cx="104" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/><circle cx="136" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/>
+    </svg>
+  </div>
+  <div class="vip-plans">
+    <a class="vip-plan" data-pack="vipm" href="#" target="_blank" rel="noopener">
+      <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
+      <span class="vip-plan-per" data-i18n="vipPerM"></span>
+      <span class="vip-plan-price" dir="ltr">$10</span>
+      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+    </a>
+    <a class="vip-plan best" data-pack="vipy" href="#" target="_blank" rel="noopener">
+      <span class="vip-ribbon" data-i18n="vipPopular"></span>
+      <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
+      <span class="vip-plan-per" data-i18n="vipPerY"></span>
+      <span class="vip-plan-price" dir="ltr">$70</span>
+      <span class="vip-save" data-i18n="vipSave42"></span>
+      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+    </a>
+    <a class="vip-plan" data-pack="verm" href="#" target="_blank" rel="noopener">
+      <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
+      <span class="vip-plan-per" data-i18n="vipPerM"></span>
+      <span class="vip-plan-price" dir="ltr">$5</span>
+      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+    </a>
+    <a class="vip-plan" data-pack="very" href="#" target="_blank" rel="noopener">
+      <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
+      <span class="vip-plan-per" data-i18n="vipPerY"></span>
+      <span class="vip-plan-price" dir="ltr">$39</span>
+      <span class="vip-save" data-i18n="vipSave35"></span>
+      <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+    </a>
+  </div>
+  <div class="vip-bens">
+    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB1"></span></div>
+    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB2"></span></div>
+    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB3"></span></div>
+    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV1"></span></div>
+    <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV2"></span></div>
+  </div>
+  <div class="vip-steps">
+    <div class="vip-step"><span class="n">1</span><span data-i18n="vipS1"></span></div>
+    <div class="vip-step"><span class="n">2</span><span data-i18n="vipS2"></span></div>
+    <div class="vip-step"><span class="n">3</span><span data-i18n="vipS3"></span></div>
+  </div>
+</section>
+
 <nav class="cats reveal" id="cats" aria-label="Категории"></nav>
 <div class="subs reveal" id="subs"></div>
 
@@ -2105,46 +2169,6 @@
     </a>
     <div class="fa-line fa-addr" data-i18n="footerAddress"></div>
   </div>
-  <!-- v1.4.2 · VIP-пакеты (вместо «أعلن معنا» — по приказу владельца):
-       VIP 1 мес $10 · VIP 1 год $70 (выгода 42%) · موثّق 1 мес $5 · موثّق 1 год $39 (выгода 35%).
-       Базовое размещение остаётся бесплатным навсегда; заказ — WhatsApp, активирует админ. -->
-  <div class="foot-ad" id="footAd">
-    <h4 data-i18n="vipTitle"></h4>
-    <p data-i18n="vipSub"></p>
-    <div class="vip-grid">
-      <a class="vip-pack vip-pack-vipm" href="#" target="_blank" rel="noopener">
-        <span class="vip-pack-name"><span class="vip-badge">VIP</span></span>
-        <span class="vip-pack-per" data-i18n="vipPerM"></span>
-        <span class="vip-pack-price" dir="ltr">$10</span>
-        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
-      </a>
-      <a class="vip-pack vip-pack-vipy" href="#" target="_blank" rel="noopener">
-        <span class="vip-pack-name"><span class="vip-badge">VIP</span></span>
-        <span class="vip-pack-per" data-i18n="vipPerY"></span>
-        <span class="vip-pack-price" dir="ltr">$70</span>
-        <span class="vip-save" data-i18n="vipSave42"></span>
-        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
-      </a>
-      <a class="vip-pack vip-pack-verm" href="#" target="_blank" rel="noopener">
-        <span class="vip-pack-name" data-i18n="verBadge"></span>
-        <span class="vip-pack-per" data-i18n="vipPerM"></span>
-        <span class="vip-pack-price" dir="ltr">$5</span>
-        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
-      </a>
-      <a class="vip-pack vip-pack-very" href="#" target="_blank" rel="noopener">
-        <span class="vip-pack-name" data-i18n="verBadge"></span>
-        <span class="vip-pack-per" data-i18n="vipPerY"></span>
-        <span class="vip-pack-price" dir="ltr">$39</span>
-        <span class="vip-save" data-i18n="vipSave35"></span>
-        <span class="vip-pack-cta" data-i18n="vipOrder"></span>
-      </a>
-    </div>
-    <p class="vip-benefits" data-i18n="vipBenefits"></p>
-    <div class="foot-ad-btns">
-      <button class="btn btn-solid" id="vipMoreBtn" type="button"><span data-i18n="vipAllBtn"></span></button>
-      <a class="btn btn-outline" href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener"><span id="footAdTgIc"></span><span data-i18n="tgBtn"></span></a>
-    </div>
-  </div>
   <div class="footer-note" data-i18n="footer"></div>
   <div class="ver-line" dir="ltr"><span class="ver-badge" id="verBadge"></span></div>
 </footer>
@@ -2164,70 +2188,7 @@
 
 <div id="toastWrap"></div>
 
-<!-- v1.4.2 · Раздел подписок VIP: свой экран в фирменном стиле (тёмный + золото/бирюза).
-     Открытие: кнопка VIP в шапке или кнопка «Все подписки» в футере. -->
-<div class="overlay" id="vipOv" role="dialog" aria-modal="true">
-  <div class="modal vip-modal">
-    <button class="modal-close" type="button" data-close="vipOv" aria-label="Close"></button>
-    <div class="vip-hero">
-      <svg class="vip-crown" viewBox="0 0 48 34" fill="none" aria-hidden="true">
-        <defs><linearGradient id="vgold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#FFE082"/><stop offset=".5" stop-color="#FFC107"/><stop offset="1" stop-color="#FF8F00"/>
-        </linearGradient></defs>
-        <path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="url(#vgold)" stroke="url(#vgold)" stroke-width="1.4" stroke-linejoin="round"/>
-        <rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="url(#vgold)" opacity=".92"/>
-      </svg>
-      <h3 class="vip-h-title">DALIL <b>VIP</b></h3>
-      <p class="vip-h-sub" data-i18n="vipSub"></p>
-      <svg class="orn-line" viewBox="0 0 240 16" fill="none" stroke="url(#vgold)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-        <path d="M6 8 H96" opacity=".45"/><path d="M144 8 H234" opacity=".45"/>
-        <path d="M120 1 L127 8 L120 15 L113 8 Z" fill="url(#vgold)" stroke="none"/>
-        <circle cx="104" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/><circle cx="136" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/>
-      </svg>
-    </div>
-    <div class="vip-plans">
-      <a class="vip-plan" data-pack="vipm" href="#" target="_blank" rel="noopener">
-        <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
-        <span class="vip-plan-per" data-i18n="vipPerM"></span>
-        <span class="vip-plan-price" dir="ltr">$10</span>
-        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-      </a>
-      <a class="vip-plan best" data-pack="vipy" href="#" target="_blank" rel="noopener">
-        <span class="vip-ribbon" data-i18n="vipPopular"></span>
-        <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
-        <span class="vip-plan-per" data-i18n="vipPerY"></span>
-        <span class="vip-plan-price" dir="ltr">$70</span>
-        <span class="vip-save" data-i18n="vipSave42"></span>
-        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-      </a>
-      <a class="vip-plan" data-pack="verm" href="#" target="_blank" rel="noopener">
-        <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
-        <span class="vip-plan-per" data-i18n="vipPerM"></span>
-        <span class="vip-plan-price" dir="ltr">$5</span>
-        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-      </a>
-      <a class="vip-plan" data-pack="very" href="#" target="_blank" rel="noopener">
-        <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
-        <span class="vip-plan-per" data-i18n="vipPerY"></span>
-        <span class="vip-plan-price" dir="ltr">$39</span>
-        <span class="vip-save" data-i18n="vipSave35"></span>
-        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-      </a>
-    </div>
-    <div class="vip-bens">
-      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB1"></span></div>
-      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB2"></span></div>
-      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB3"></span></div>
-      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV1"></span></div>
-      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV2"></span></div>
-    </div>
-    <div class="vip-steps">
-      <div class="vip-step"><span class="n">1</span><span data-i18n="vipS1"></span></div>
-      <div class="vip-step"><span class="n">2</span><span data-i18n="vipS2"></span></div>
-      <div class="vip-step"><span class="n">3</span><span data-i18n="vipS3"></span></div>
-    </div>
-  </div>
-</div>
+
 
 <!-- v1.5.0 · Экран приветствия: «Добро пожаловать в DALIL SURIYA».
      Показывается, пока у посетителя нет аккаунта и он не выбрал «Войти как гость».
@@ -7132,10 +7093,11 @@
 
   /* ================= Настройки: шестерёнка → тема + языки ================= */
   $("settingsBtn").addEventListener("click", () => openOv("settingsOverlay"));
-  /* v1.4.2: раздел подписок — кнопка VIP в шапке и «Все подписки» в футере */
-  $("vipBtn").addEventListener("click", () => openOv("vipOv"));
-  const _vipMore = $("vipMoreBtn");
-  if (_vipMore) _vipMore.addEventListener("click", () => openOv("vipOv"));
+  /* v1.4.2: кнопка VIP в шапке — плавная прокрутка к разделу подписок на главной */
+  $("vipBtn").addEventListener("click", () => {
+    const el = document.getElementById("vipSection");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 
   /* Динамический переключатель темы: тёмная (как была) и светлая
      (фон #e5e1dd, бирюза #407e8c, бронза #a58d66, тёмно-синий #083a4f).
@@ -8966,7 +8928,6 @@
       $("appAgreeBox").innerHTML = icon("check", 14);
       $("appDoneIc").innerHTML = icon("check", 30);
       $("appDoneWaIc").innerHTML = icon("chat", 15);
-      $("footAdTgIc").innerHTML = icon("send", 15);      /* v1.4.2: Telegram в блоке VIP-пакетов */
       document.querySelectorAll(".modal-close").forEach(b => b.innerHTML = icon("x", 18));
 
       state.levelSelected = !catById(state.cat).levels;
