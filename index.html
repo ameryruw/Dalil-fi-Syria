@@ -2002,6 +2002,30 @@
   article.row.vip-card:hover{ box-shadow:0 10px 30px rgba(255,193,7,.22); }
   .city-card, .btn, .chip{ will-change:transform; }
   .modal{ scrollbar-color: rgba(255,193,7,.35) transparent; }
+  /* ═══ v1.4.2 · COLLIDER-СТИЛЬ: большой hero, пилюли, плитки (наши цвета) ═══ */
+  .hero h1{ font-size:clamp(2.3rem, 6.2vw, 3.6rem); line-height:1.06; letter-spacing:-.02em; font-weight:900; }
+  .hero-badges{ display:flex; flex-wrap:wrap; gap:9px; margin-top:18px; }
+  .h-badge{ display:inline-flex; align-items:center; gap:7px; padding:8px 14px;
+    border-radius:999px; font-size:12.5px; font-weight:700;
+    border:1px solid rgba(255,193,7,.35); background:rgba(255,193,7,.06); color:var(--panel-text); }
+  .h-badge svg{ width:15px; height:15px; color:#FFC107; }
+  .search{ border-radius:999px; }
+  .search:focus-within{ box-shadow:0 0 0 3px rgba(255,193,7,.16), 0 0 22px rgba(255,193,7,.12); border-color:rgba(255,193,7,.55); }
+  .ft-sec{ max-width:980px; margin:6px auto 0; padding:0 24px; }
+  .ft-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  @media (max-width:760px){ .ft-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:440px){ .ft-grid{ grid-template-columns:1fr; } }
+  .ft-tile{ display:flex; flex-direction:column; gap:6px; padding:16px 15px;
+    border-radius:20px; border:1px solid var(--line-soft); background:var(--panel);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+  .ft-tile:hover{ transform:translateY(-3px); border-color:rgba(255,193,7,.4);
+    box-shadow:0 10px 26px rgba(0,0,0,.25), 0 0 18px rgba(255,193,7,.10); }
+  .ft-ic{ width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    color:#FFC107; background:linear-gradient(135deg,rgba(255,224,130,.16),rgba(255,143,0,.12));
+    border:1px solid rgba(255,193,7,.35); box-shadow:0 0 12px rgba(255,193,7,.15); margin-bottom:2px; }
+  .ft-ic svg{ width:19px; height:19px; }
+  .ft-tile b{ font-size:14px; line-height:1.3; }
+  .ft-tile span{ font-size:12px; opacity:.72; line-height:1.45; }
 </style>
 </head>
 <body>
@@ -2064,9 +2088,26 @@
   </h1>
   <div class="hero-alt" id="heroAlt"></div>
   <p class="hero-desc" data-i18n="heroDesc"></p>
+  <div class="hero-badges" aria-hidden="false">
+    <span class="h-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 11-14h-7l0-6z"/></svg><span data-i18n="heroB1"></span></span>
+    <span class="h-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-4z"/><path d="M9 12l2 2 4-4"/></svg><span data-i18n="heroB2"></span></span>
+    <span class="h-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg><span data-i18n="heroB3"></span></span>
+  </div>
   <div class="search" id="searchBox">
     <span id="searchIcon"></span>
     <input id="searchInput" type="search" inputmode="search" data-i18n-ph="searchPh">
+  </div>
+</section>
+
+<!-- v1.4.2 · Плитки преимуществ на главной (в стиле Collider: иконка + короткий текст) -->
+<section class="ft-sec reveal" aria-label="Features">
+  <div class="ft-grid">
+    <div class="ft-tile"><span class="ft-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 11-14h-7l0-6z"/></svg></span><b data-i18n="ftT1"></b><span data-i18n="ftD1"></span></div>
+    <div class="ft-tile"><span class="ft-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-4z"/><path d="M9 12l2 2 4-4"/></svg></span><b data-i18n="ftT2"></b><span data-i18n="ftD2"></span></div>
+    <div class="ft-tile"><span class="ft-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/></svg></span><b data-i18n="ftT3"></b><span data-i18n="ftD3"></span></div>
+    <div class="ft-tile"><span class="ft-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></span><b data-i18n="ftT4"></b><span data-i18n="ftD4"></span></div>
+    <div class="ft-tile"><span class="ft-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" transform="scale(0.62) translate(3,-1)"/></svg></span><b data-i18n="ftT5"></b><span data-i18n="ftD5"></span></div>
+    <div class="ft-tile"><span class="ft-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><b data-i18n="ftT6"></b><span data-i18n="ftD6"></span></div>
   </div>
 </section>
 
@@ -3162,6 +3203,21 @@
       vipSave42: "выгода 42%",
       vipSave35: "выгода 35%",
       vipBenefits: "VIP — карточка всегда первая в списке и с золотым бейджем: больше просмотров и звонков. موثّق (Проверено) — значок доверия: админ подтвердил, что бизнес настоящий. Оплата переводом, активация после подтверждения.",
+      heroB1: "Бесплатно навсегда",
+      heroB2: "Проверяется админом",
+      heroB3: "Вся Сирия · 15 городов",
+      ftT1: "Бесплатно навсегда",
+      ftD1: "Базовая анкета в каталоге — 0$ без ограничений по сроку",
+      ftT2: "Проверенные анкеты",
+      ftD2: "Каждая карточка проходит проверку администратора",
+      ftT3: "6 языков",
+      ftD3: "Сайт говорит по-арабски, русски, курдски, английски, немецки, турецки",
+      ftT4: "Карта городов",
+      ftD4: "Анкеты с метками на карте и режим «Рядом со мной»",
+      ftT5: "VIP для бизнеса",
+      ftD5: "Золотое оформление и первое место в списке — от 5$",
+      ftT6: "Анкета за 2 минуты",
+      ftD6: "Подай заявку онлайн — публикация в день одобрения",
       vipAllBtn: "Все подписки и пакеты",
       vipPopular: "Популярный",
       vipB1: "Карточка всегда первая в списке и первой видна клиентам",
@@ -3538,6 +3594,21 @@
       vipSave42: "وفّر 42%",
       vipSave35: "وفّر 35%",
       vipBenefits: "حالة VIP: بطاقتك دائماً الأولى في القائمة مع شارة ذهبية — مشاهدات واتصالات أكثر. موثّق: شارة ثقة تؤكد أن نشاطك حقيقي. الدفع بالحوالة وتُفعَّل الحالة بعد التأكيد.",
+      heroB1: "مجاني للأبد",
+      heroB2: "يُراجعه المسؤول",
+      heroB3: "كل سوريا · 15 مدينة",
+      ftT1: "مجاني للأبد",
+      ftD1: "البطاقة الأساسية في الدليل — 0$ بلا حدود زمنية",
+      ftT2: "بطاقات موثوقة",
+      ftD2: "كل بطاقة تمر بمراجعة المسؤول",
+      ftT3: "6 لغات",
+      ftD3: "الموقع يتحدث العربية والروسية والكردية والإنجليزية والألمانية والتركية",
+      ftT4: "خريطة المدن",
+      ftD4: "بطاقات على الخريطة ووضع «قريب مني»",
+      ftT5: "VIP للأعمال",
+      ftD5: "تصميم ذهبي والمركز الأول في القائمة — من 5$",
+      ftT6: "بطاقتك بدقيقتين",
+      ftD6: "أرسل الطلب أونلاين — النشر في يوم القبول",
       vipAllBtn: "كل الاشتراكات والباقات",
       vipPopular: "الأكثر طلباً",
       vipB1: "بطاقتك دائماً الأولى في القائمة — يراها العملاء أولاً",
@@ -3914,6 +3985,21 @@
       vipSave42: "%42 kêmtir",
       vipSave35: "%35 kêmtir",
       vipBenefits: "VIP: karta te her tim a yekem e bi nîşana zêrîn — lîstin û gazinkirin zêdetir. موثّق: nîşana baweriyê ku distîre ku kara we ya rastîn e. Pere bi hawîldanê tê kirin û piştî piştrastkirinê çalak dibe.",
+      heroB1: "Herdem belaş",
+      heroB2: "Bi rêveber tê kontrol kirin",
+      heroB3: "Hemû Sûrî · 15 bajâr",
+      ftT1: "Herdem belaş",
+      ftD1: "Karta bingehîn di rêberê de — 0$ bê sînorkirina demê",
+      ftT2: "Kartên piştrastkirî",
+      ftD2: "Her kart ji aliyê rêveber ve tê kontrol kirin",
+      ftT3: "6 ziman",
+      ftD3: "Malper bi erebî, rûsî, kurdî, îngilîzî, almanî û tirkî diaxive",
+      ftT4: "Nexşeya bajâran",
+      ftD4: "Kartên li ser nexşeyê û moda «Nêzîkî min»",
+      ftT5: "VIP ji bo karan",
+      ftD5: "Pêşandina zêrîn û cihê yekem — ji 5$",
+      ftT6: "Kart di 2 xulekan de",
+      ftD6: "Daxwazê bişîne — weşan di roja qebûlkirinê de",
       vipAllBtn: "Hemû endamî û paket",
       vipPopular: "Pirtirtirîn",
       vipB1: "Karta te her tim a yekem e — xerîdarên pêşî wê dibînin",
@@ -4291,6 +4377,21 @@
       vipSave42: "save 42%",
       vipSave35: "save 35%",
       vipBenefits: "VIP — your card is always first in the list with a golden badge: more views and calls. Verified — a trust badge confirming the business is real. Payment by transfer; the status is activated after confirmation.",
+      heroB1: "Free forever",
+      heroB2: "Admin-verified",
+      heroB3: "All of Syria · 15 cities",
+      ftT1: "Free forever",
+      ftD1: "A basic listing in the directory — $0 with no time limits",
+      ftT2: "Verified listings",
+      ftD2: "Every card is reviewed by the administrator",
+      ftT3: "6 languages",
+      ftD3: "The site speaks Arabic, Russian, Kurdish, English, German and Turkish",
+      ftT4: "City map",
+      ftD4: "Listings on the map with a «Near me» mode",
+      ftT5: "VIP for business",
+      ftD5: "Golden styling and the first spot in the list — from $5",
+      ftT6: "A listing in 2 minutes",
+      ftD6: "Apply online — published the day it is approved",
       vipAllBtn: "All subscriptions & packages",
       vipPopular: "Most popular",
       vipB1: "Your card is always first in the list — clients see it first",
@@ -4668,6 +4769,21 @@
       vipSave42: "42 % sparen",
       vipSave35: "35 % sparen",
       vipBenefits: "VIP — dein Eintrag ist immer an erster Stelle, mit goldenem Abzeichen: mehr Aufrufe und Anrufe. Verifiziert — Vertrauensabzeichen, das bestätigt, dass das Geschäft echt ist. Zahlung per Überweisung, Aktivierung nach Bestätigung.",
+      heroB1: "Für immer kostenlos",
+      heroB2: "Vom Admin geprüft",
+      heroB3: "Ganz Syrien · 15 Städte",
+      ftT1: "Für immer kostenlos",
+      ftD1: "Ein normaler Eintrag im Verzeichnis — 0 $ ohne Zeitlimit",
+      ftT2: "Geprüfte Einträge",
+      ftD2: "Jede Karte wird vom Administrator geprüft",
+      ftT3: "6 Sprachen",
+      ftD3: "Die Seite spricht Arabisch, Russisch, Kurdisch, Englisch, Deutsch und Türkisch",
+      ftT4: "Städtekarte",
+      ftD4: "Einträge auf der Karte mit «In meiner Nähe»",
+      ftT5: "VIP für Geschäfte",
+      ftD5: "Goldenes Design und der erste Platz — ab 5 $",
+      ftT6: "Eintrag in 2 Minuten",
+      ftD6: "Online beantragen — veröffentlicht am Tag der Freigabe",
       vipAllBtn: "Alle Abos & Pakete",
       vipPopular: "Am beliebtesten",
       vipB1: "Dein Eintrag ist immer an erster Stelle — Kunden sehen ihn zuerst",
@@ -5045,6 +5161,21 @@
       vipSave42: "%42 tasarruf",
       vipSave35: "%35 tasarruf",
       vipBenefits: "VIP — kartın her zaman listenin başında, altın rozetle: daha çok görüntüleme ve arama. Doğrulanmış — işletmenin gerçek olduğunu onaylayan güven rozeti. Ödeme havale ile, onaydan sonra etkinleştirilir.",
+      heroB1: "Sonsuza kadar ücretsiz",
+      heroB2: "Yönetici onaylı",
+      heroB3: "Tüm Suriye · 15 şehir",
+      ftT1: "Sonsuza kadar ücretsiz",
+      ftD1: "Rehberde temel kayıt — süre sınırı olmadan 0$",
+      ftT2: "Onaylı kayıtlar",
+      ftD2: "Her kart yönetici tarafından incelenir",
+      ftT3: "6 dil",
+      ftD3: "Site Arapça, Rusça, Kürtçe, İngilizce, Almanca ve Türkçe konuşur",
+      ftT4: "Şehir haritası",
+      ftD4: "Haritada kayıtlar ve «Yakınımda» modu",
+      ftT5: "İşletmelere VIP",
+      ftD5: "Altın tasarım ve listede ilk sıra — 5$'dan",
+      ftT6: "2 dakikada kayıt",
+      ftD6: "Çevrimiçi başvur — onay günü yayınlanır",
       vipAllBtn: "Tüm abonelikler ve paketler",
       vipPopular: "En popüler",
       vipB1: "Kartın her zaman listenin başında — müşteriler önce onu görür",
