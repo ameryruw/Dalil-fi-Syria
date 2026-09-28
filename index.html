@@ -906,6 +906,70 @@
     border:1px solid rgba(102,187,106,.6); }
   .vip-pack-cta{ margin-top:4px; font-size:11px; font-weight:700; color:#FFD54F; text-decoration:underline; }
   .vip-benefits{ margin:10px 0 0; font-size:11.5px; opacity:.85; line-height:1.55; text-align:start; }
+  /* v1.4.2 · Золотые узоры-арабески на VIP-карточках (список + детальный вид) */
+  .vip-orn{ position:absolute; width:30px; height:30px; color:#FFC107; opacity:.5;
+    pointer-events:none; line-height:0; }
+  .vip-orn svg{ width:100%; height:100%; }
+  .vip-orn.tl{ top:3px; inset-inline-start:3px; }
+  .vip-orn.br{ bottom:3px; inset-inline-end:3px; transform:scaleX(-1) scaleY(-1); }
+  article.row.vip-card .row-body, .detail-card .vip-orn-zone{ position:relative; }
+  article.row.vip-card{ position:relative; overflow:hidden; }
+  /* v1.4.2 · Кнопка VIP в шапке */
+  .btn-vip{ display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+    padding:7px 13px; border-radius:999px; border:1px solid rgba(255,193,7,.65);
+    background:linear-gradient(135deg,rgba(255,224,130,.16),rgba(255,143,0,.14));
+    color:#FFD54F; font-weight:800; font-size:12.5px; letter-spacing:.05em;
+    box-shadow:0 0 10px rgba(255,193,7,.22); transition:transform .12s ease, box-shadow .12s ease; }
+  .btn-vip:hover{ transform:translateY(-1px); box-shadow:0 0 16px rgba(255,193,7,.38); }
+  .btn-vip:active{ transform:scale(.96); }
+  .btn-vip svg{ width:17px; height:13px; }
+  /* v1.4.2 · Раздел подписок (vipOverlay): фирменный тёмный + золото/бирюза */
+  .overlay .modal{ position:relative; }
+  .vip-modal{ position:relative; overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 50% -20%, rgba(64,126,140,.28), transparent 60%),
+      radial-gradient(90% 70% at 50% 115%, rgba(255,193,7,.10), transparent 55%),
+      var(--panel);
+    border:1px solid rgba(255,193,7,.38);
+    box-shadow:var(--shadow-pop), 0 0 34px rgba(255,193,7,.10); }
+  .vip-modal .modal-close{ position:absolute; top:14px; inset-inline-end:14px; z-index:2; }
+  .vip-hero{ text-align:center; padding:4px 0 14px; }
+  .vip-crown{ width:52px; height:37px; filter:drop-shadow(0 0 10px rgba(255,193,7,.45)); }
+  .vip-h-title{ margin:6px 0 4px; font-size:1.65rem; font-weight:800; letter-spacing:.08em; color:var(--panel-text); }
+  .vip-h-title b{ background:linear-gradient(135deg,#FFE082 0%,#FFC107 45%,#FF8F00 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .vip-h-sub{ margin:0 0 8px; font-size:12.5px; opacity:.8; }
+  .orn-line{ width:min(240px,80%); height:16px; display:block; margin:0 auto; }
+  .vip-plans{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .vip-plan{ position:relative; display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:18px 10px 14px; border-radius:16px; text-decoration:none; color:inherit;
+    border:1px solid rgba(255,193,7,.42);
+    background:linear-gradient(180deg,rgba(255,193,7,.09),rgba(255,193,7,.02));
+    transition:transform .14s ease, box-shadow .14s ease; }
+  .vip-plan:hover{ transform:translateY(-3px); box-shadow:0 8px 22px rgba(255,193,7,.22); }
+  .vip-plan.best{ border-color:rgba(255,193,7,.85);
+    background:linear-gradient(180deg,rgba(255,193,7,.16),rgba(255,193,7,.04));
+    box-shadow:0 0 20px rgba(255,193,7,.22), inset 0 0 12px rgba(255,193,7,.06); }
+  .vip-ribbon{ position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+    padding:2px 10px; border-radius:999px; font-size:10px; font-weight:800; letter-spacing:.04em;
+    color:#3B2500; background:linear-gradient(135deg,#FFE082,#FFC107 55%,#FF8F00);
+    box-shadow:0 0 8px rgba(255,193,7,.5); white-space:nowrap; }
+  .vip-plan-badge.vrf{ font-weight:800; font-size:11px; color:#7ADBA8; letter-spacing:.03em; }
+  .vip-plan-per{ font-size:11px; opacity:.72; }
+  .vip-plan-price{ font-size:1.65rem; font-weight:800; color:#FFC107; line-height:1.15;
+    text-shadow:0 0 14px rgba(255,193,7,.35); }
+  .vip-plan-cta{ margin-top:5px; font-size:11px; font-weight:700; color:#FFD54F;
+    text-decoration:underline; text-underline-offset:3px; }
+  .vip-bens{ margin-top:16px; display:grid; gap:8px; }
+  .vip-ben{ display:flex; gap:9px; align-items:flex-start; font-size:12.5px; line-height:1.45; opacity:.92; }
+  .vip-ben svg{ width:14px; height:14px; flex:0 0 auto; margin-top:2px; color:#66BB6A; }
+  .vip-steps{ margin-top:14px; padding-top:12px; border-top:1px dashed rgba(255,193,7,.35);
+    display:grid; gap:8px; }
+  .vip-step{ display:flex; gap:10px; align-items:center; font-size:12.5px; }
+  .vip-step .n{ flex:0 0 auto; width:21px; height:21px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;
+    color:#3B2500; background:linear-gradient(135deg,#FFE082,#FFC107 55%,#FF8F00);
+    box-shadow:0 0 6px rgba(255,193,7,.4); }
   .vip-block{ border:1px solid rgba(255,193,7,.45); border-radius:14px;
     padding:12px 14px; background:rgba(255,193,7,.06); margin-top:14px; }
   .vip-block > label{ display:block; font-weight:700; font-size:12.5px;
@@ -1930,6 +1994,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     <span class="t" data-i18n="tgBtn"></span>
   </a>
+  <button class="btn-vip" id="vipBtn" type="button" aria-label="VIP">
+    <svg viewBox="0 0 48 34" fill="none" aria-hidden="true"><path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="currentColor" opacity=".92"/></svg>
+    <span class="t">VIP</span>
+  </button>
   <button class="btn-gear" id="notifBtn" type="button" aria-label="Notifications">
     <span id="notifBtnIc"></span>
   </button>
@@ -2073,6 +2141,7 @@
     </div>
     <p class="vip-benefits" data-i18n="vipBenefits"></p>
     <div class="foot-ad-btns">
+      <button class="btn btn-solid" id="vipMoreBtn" type="button"><span data-i18n="vipAllBtn"></span></button>
       <a class="btn btn-outline" href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener"><span id="footAdTgIc"></span><span data-i18n="tgBtn"></span></a>
     </div>
   </div>
@@ -2094,6 +2163,71 @@
 </nav>
 
 <div id="toastWrap"></div>
+
+<!-- v1.4.2 · Раздел подписок VIP: свой экран в фирменном стиле (тёмный + золото/бирюза).
+     Открытие: кнопка VIP в шапке или кнопка «Все подписки» в футере. -->
+<div class="overlay" id="vipOv" role="dialog" aria-modal="true">
+  <div class="modal vip-modal">
+    <button class="modal-close" type="button" data-close="vipOv" aria-label="Close"></button>
+    <div class="vip-hero">
+      <svg class="vip-crown" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+        <defs><linearGradient id="vgold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#FFE082"/><stop offset=".5" stop-color="#FFC107"/><stop offset="1" stop-color="#FF8F00"/>
+        </linearGradient></defs>
+        <path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="url(#vgold)" stroke="url(#vgold)" stroke-width="1.4" stroke-linejoin="round"/>
+        <rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="url(#vgold)" opacity=".92"/>
+      </svg>
+      <h3 class="vip-h-title">DALIL <b>VIP</b></h3>
+      <p class="vip-h-sub" data-i18n="vipSub"></p>
+      <svg class="orn-line" viewBox="0 0 240 16" fill="none" stroke="url(#vgold)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 8 H96" opacity=".45"/><path d="M144 8 H234" opacity=".45"/>
+        <path d="M120 1 L127 8 L120 15 L113 8 Z" fill="url(#vgold)" stroke="none"/>
+        <circle cx="104" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/><circle cx="136" cy="8" r="1.8" fill="url(#vgold)" stroke="none"/>
+      </svg>
+    </div>
+    <div class="vip-plans">
+      <a class="vip-plan" data-pack="vipm" href="#" target="_blank" rel="noopener">
+        <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
+        <span class="vip-plan-per" data-i18n="vipPerM"></span>
+        <span class="vip-plan-price" dir="ltr">$10</span>
+        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+      </a>
+      <a class="vip-plan best" data-pack="vipy" href="#" target="_blank" rel="noopener">
+        <span class="vip-ribbon" data-i18n="vipPopular"></span>
+        <span class="vip-plan-badge"><span class="vip-badge">VIP</span></span>
+        <span class="vip-plan-per" data-i18n="vipPerY"></span>
+        <span class="vip-plan-price" dir="ltr">$70</span>
+        <span class="vip-save" data-i18n="vipSave42"></span>
+        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+      </a>
+      <a class="vip-plan" data-pack="verm" href="#" target="_blank" rel="noopener">
+        <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
+        <span class="vip-plan-per" data-i18n="vipPerM"></span>
+        <span class="vip-plan-price" dir="ltr">$5</span>
+        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+      </a>
+      <a class="vip-plan" data-pack="very" href="#" target="_blank" rel="noopener">
+        <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
+        <span class="vip-plan-per" data-i18n="vipPerY"></span>
+        <span class="vip-plan-price" dir="ltr">$39</span>
+        <span class="vip-save" data-i18n="vipSave35"></span>
+        <span class="vip-plan-cta" data-i18n="vipOrder"></span>
+      </a>
+    </div>
+    <div class="vip-bens">
+      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB1"></span></div>
+      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB2"></span></div>
+      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB3"></span></div>
+      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV1"></span></div>
+      <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV2"></span></div>
+    </div>
+    <div class="vip-steps">
+      <div class="vip-step"><span class="n">1</span><span data-i18n="vipS1"></span></div>
+      <div class="vip-step"><span class="n">2</span><span data-i18n="vipS2"></span></div>
+      <div class="vip-step"><span class="n">3</span><span data-i18n="vipS3"></span></div>
+    </div>
+  </div>
+</div>
 
 <!-- v1.5.0 · Экран приветствия: «Добро пожаловать в DALIL SURIYA».
      Показывается, пока у посетителя нет аккаунта и он не выбрал «Войти как гость».
@@ -3031,6 +3165,16 @@
       vipSave42: "выгода 42%",
       vipSave35: "выгода 35%",
       vipBenefits: "VIP — карточка всегда первая в списке и с золотым бейджем: больше просмотров и звонков. موثّق (Проверено) — значок доверия: админ подтвердил, что бизнес настоящий. Оплата переводом, активация после подтверждения.",
+      vipAllBtn: "Все подписки и пакеты",
+      vipPopular: "Популярный",
+      vipB1: "Карточка всегда первая в списке и первой видна клиентам",
+      vipB2: "Золотое оформление карточки: бейдж VIP и узоры-арабески",
+      vipB3: "Больше просмотров, звонков и WhatsApp-сообщений",
+      vipBV1: "«Проверено» — админ подтвердил, что бизнес настоящий",
+      vipBV2: "Клиенты доверяют и выбирают проверенные карточки",
+      vipS1: "Напиши нам в WhatsApp и выбери пакет",
+      vipS2: "Оплати переводом — реквизиты пришлём в чат",
+      vipS3: "Активирую статус — обычно в тот же день",
       adTag: "Реклама",
       vipBlockLbl: "VIP-статус и продвижение",
       vipHint: "VIP — карточка всегда первая в списке. «Проверено» — золотая галочка доверия.",
@@ -3397,6 +3541,16 @@
       vipSave42: "وفّر 42%",
       vipSave35: "وفّر 35%",
       vipBenefits: "حالة VIP: بطاقتك دائماً الأولى في القائمة مع شارة ذهبية — مشاهدات واتصالات أكثر. موثّق: شارة ثقة تؤكد أن نشاطك حقيقي. الدفع بالحوالة وتُفعَّل الحالة بعد التأكيد.",
+      vipAllBtn: "كل الاشتراكات والباقات",
+      vipPopular: "الأكثر طلباً",
+      vipB1: "بطاقتك دائماً الأولى في القائمة — يراها العملاء أولاً",
+      vipB2: "تصميم ذهبي للبطاقة: شارة VIP وزخارف",
+      vipB3: "مشاهدات واتصالات ورسائل واتساب أكثر",
+      vipBV1: "«موثّق» — أكّد المسؤول أن النشاط حقيقي",
+      vipBV2: "العملاء يثقون ويختارون البطاقات الموثّقة",
+      vipS1: "اكتب لنا في واتساب واختر الباقة",
+      vipS2: "ادفع بالحوالة — سترسل لك التفاصيل في المحادثة",
+      vipS3: "أفعّل الحالة — عادةً في نفس اليوم",
       adTag: "إعلان",
       vipBlockLbl: "حالة VIP والترقية",
       vipHint: "VIP — البطاقة تبقى دائماً في الأعلى. «موثّق» — علامة ذهبية للثقة.",
@@ -3763,6 +3917,16 @@
       vipSave42: "%42 kêmtir",
       vipSave35: "%35 kêmtir",
       vipBenefits: "VIP: karta te her tim a yekem e bi nîşana zêrîn — lîstin û gazinkirin zêdetir. موثّق: nîşana baweriyê ku distîre ku kara we ya rastîn e. Pere bi hawîldanê tê kirin û piştî piştrastkirinê çalak dibe.",
+      vipAllBtn: "Hemû endamî û paket",
+      vipPopular: "Pirtirtirîn",
+      vipB1: "Karta te her tim a yekem e — xerîdarên pêşî wê dibînin",
+      vipB2: "Pêşandina zêrîn a kartê: nîşana VIP û ornên zêrîn",
+      vipB3: "Lîstin, gazinkirin û peyamên WhatsAppê zêdetir",
+      vipBV1: "«موثّق» — rêveber rastîniya kara piştrast kir",
+      vipBV2: "Xerîdar kardên piştrastkirî dikin",
+      vipS1: "Bi WhatsAppê ji me re binivîse û paketê hilbijêre",
+      vipS2: "Bi hawîldanê bide — agahdarî di çatê de dişînin",
+      vipS3: "Ez çalak dikim — bi gelemperî di heman rojê de",
       adTag: "Reklam",
       vipBlockLbl: "Statûya VIP û pêşxistin",
       vipHint: "VIP — kart her tim li jor e. «Verîfkirî» — tîka zêrîn a baweriyê.",
@@ -4130,6 +4294,16 @@
       vipSave42: "save 42%",
       vipSave35: "save 35%",
       vipBenefits: "VIP — your card is always first in the list with a golden badge: more views and calls. Verified — a trust badge confirming the business is real. Payment by transfer; the status is activated after confirmation.",
+      vipAllBtn: "All subscriptions & packages",
+      vipPopular: "Most popular",
+      vipB1: "Your card is always first in the list — clients see it first",
+      vipB2: "Golden card styling: VIP badge and arabesque ornaments",
+      vipB3: "More views, calls and WhatsApp messages",
+      vipBV1: "«Verified» — the admin confirmed the business is real",
+      vipBV2: "Customers trust and choose verified cards",
+      vipS1: "Message us on WhatsApp and pick a package",
+      vipS2: "Pay by transfer — we send the details in the chat",
+      vipS3: "I activate the status — usually the same day",
       adTag: "Ad",
       vipBlockLbl: "VIP status & promotion",
       vipHint: "VIP — the card is always first in the list. «Verified» — golden trust badge.",
@@ -4497,6 +4671,16 @@
       vipSave42: "42 % sparen",
       vipSave35: "35 % sparen",
       vipBenefits: "VIP — dein Eintrag ist immer an erster Stelle, mit goldenem Abzeichen: mehr Aufrufe und Anrufe. Verifiziert — Vertrauensabzeichen, das bestätigt, dass das Geschäft echt ist. Zahlung per Überweisung, Aktivierung nach Bestätigung.",
+      vipAllBtn: "Alle Abos & Pakete",
+      vipPopular: "Am beliebtesten",
+      vipB1: "Dein Eintrag ist immer an erster Stelle — Kunden sehen ihn zuerst",
+      vipB2: "Goldenes Karten-Design: VIP-Abzeichen und Ornamente",
+      vipB3: "Mehr Aufrufe, Anrufe und WhatsApp-Nachrichten",
+      vipBV1: "„Verifiziert“ — der Admin hat bestätigt, dass das Geschäft echt ist",
+      vipBV2: "Kunden vertrauen verifizierten Karten und wählen sie aus",
+      vipS1: "Schreib uns per WhatsApp und wähle ein Paket",
+      vipS2: "Zahle per Überweisung — die Daten schicken wir im Chat",
+      vipS3: "Ich aktiviere den Status — meistens am selben Tag",
       adTag: "Werbung",
       vipBlockLbl: "VIP-Status & Werbung",
       vipHint: "VIP — die Karte ist immer ganz oben. «Verifiziert» — goldenes Vertrauenssymbol.",
@@ -4864,6 +5048,16 @@
       vipSave42: "%42 tasarruf",
       vipSave35: "%35 tasarruf",
       vipBenefits: "VIP — kartın her zaman listenin başında, altın rozetle: daha çok görüntüleme ve arama. Doğrulanmış — işletmenin gerçek olduğunu onaylayan güven rozeti. Ödeme havale ile, onaydan sonra etkinleştirilir.",
+      vipAllBtn: "Tüm abonelikler ve paketler",
+      vipPopular: "En popüler",
+      vipB1: "Kartın her zaman listenin başında — müşteriler önce onu görür",
+      vipB2: "Altın kart tasarımı: VIP rozeti ve süslemeler",
+      vipB3: "Daha çok görüntüleme, arama ve WhatsApp mesajı",
+      vipBV1: "«Doğrulanmış» — yönetici işletmenin gerçek olduğunu onayladı",
+      vipBV2: "Müşteriler doğrulanmış kartlara güvenir ve onları seçer",
+      vipS1: "WhatsApp'tan bize yaz ve paketi seç",
+      vipS2: "Havale ile öde — bilgileri sohbette göndeririz",
+      vipS3: "Durumu etkinleştiririm — genellikle aynı gün",
       adTag: "Reklam",
       vipBlockLbl: "VIP durumu ve tanıtım",
       vipHint: "VIP — kart her zaman listenin başında. «Doğrulandı» — altın güven işareti.",
@@ -5830,6 +6024,7 @@
       const wa = tel.replace(/\D/g, "");
       return `
       <article class="row${p.feat ? " vip-card" : ""}" data-id="${esc(p.id)}" style="animation-delay:${Math.min(i * 45, 400)}ms">
+        ${p.feat ? vipOrnHTML() : ""}
         <div class="num">${String(i + 1).padStart(2, "0")}</div>
         <div class="row-body">
           <div class="row-top">
@@ -5915,6 +6110,11 @@
       };
       set("vipm", "vipm"); set("vipy", "vipy");
       set("verm", "verm"); set("very", "very");
+      /* раздел подписок (vipOverlay): пакеты помечены data-pack */
+      document.querySelectorAll("[data-pack]").forEach(el => {
+        const k = el.dataset.pack;
+        if (msgs[k]) el.href = wa + encodeURIComponent(msgs[k]);
+      });
     }
     $("addModalTitle").textContent = t(editingId ? "editTitle" : "addTitle");
     const sc = document.getElementById("subContactName");
@@ -5933,12 +6133,17 @@
   }
 
   /* ================= Детальная карточка ================= */
+  /* v1.4.2: золотые узоры-арабески для карточек с VIP-статусом (inline SVG, по железному правилу — не файлы) */
+  const VIP_ORN_SVG = '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 38 V17 Q2 2 17 2 H38"/><path d="M9 38 V22 Q9 9 22 9 H38" opacity=".5"/><path d="M17 31 q9 0 9 -9" opacity=".8"/><circle cx="14.5" cy="14.5" r="2.1" fill="currentColor" stroke="none"/></svg>';
+  const vipOrnHTML = () => '<span class="vip-orn tl" aria-hidden="true">' + VIP_ORN_SVG + '</span><span class="vip-orn br" aria-hidden="true">' + VIP_ORN_SVG + '</span>';
+
   function detailHTML(p) {
     const tel = (p.phone || "").replace(/[^\d+]/g, "");
     const wa = tel.replace(/\D/g, "");
 
     return `
       <button type="button" class="modal-back" data-close="detailOverlay">${icon("back", 15)}<span>${esc(t("back"))}</span></button>
+      ${p.feat ? vipOrnHTML() : ""}
       <div class="modal-head">
         <h3>${esc(pname(p))}${p.feat ? ' <span class="vip-badge">VIP</span>' : ""}${p.ver ? ` <span class="vrf-badge" title="${esc(t("verBadge"))}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>` : ""}</h3>
       </div>
@@ -6927,6 +7132,10 @@
 
   /* ================= Настройки: шестерёнка → тема + языки ================= */
   $("settingsBtn").addEventListener("click", () => openOv("settingsOverlay"));
+  /* v1.4.2: раздел подписок — кнопка VIP в шапке и «Все подписки» в футере */
+  $("vipBtn").addEventListener("click", () => openOv("vipOv"));
+  const _vipMore = $("vipMoreBtn");
+  if (_vipMore) _vipMore.addEventListener("click", () => openOv("vipOv"));
 
   /* Динамический переключатель темы: тёмная (как была) и светлая
      (фон #e5e1dd, бирюза #407e8c, бронза #a58d66, тёмно-синий #083a4f).
