@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <title>دليل سوريا · DALIL SURIYA — Справочник Сирии</title>
-<link rel="preload" as="image" href="assets/img/cities/hero_raqqa.jpg">
+<link rel="preload" as="image" href="assets/img/cities/hero_raqqa.webp">
 <script>
   /* Тема до первой отрисовки — без вспышки тёмного фона у выбравших светлую */
   try { if (localStorage.getItem("dalil_theme") === "light") document.documentElement.setAttribute("data-theme", "light"); } catch (e) {}
@@ -12,7 +12,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 1.5 21.5 7v10L12 22.5 2.5 17V7z' fill='none' stroke='%23AF7F42' stroke-width='2'/><path d='M12 7l4.5 2.6v5.2L12 17.5l-4.5-2.7V9.6z' fill='%23AF7F42'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&family=Noto+Sans:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ================================================================
      DALIL SURIYA · v1.3.4 — Midnight Gold + промо + рейтинг через REST
@@ -109,12 +109,12 @@
   ::-webkit-scrollbar-track{ background:transparent; }
   ::-webkit-scrollbar-thumb{ background:linear-gradient(180deg,var(--accent-hi),var(--accent-lo)); border-radius:99px; }
   *{ scrollbar-width:thin; scrollbar-color:rgba(194,146,79,.45) transparent; }
-  html[dir="rtl"] body{ font-family:'Noto Kufi Arabic','Golos Text',sans-serif; }
+  html[dir="rtl"] body{ font-family:'Cairo','Manrope',sans-serif; }
   html[dir="rtl"] *{ letter-spacing:normal !important; }
   body{
     background: var(--bg);
     color: var(--card);
-    font-family: 'Golos Text','Noto Sans','Noto Kufi Arabic',sans-serif;
+    font-family: 'Manrope','Cairo',sans-serif;
     font-variant-numeric: tabular-nums;
     min-height: 100vh;
     overflow-x: hidden; /* фолбэк для старых WebView, не знающих clip */
@@ -124,6 +124,8 @@
   }
   button{ font: inherit; touch-action: manipulation; }
   svg{ flex-shrink:0; }
+  /* v1.4.2 (приказ 17г): wow-типографика — Unbounded для заголовков (кириллица/латиница), Cairo для арабского */
+  h1, h2, .vip-h-title{ font-family:'Unbounded','Cairo','Manrope',sans-serif; letter-spacing:-.01em; }
   h1, h2, h3, p, span, button, .tag, .chip{ overflow-wrap: break-word; }
   [hidden]{ display:none !important; }
   .hero, .cats, .subs, .list-wrap, .mapsec, footer{ position:relative; }
@@ -196,11 +198,11 @@
   }
   .brand svg{ color: var(--accent-hi); filter: drop-shadow(0 0 8px rgba(194,146,79,.45)); }
   .brand-sub{
-    font-family:'Noto Kufi Arabic',sans-serif;
+    font-family:'Cairo',sans-serif;
     font-weight:400; font-size:.78rem; color:var(--muted);
     letter-spacing:0; align-self:flex-end; padding-bottom:2px;
   }
-  html[dir="rtl"] .brand{ font-family:'Golos Text',sans-serif; }
+  html[dir="rtl"] .brand{ font-family:'Manrope',sans-serif; }
   #settingsBtn{ margin-inline-start:auto; }
   .btn-gear{
     display:inline-flex; align-items:center; justify-content:center;
@@ -266,7 +268,7 @@
     border-inline-start:3px solid var(--accent);
     padding-inline-start:12px; margin-top:6px;
   }
-  html[dir="ltr"] .hero-alt{ font-family:'Noto Kufi Arabic',sans-serif; }
+  html[dir="ltr"] .hero-alt{ font-family:'Cairo',sans-serif; }
   .hero-desc{
     color:var(--card); opacity:.74; max-width:560px;
     margin-top:16px; line-height:1.65; font-size:.97rem;
@@ -400,19 +402,27 @@
 
   .level-cards{
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(146px, 1fr));
-    gap:9px; margin-top:6px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap:8px; margin-top:6px;
     width:100%;
   }
+  /* v1.4.2 (приказ 17з): индивидуальный дизайн подкатегорий — «золотая штанга» + капсула счётчика */
   .level-card{
+    position:relative;
     display:flex; flex-direction:column; gap:2px;
     background: var(--surface);
-    border:1px solid var(--line-soft); border-radius:14px;
-    padding:10px 12px; cursor:pointer; text-align:start;
+    border:1px solid var(--line-soft); border-radius:13px;
+    padding:10px 12px 10px 17px; padding-inline-start:17px; cursor:pointer; text-align:start;
     transition: border-color .2s, transform .18s, box-shadow .2s, background .2s;
     touch-action: manipulation;
     animation: fadeUp .45s backwards;
     min-width:0;
+    overflow:hidden;
+  }
+  .level-card::before{
+    content:""; position:absolute; inset-inline-start:0; top:14%; bottom:14%; width:3.5px;
+    border-radius:99px; background:var(--gold-grad); opacity:.32;
+    transition: opacity .2s, top .2s, bottom .2s, box-shadow .2s;
   }
   .level-card .lc-top{ display:flex; align-items:center; gap:7px; min-width:0; }
   .level-card .lc-arrow{
@@ -420,25 +430,29 @@
     transition: transform .2s, color .2s;
     opacity:.7;
   }
-  .level-card .lc-title{ font-size:.88rem; font-weight:700; color:var(--card); line-height:1.22; min-width:0; }
+  .level-card .lc-title{ font-size:.86rem; font-weight:700; color:var(--card); line-height:1.22; min-width:0; }
   .level-card .lc-sub{ font-size:.66rem; color:var(--muted); font-weight:500; }
   .level-card .lc-cnt{
-    font-size:.64rem; color:var(--accent-hi); font-weight:700;
-    display:inline-block; margin-top:3px;
+    font-size:.64rem; color:var(--accent-hi); font-weight:800;
+    display:inline-block; margin-top:4px; width:fit-content;
+    padding:1.5px 9px; border-radius:99px;
+    background:rgba(194,146,79,.13); border:1px solid rgba(194,146,79,.25);
   }
   .level-card:hover{
     border-color: var(--accent);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-card);
     background: var(--hover-tint);
   }
+  .level-card:hover::before{ opacity:.75; }
   .level-card:hover .lc-arrow{ color: var(--accent-hi); transform: translateX(3px); }
   html[dir="rtl"] .level-card:hover .lc-arrow{ transform: translateX(-3px); }
   .level-card.on{
     border-color: var(--accent);
-    background: rgba(194,146,79,.1);
-    box-shadow: 0 5px 18px -10px rgba(194,146,79,.45), inset 0 1px 0 rgba(255,255,255,.05);
+    background: linear-gradient(135deg, rgba(194,146,79,.16), rgba(194,146,79,.04));
+    box-shadow: 0 5px 18px -10px rgba(194,146,79,.5);
   }
+  .level-card.on::before{ opacity:1; top:7%; bottom:7%; box-shadow:0 0 12px rgba(194,146,79,.55); }
   .level-card.on .lc-title{ color: var(--accent-hi); }
   .level-card.on .lc-arrow{ color: var(--accent-hi); }
 
@@ -457,6 +471,22 @@
   html[dir="rtl"] .subjects-title{ text-transform:none; letter-spacing:0; }
   .subjects-title::after{ content:""; flex:1; height:1px; background:var(--line-soft); }
   .subjects-title svg{ color: var(--accent); }
+  /* v1.4.2 (приказ 17з): чипы предметов — «билет» со срезанным углом и точкой-меткой */
+  .subjects-block .chip{
+    position:relative; padding:9px 18px 9px 21px; padding-inline-start:21px;
+    border-radius:12px 4px 12px 4px !important; border:1px solid var(--line);
+    background:var(--surface) !important; font-weight:700; font-size:12.5px;
+  }
+  .subjects-block .chip::before{
+    content:""; position:absolute; inset-inline-start:8px; top:50%; width:5px; height:5px;
+    border-radius:50%; background:var(--stroke); transform:translateY(-50%); transition:background .2s;
+  }
+  .subjects-block .chip:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .subjects-block .chip.on{
+    background:var(--gold-grad) !important; color:var(--on-accent) !important; border-color:var(--accent-lo) !important;
+    box-shadow:0 6px 16px -8px rgba(194,146,79,.6);
+  }
+  .subjects-block .chip.on::before{ background:var(--on-accent); }
 
   .btn-add{
     margin-inline-start:auto;
@@ -672,7 +702,7 @@
   .map-coord-row .btn{ flex:0 0 auto; padding:9px 14px; font-size:.8rem; }
   .map-pop-btn{ padding:7px 10px; font-size:.78rem; }
   .dalil-pin{
-    width:30px; height:30px;
+    width:34px; height:34px;
     border-radius:50% 50% 50% 0;
     transform:rotate(-45deg);
     background:var(--pin-g, var(--gold-grad));
@@ -682,6 +712,23 @@
   }
   .dalil-pin svg{ transform:rotate(45deg); color:#fff;
     filter:drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+  /* v1.4.2 (приказ 17е): эмодзи-отметки категорий на карте + золотой ореол у VIP */
+  .dalil-pin .dalil-emoji{ transform:rotate(45deg); font-size:15px; line-height:1;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+  .dalil-pin.vip{ border-color:#FFD75E;
+    box-shadow:0 0 0 2.5px rgba(255,215,94,.5), 0 8px 18px -6px rgba(0,0,0,.55); }
+  .map-filter{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 8px; }
+  .mf-chip{ display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+    padding:6px 12px; border-radius:11px 3px 11px 3px;
+    border:1px solid var(--line); background:var(--surface); color:var(--card);
+    font-size:12px; font-weight:700;
+    transition:border-color .18s, background .18s, color .18s, transform .15s; }
+  .mf-chip .me{ font-size:14px; line-height:1; }
+  .mf-chip .n{ font-family:'IBM Plex Mono','Manrope',monospace; font-size:10.5px; opacity:.7; }
+  .mf-chip:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .mf-chip.on{ background:var(--gold-grad); color:var(--on-accent); border-color:var(--accent-lo);
+    box-shadow:0 5px 14px -8px rgba(194,146,79,.6); }
+  .mf-chip.on .n{ opacity:.85; }
 
   /* Метка на карте в формах */
   .map-pick{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
@@ -921,25 +968,28 @@
     border:1px solid rgba(102,187,106,.6); }
   .vip-pack-cta{ margin-top:4px; font-size:11px; font-weight:700; color:var(--accent-hi); text-decoration:underline; }
   .vip-benefits{ margin:10px 0 0; font-size:11.5px; opacity:.85; line-height:1.55; text-align:start; }
-  /* v1.4.2 · Приказ владельца 29.09: узор VIP-карточек = присланный им золотой барочный акант
-     (assets/img/ornament/gold-acanthus.png; по железному правилу картинки только PNG/JPG).
-     Римский меандр и ромбы убраны полностью. */
-  .vip-orn{ position:absolute; width:30px; height:32px; opacity:.55; pointer-events:none;
-    line-height:0; z-index:1; filter:drop-shadow(0 1px 3px rgba(0,0,0,.3)); }
-  .vip-orn img{ width:100%; height:100%; display:block; object-fit:contain; }
-  .vip-orn.tl{ top:5px; inset-inline-start:5px; }
-  .vip-orn.br{ bottom:5px; inset-inline-end:5px; transform:scaleX(-1) scaleY(-1); }
-  article.row.vip-card .row-body{ position:relative; }
-  article.row.vip-card{ position:relative; overflow:hidden; padding-block-start:19px; padding-block-end:19px; }
-  /* тонкая золотая кайма по периметру VIP-строки вместо узорных полос */
-  article.row.vip-card::before{
-    content:""; position:absolute; inset:4px; z-index:0; pointer-events:none;
-    border:1px solid rgba(211,164,88,.4); border-radius:16px;
-    box-shadow:inset 0 0 0 2.5px rgba(211,164,88,.1); }
-  /* детальная VIP-карточка: резная акант-эмблема над заголовком и под кнопками */
-  .vip-crest{ display:block; width:64px; height:56px; margin:0 auto 10px; object-fit:contain;
-    pointer-events:none; opacity:.95; filter:drop-shadow(0 2px 5px rgba(0,0,0,.35)); }
-  .vip-crest.foot{ margin:12px auto -2px; }
+  /* v1.4.2 · Приказ 17и: узор владельца идёт ПО ВСЕЙ ДЛИНЕ VIP-карточки — бесшовный
+     золотой фриз (assets/img/ornament/gold-frieze.png, тайл собран из ЕГО аканта).
+     Присланная фотка была примером стиля; ромбы/меандр/уголки убраны полностью. */
+  article.row.vip-card::before, article.row.vip-card::after{
+    content:""; position:absolute; left:0; right:0; height:16px; z-index:0; pointer-events:none;
+    background:url("assets/img/ornament/gold-frieze.png") repeat-x left center;
+    background-size:auto 100%; opacity:.8;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,.25));
+  }
+  article.row.vip-card::before{ top:0; border-radius:20px 20px 0 0; }
+  article.row.vip-card::after{ bottom:0; border-radius:0 0 20px 20px; }
+  article.row.vip-card .row-body{ position:relative; z-index:1; }
+  article.row.vip-card{ position:relative; overflow:hidden; padding-block-start:22px; padding-block-end:22px; }
+  /* детальная VIP-карточка: фризы во всю ширину модалки (в потоке, от края до края) */
+  .modal{ --modal-px:26px; --modal-py:28px; }
+  .vip-strip{ display:block; height:20px; pointer-events:none; opacity:.9;
+    background:url("assets/img/ornament/gold-frieze.png") repeat-x left center;
+    background-size:auto 100%; }
+  .vip-strip.t{ margin:calc(-1 * var(--modal-py)) calc(-1 * var(--modal-px)) 12px;
+    border-radius:17px 17px 0 0; }
+  .vip-strip.b{ margin:12px calc(-1 * var(--modal-px)) calc(-1 * var(--modal-py));
+    border-radius:0 0 17px 17px; }
   /* v1.4.2 · Кнопка VIP в шапке */
   .btn-vip{ display:inline-flex; align-items:center; gap:6px; cursor:pointer;
     padding:7px 13px; border-radius:999px; border:1px solid rgba(255,193,7,.65);
@@ -1823,9 +1873,18 @@
     /* v1.5.0: кнопка аккаунта — заметная и на телефоне */
     .btn-login{ height:34px; padding:0 12px; font-size:.78rem; }
     .btn-login.on span{ max-width:90px; }
-    .btn-admin{ padding:7px 9px; margin-inline-start:0; }
+    .btn-admin{ padding:7px 8px; margin-inline-start:0; }
     .btn-admin .t{ display:none; }
-    .btn-gear{ width:36px; height:36px; }
+    .btn-gear{ width:30px; height:30px; }
+    /* v1.4.2 (приказ 17б): шапка не переполняет экран — на узких телефонах раньше резало край */
+    .topbar{ gap:5px; padding:0 8px; }
+    .btn-tg{ display:none; }
+    .brand{ font-size:.74rem; letter-spacing:.03em; gap:6px; }
+    .btn-vip{ padding:6px 8px; font-size:11px; gap:4px; }
+    .btn-vip svg{ width:14px; height:10px; }
+    .btn-login{ padding:0 8px; font-size:.72rem; }
+    .btn-login span{ display:none; }
+    .btn-login.on span{ display:block; max-width:64px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
     .hero{ padding:32px 14px 14px; }
     .hero h1{ font-size: clamp(1.5rem, 7.4vw, 2.05rem); gap:7px; }
@@ -1871,7 +1930,7 @@
     .mapsec{ padding:0 14px; margin-top:20px; }
     .map-shell{ height:330px; border-radius:18px; }
 
-    .modal{ padding:22px 18px; max-height:92vh; border-radius:20px; }
+    .modal{ padding:22px 18px; max-height:92vh; border-radius:20px; --modal-px:18px; --modal-py:22px; }
     .modal-head h3{ font-size:1.1rem; }
     .overlay{ padding:12px; align-items:center; }
     .plans{ flex-direction:column; }
@@ -1938,7 +1997,7 @@
   }
   .btn-solid:hover::after{ inset-inline-start:120%; }
 
-  html[lang="ku"] .hero-alt{ font-family:'Golos Text','Noto Sans',sans-serif; }
+  html[lang="ku"] .hero-alt{ font-family:'Manrope',sans-serif; }
 
   @media (hover:hover) and (pointer:fine){
     .btn-sub:hover, .btn-add:hover{
@@ -2070,7 +2129,7 @@
   .hero-grid{ display:grid; grid-template-columns:1.35fr .65fr; gap:40px; align-items:end; }
   @media (max-width:900px){ .hero-grid{ grid-template-columns:1fr; gap:26px; } }
   .hero-meta{ display:inline-flex; align-items:center; gap:12px;
-    font-family:'IBM Plex Mono','Golos Text',monospace;
+    font-family:'IBM Plex Mono','Manrope',monospace;
     color:var(--accent-hi); font-size:10.5px; font-weight:600;
     letter-spacing:.34em; text-transform:uppercase; }
   .hero-meta::after{ content:""; width:96px; height:1px;
@@ -2100,7 +2159,7 @@
     padding:24px; border-radius:16px;
     background:var(--panel); border:1px solid var(--line);
     box-shadow:var(--shadow-card); }
-  .hc-title{ font-family:'IBM Plex Mono','Golos Text',monospace;
+  .hc-title{ font-family:'IBM Plex Mono','Manrope',monospace;
     font-size:10.5px; font-weight:600; letter-spacing:.3em; color:var(--panel-text);
     text-transform:uppercase; padding-bottom:12px; margin-bottom:2px;
     border-bottom:1px solid var(--line); }
@@ -2108,7 +2167,7 @@
   .hc-stat b{ font-size:2.4rem; font-weight:900; line-height:1; min-width:86px; text-align:center;
     color:var(--panel-text); font-variant-numeric:tabular-nums; }
   .hc-stat.gold b{ color:var(--accent-hi); }
-  .hc-stat span{ font-family:'IBM Plex Mono','Golos Text',monospace;
+  .hc-stat span{ font-family:'IBM Plex Mono','Manrope',monospace;
     font-size:10.5px; color:var(--muted); line-height:1.5;
     text-transform:uppercase; letter-spacing:.1em; }
 
@@ -2124,32 +2183,33 @@
   #searchIcon{ color:var(--accent); }
 
   /* — Плитки преимуществ: пронумерованные модули — */
-  .ft-sec{ max-width:1080px; margin:26px auto 0; padding:0 24px; }
-  .ft-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
-  .ft-tile:first-child{ grid-column:span 2; }
-  .ft-tile:nth-child(6){ grid-column:span 2; }
-  @media (max-width:760px){ .ft-grid{ grid-template-columns:repeat(2,1fr); } }
-  @media (max-width:440px){ .ft-grid{ grid-template-columns:1fr; }
-    .ft-tile:first-child, .ft-tile:nth-child(6){ grid-column:auto; } }
-  .ft-tile{ position:relative; display:flex; flex-direction:column; gap:7px; padding:20px 18px;
-    border-radius:16px; background:var(--panel) !important; border:1px solid var(--line);
+  .ft-sec{ max-width:1080px; margin:22px auto 0; padding:0 24px; }
+  /* v1.4.2 (приказ 17ж): 6 плашек сжаты СИЛЬНО — компактная лента вместо больших карточек */
+  .ft-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+  @media (max-width:760px){ .ft-grid{ grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:440px){ .ft-grid{ grid-template-columns:repeat(2,1fr); gap:6px; } }
+  .ft-tile{ position:relative; display:grid; grid-template-columns:26px minmax(0,1fr); gap:1px 8px;
+    align-items:center; padding:9px 26px 9px 10px; padding-inline-end:26px;
+    border-radius:12px; background:var(--panel) !important; border:1px solid var(--line);
     box-shadow:none; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
     transition:transform .15s ease, border-color .15s ease; }
-  .ft-tile::after{ position:absolute; top:10px; inset-inline-end:14px;
-    font-family:'IBM Plex Mono','Golos Text',monospace;
-    font-size:24px; font-weight:600; line-height:1;
-    color:transparent; -webkit-text-stroke:1px var(--stroke); }
+  .ft-tile::after{ position:absolute; top:6px; inset-inline-end:8px;
+    font-family:'IBM Plex Mono','Manrope',monospace;
+    font-size:12px; font-weight:600; line-height:1;
+    color:transparent; -webkit-text-stroke:.6px var(--stroke); opacity:.8; }
   .ft-tile:nth-child(1)::after{ content:"01"; } .ft-tile:nth-child(2)::after{ content:"02"; }
   .ft-tile:nth-child(3)::after{ content:"03"; } .ft-tile:nth-child(4)::after{ content:"04"; }
   .ft-tile:nth-child(5)::after{ content:"05"; } .ft-tile:nth-child(6)::after{ content:"06"; }
   .ft-tile:hover{ transform:translateY(-2px); border-color:var(--accent); }
   .ft-tile:hover::after{ -webkit-text-stroke-color:var(--accent); }
-  .ft-ic{ width:38px; height:38px; border-radius:11px; display:flex; align-items:center;
-    justify-content:center; margin-bottom:3px; color:var(--accent-hi);
+  .ft-ic{ grid-column:1; grid-row:1 / 3; width:26px; height:26px; border-radius:8px; display:flex; align-items:center;
+    justify-content:center; color:var(--accent-hi);
     background:var(--hover-tint); border:1px solid var(--line-soft); }
-  .ft-ic svg{ width:19px; height:19px; }
-  .ft-tile b{ font-size:14.5px; font-weight:800; line-height:1.3; }
-  .ft-tile span{ font-size:12px; color:var(--muted); line-height:1.55; }
+  .ft-ic svg{ width:14px; height:14px; }
+  .ft-tile b{ grid-column:2; font-size:12px; font-weight:800; line-height:1.25;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ft-tile span:not(.ft-ic){ grid-column:2; font-size:10.5px; color:var(--muted); line-height:1.35;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 
   /* — Заголовки секций: золотая черта + моно-номер — */
   .cities-head h2, .list-head h2, .map-head h2{
@@ -2159,7 +2219,7 @@
     margin-inline-end:12px; vertical-align:.24em;
     background:var(--gold-grad); box-shadow:none; }
   .cities-head h2::after, .list-head h2::after{
-    font-family:'IBM Plex Mono','Golos Text',monospace;
+    font-family:'IBM Plex Mono','Manrope',monospace;
     margin-inline-start:12px; font-size:.42em; font-weight:600;
     color:var(--muted); letter-spacing:.24em; vertical-align:.32em; }
   .cities-head h2::after{ content:" / 01"; }
@@ -2177,7 +2237,7 @@
   .city-card::after{ content:none; }
   .city-card:hover{ background:var(--panel-text) !important; border-color:var(--panel-text); }
   .city-card:hover .cc-name, .city-card:hover .cc-pin, .city-card:hover .cc-cnt{ color:var(--bg); }
-  .cc-cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; font-size:11px;
+  .cc-cnt{ font-family:'IBM Plex Mono','Manrope',monospace; font-size:11px;
     color:var(--muted); border:1px solid var(--line-soft); border-radius:99px;
     padding:1px 8px; transition:color .14s ease, border-color .14s ease; }
   .city-card:hover .cc-cnt{ border-color:transparent; }
@@ -2191,7 +2251,7 @@
   .cat-pill.on{ background:var(--gold-grad); border-color:var(--accent-lo); color:var(--on-accent);
     box-shadow:0 6px 16px -8px rgba(201,153,74,.5); }
   .cat-pill.on .cnt{ color:var(--on-accent); border-color:rgba(0,0,0,.22); }
-  .cat-pill .cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; font-size:10.5px;
+  .cat-pill .cnt{ font-family:'IBM Plex Mono','Manrope',monospace; font-size:10.5px;
     color:var(--muted); border:1px solid var(--line-soft); border-radius:99px; padding:0 7px; }
   .cat-pill .cic{ color:var(--accent); }
   .cat-pill.on .cic{ color:var(--on-accent); }
@@ -2202,7 +2262,7 @@
   .level-card:hover{ border-color:var(--accent); }
   .level-card.on{ border-color:var(--accent); background:var(--hover-tint); }
   .lc-title{ font-weight:800; }
-  .lc-cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; color:var(--muted); }
+  .lc-cnt{ font-family:'IBM Plex Mono','Manrope',monospace; color:var(--muted); }
 
   /* — Инструменты списка — */
   .chip{ border-radius:11px !important; border:1px solid var(--line);
@@ -2214,7 +2274,7 @@
   .chip-fav.fav-on{ border-color:var(--accent); color:var(--accent-hi); }
   .chip-fav.fav-on svg{ fill:var(--accent); }
   .sort-sep{ width:1px; height:18px; background:var(--line); }
-  .cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; }
+  .cnt{ font-family:'IBM Plex Mono','Manrope',monospace; }
 
   /* — Анкеты: карточки — */
   .list-wrap{ max-width:1080px; }
@@ -2225,7 +2285,7 @@
     transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
   .row:hover{ transform:translateY(-2px); border-color:var(--accent);
     box-shadow:0 12px 26px -18px rgba(0,0,0,.55); }
-  .row .num{ font-family:'IBM Plex Mono','Golos Text',monospace; font-weight:600;
+  .row .num{ font-family:'IBM Plex Mono','Manrope',monospace; font-weight:600;
     color:var(--muted); font-size:12px; }
   .row h3{ font-weight:800; letter-spacing:-.01em; color:var(--panel-text); }
   .row-desc{ color:var(--card); opacity:.86; }
@@ -2258,8 +2318,8 @@
     background:linear-gradient(180deg, var(--vip-wash), transparent 62%), var(--panel) !important;
     box-shadow:0 12px 30px -20px rgba(201,153,74,.5); }
   article.row.vip-card:hover{ box-shadow:0 14px 34px -18px rgba(201,153,74,.55); }
-  .vip-orn{ opacity:.6; }
-  .vip-crest{ opacity:.9; }
+  article.row.vip-card::before, article.row.vip-card::after{ opacity:.75; }
+  .vip-strip{ opacity:.85; }
 
   /* — Кнопки действий: спокойная система — */
   .btn{ border-radius:11px; font-weight:700; font-size:13.5px; letter-spacing:.01em;
@@ -2301,7 +2361,7 @@
     border-top:1px solid var(--line-soft); }
   .footer-agent{ color:var(--muted); }
   .footer-phone{ color:var(--accent-hi); font-weight:800; }
-  .ver-badge{ font-family:'IBM Plex Mono','Golos Text',monospace; font-size:10.5px;
+  .ver-badge{ font-family:'IBM Plex Mono','Manrope',monospace; font-size:10.5px;
     color:var(--muted); border:1px solid var(--line-soft); border-radius:99px; padding:2px 10px; }
 
   /* — Плавающая панель админа и нижний док — */
@@ -2353,7 +2413,7 @@
     box-shadow:0 0 0 3px rgba(201,153,74,.14); outline:none; }
   .field select option{ background:var(--panel); color:var(--panel-text); }
   html[data-theme="light"] .field select option{ background:#FFFFFF; color:#23272F; }
-  .counter{ font-family:'IBM Plex Mono','Golos Text',monospace; color:var(--muted); font-size:10.5px; }
+  .counter{ font-family:'IBM Plex Mono','Manrope',monospace; color:var(--muted); font-size:10.5px; }
   .steps .step{ background:var(--line-soft); border-radius:99px; }
   .steps .step.on{ background:var(--gold-grad); }
   .steps-cap{ color:var(--muted); font-size:12px; }
@@ -2493,7 +2553,7 @@
   /* — Уведомления — */
   .notif-item{ background:var(--panel2); border:1px solid var(--line-soft); border-radius:14px; }
   .ni-ic{ color:var(--accent-hi); background:var(--hover-tint); border-radius:12px; }
-  .ni-time{ color:var(--muted); font-family:'IBM Plex Mono','Golos Text',monospace; font-size:10.5px; }
+  .ni-time{ color:var(--muted); font-family:'IBM Plex Mono','Manrope',monospace; font-size:10.5px; }
   .ni-desc{ color:var(--muted); }
   .notif-empty{ color:var(--muted); }
   .unread{ border-inline-start:3px solid var(--accent); }
@@ -2559,7 +2619,7 @@
      «максимализм» → крупные фотоплитки городов, большой hero,
      богатые отступы; «на фон подгрузи фотки Сирии, тёмная
      узнаваемая Ракка» → hero = Багдадские ворота Ракки под тёмной
-     вуалью, города — реальные фото (assets/img/cities/*.jpg).
+     вуалью, города — реальные фото (assets/img/cities/*.webp).
      ТОЛЬКО презентация: классы, разметка и JS не тронуты.
      ================================================================ */
 
@@ -2572,7 +2632,7 @@
     padding:clamp(36px,6vw,76px) clamp(22px,4.5vw,56px) clamp(30px,4.5vw,50px);
     background:
       linear-gradient(180deg, rgba(11,14,19,.60) 0%, rgba(11,14,19,.82) 52%, rgba(10,13,18,.96) 100%),
-      url("assets/img/cities/hero_raqqa.jpg") center 30% / cover no-repeat,
+      url("assets/img/cities/hero_raqqa.webp") center 30% / cover no-repeat,
       #0D1015;
     box-shadow:0 36px 90px -44px rgba(0,0,0,.85);
     /* светлый текст на фото — в обеих темах */
@@ -2669,21 +2729,21 @@
     background:var(--gold-grad); color:var(--on-accent); border-color:transparent;
   }
   /* реальные фото городов Сирии */
-  .city-card[data-city="damascus"]  { --cc-photo:url("assets/img/cities/damascus.jpg"); }
-  .city-card[data-city="rifdimashq"]{ --cc-photo:url("assets/img/cities/rifdimashq.jpg"); }
-  .city-card[data-city="aleppo"]    { --cc-photo:url("assets/img/cities/aleppo.jpg"); }
-  .city-card[data-city="homs"]      { --cc-photo:url("assets/img/cities/homs.jpg"); }
-  .city-card[data-city="hama"]      { --cc-photo:url("assets/img/cities/hama.jpg"); }
-  .city-card[data-city="latakia"]   { --cc-photo:url("assets/img/cities/latakia.jpg"); }
-  .city-card[data-city="tartus"]    { --cc-photo:url("assets/img/cities/tartus.jpg"); }
-  .city-card[data-city="idlib"]     { --cc-photo:url("assets/img/cities/idlib.jpg"); }
-  .city-card[data-city="daraa"]     { --cc-photo:url("assets/img/cities/daraa.jpg"); }
-  .city-card[data-city="suwayda"]   { --cc-photo:url("assets/img/cities/suwayda.jpg"); }
-  .city-card[data-city="deirezzor"] { --cc-photo:url("assets/img/cities/deirezzor.jpg"); }
-  .city-card[data-city="hasakah"]   { --cc-photo:url("assets/img/cities/hasakah.jpg"); }
-  .city-card[data-city="qamishli"]  { --cc-photo:url("assets/img/cities/qamishli.jpg"); }
-  .city-card[data-city="manbij"]    { --cc-photo:url("assets/img/cities/manbij.jpg"); }
-  .city-card[data-city="raqqa"]     { --cc-photo:url("assets/img/cities/raqqa.jpg"); }
+  .city-card[data-city="damascus"]  { --cc-photo:url("assets/img/cities/damascus.webp"); }
+  .city-card[data-city="rifdimashq"]{ --cc-photo:url("assets/img/cities/rifdimashq.webp"); }
+  .city-card[data-city="aleppo"]    { --cc-photo:url("assets/img/cities/aleppo.webp"); }
+  .city-card[data-city="homs"]      { --cc-photo:url("assets/img/cities/homs.webp"); }
+  .city-card[data-city="hama"]      { --cc-photo:url("assets/img/cities/hama.webp"); }
+  .city-card[data-city="latakia"]   { --cc-photo:url("assets/img/cities/latakia.webp"); }
+  .city-card[data-city="tartus"]    { --cc-photo:url("assets/img/cities/tartus.webp"); }
+  .city-card[data-city="idlib"]     { --cc-photo:url("assets/img/cities/idlib.webp"); }
+  .city-card[data-city="daraa"]     { --cc-photo:url("assets/img/cities/daraa.webp"); }
+  .city-card[data-city="suwayda"]   { --cc-photo:url("assets/img/cities/suwayda.webp"); }
+  .city-card[data-city="deirezzor"] { --cc-photo:url("assets/img/cities/deirezzor.webp"); }
+  .city-card[data-city="hasakah"]   { --cc-photo:url("assets/img/cities/hasakah.webp"); }
+  .city-card[data-city="qamishli"]  { --cc-photo:url("assets/img/cities/qamishli.webp"); }
+  .city-card[data-city="manbij"]    { --cc-photo:url("assets/img/cities/manbij.webp"); }
+  .city-card[data-city="raqqa"]     { --cc-photo:url("assets/img/cities/raqqa.webp"); }
 
   /* ---------- КАТЕГОРИИ: разрядить и укрупнить ---------- */
   .cats{ gap:12px; }
@@ -2715,20 +2775,11 @@
   .bn-item{ gap:4px; padding:8px 4px 6px; font-size:.64rem; border-radius:16px; }
   .bn-fab .fab-disc{ width:50px; height:50px; }
 
-  /* ---------- ЧИПЫ / УРОВНИ / ПРЕИМУЩЕСТВА: крупнее ---------- */
+  /* ---------- ЧИПЫ / УРОВНИ / ПРЕИМУЩЕСТВА: v1.4.2 (приказ 17ж/17з) —
+     компактные плашки и новый дизайн подкатегорий заданы в базовых правилах выше ---------- */
   .subs{ margin-top:18px; }
-  .subjects-block{ gap:10px; }
-  .chip{ padding:8px 15px; font-size:.84rem; border-radius:12px; }
+  .subjects-block{ gap:8px; }
   @media (max-width:760px){ .chip{ padding:7px 13px; font-size:.79rem; } }
-  .level-cards{ gap:12px; }
-  .level-card{ padding:14px 15px; border-radius:16px; }
-  .level-card .lc-title{ font-size:.94rem; }
-  .ft-sec{ margin-top:30px; }
-  .ft-grid{ gap:16px; }
-  .ft-tile{ padding:24px 22px; gap:9px; border-radius:20px; }
-  .ft-ic{ width:44px; height:44px; border-radius:14px; }
-  .ft-tile b{ font-size:15.5px; }
-  .ft-tile span{ font-size:12.5px; }
 </style>
 </head>
 <body>
@@ -2849,6 +2900,7 @@
     </div>
   </div>
   <p class="map-hint" data-i18n="mapHint"></p>
+  <div class="map-filter" id="mapFilter" hidden></div>
   <div class="map-coord-row" id="myCoordRow" hidden>
     <input type="text" id="myCoordLat" class="ltr-num" inputmode="decimal" autocomplete="off" placeholder="35.9500">
     <input type="text" id="myCoordLng" class="ltr-num" inputmode="decimal" autocomplete="off" placeholder="39.0167">
@@ -4087,6 +4139,7 @@
       mapNearMe: "Рядом со мной",
       mapLocating: "Определяем ваше местоположение…",
       mapNearErr: "Не удалось определить местоположение",
+      mapPermDenied: "Доступ к геолокации запрещён — разреши его в настройках браузера",
       mapLoadErr: "Карты временно недоступны",
       mapNetAlt: "Источник карты заблокирован — включён резервный",
       mapOpenGmaps: "Открыть в Google Maps",
@@ -4478,6 +4531,7 @@
       mapNearMe: "بالقرب مني",
       mapLocating: "جارٍ تحديد موقعك…",
       mapNearErr: "تعذّر تحديد موقعك",
+      mapPermDenied: "تم رفض الوصول إلى الموقع — اسمح به من إعدادات المتصفح",
       mapLoadErr: "الخرائط غير متوفرة حالياً",
       mapNetAlt: "تم حظر مصدر الخرائط — تم التبديل إلى المصدر الاحتياطي",
       mapOpenGmaps: "افتح في خرائط Google",
@@ -4869,6 +4923,7 @@
       mapNearMe: "Nêzîkî min",
       mapLocating: "Cihê te tê diyarkirin…",
       mapNearErr: "Nikaribû cihê te diyar bike",
+      mapPermDenied: "Gihîştina cih hat astengkirin — ji mîhengên gerokê destûr bide",
       mapLoadErr: "Nexşe niha ne gengaz in",
       mapNetAlt: "Çavkaniya nexşeyê hat astengkirin — çavkaniya yedek çalak e",
       mapOpenGmaps: "Veke di Google Maps de",
@@ -5261,6 +5316,7 @@
       mapNearMe: "Near me",
       mapLocating: "Detecting your location…",
       mapNearErr: "Couldn't detect your location",
+      mapPermDenied: "Location access denied — allow it in your browser settings",
       mapLoadErr: "Maps are temporarily unavailable",
       mapNetAlt: "Map source blocked — backup source enabled",
       mapOpenGmaps: "Open in Google Maps",
@@ -5653,6 +5709,7 @@
       mapNearMe: "In meiner Nähe",
       mapLocating: "Standort wird ermittelt…",
       mapNearErr: "Standort konnte nicht ermittelt werden",
+      mapPermDenied: "Standortzugriff verweigert — erlaube ihn in den Browser-Einstellungen",
       mapLoadErr: "Karten sind derzeit nicht verfügbar",
       mapNetAlt: "Kartenquelle blockiert — Ersatzquelle aktiv",
       mapOpenGmaps: "In Google Maps öffnen",
@@ -6045,6 +6102,7 @@
       mapNearMe: "Bana yakın",
       mapLocating: "Konumunuz belirleniyor…",
       mapNearErr: "Konum belirlenemedi",
+      mapPermDenied: "Konum erişimi reddedildi — tarayıcı ayarlarından izin ver",
       mapLoadErr: "Haritalar şu anda kullanılamıyor",
       mapNetAlt: "Harita kaynağı engellendi — yedek kaynak etkin",
       mapOpenGmaps: "Google Maps'te aç",
@@ -6866,7 +6924,6 @@
       const wa = tel.replace(/\D/g, "");
       return `
       <article class="row${p.feat ? " vip-card" : ""}" data-id="${esc(p.id)}" style="animation-delay:${Math.min(i * 45, 400)}ms">
-        ${p.feat ? vipOrnHTML() : ""}
         <div class="num">${String(i + 1).padStart(2, "0")}</div>
         <div class="row-body">
           <div class="row-top">
@@ -6975,19 +7032,16 @@
   }
 
   /* ================= Детальная карточка ================= */
-  /* v1.4.2 · Приказ владельца: узор VIP-карточек = его барочный золотой акант
-     (assets/img/ornament/gold-acanthus.png — PNG-ассет в репо; картинки только PNG/JPG) */
-  const VIP_ORN_IMG = '<img src="assets/img/ornament/gold-acanthus.png" alt="" loading="lazy" decoding="async">';
-  const vipOrnHTML = () => '<span class="vip-orn tl" aria-hidden="true">' + VIP_ORN_IMG + '</span><span class="vip-orn br" aria-hidden="true">' + VIP_ORN_IMG + '</span>';
-  const vipCrestHTML = (foot) => '<img class="vip-crest' + (foot ? " foot" : "") + '" src="assets/img/ornament/gold-acanthus.png" alt="" aria-hidden="true" decoding="async">';
+  /* v1.4.2 · Приказ 17и: фризы во всю длину VIP-модалки (тайл из аканта владельца) */
+  const vipStripHTML = (top) => '<span class="vip-strip ' + (top ? "t" : "b") + '" aria-hidden="true"></span>';
 
   function detailHTML(p) {
     const tel = (p.phone || "").replace(/[^\d+]/g, "");
     const wa = tel.replace(/\D/g, "");
 
     return `
+      ${p.feat ? vipStripHTML(true) : ""}
       <button type="button" class="modal-back" data-close="detailOverlay">${icon("back", 15)}<span>${esc(t("back"))}</span></button>
-      ${p.feat ? vipCrestHTML() : ""}
       <div class="modal-head">
         <h3>${esc(pname(p))}${p.feat ? ' <span class="vip-badge"><b>VIP</b></span>' : ""}${p.ver ? ` <span class="vrf-badge" title="${esc(t("verBadge"))}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>` : ""}</h3>
       </div>
@@ -7023,7 +7077,7 @@
         ${myListingIds.has(p.id) ? `<button type="button" class="btn btn-danger detail-mydel" data-id="${esc(p.id)}">${icon("trash", 14)}${esc(t("myDelBtn"))}</button>` : ""}
         ${state.admin ? `<button type="button" class="btn btn-outline detail-edit" data-id="${esc(p.id)}">${icon("edit", 14)}${esc(t("edit"))}</button>` : ""}
         ${state.admin ? `<button type="button" class="btn btn-danger detail-del" data-id="${esc(p.id)}">${icon("trash", 14)}${esc(t("delete"))}</button>` : ""}
-      </div>${p.feat ? vipCrestHTML(true) : ""}`;
+      </div>${p.feat ? vipStripHTML(false) : ""}`;
   }
 
   function bindDetail(p) {
@@ -7314,13 +7368,13 @@
 
   /* v1.3.0 · Пины по категориям: свой цвет + иконка категории внутри пина */
   const CAT_PINS = {
-    doctors:    { ic: "health", g: "linear-gradient(135deg,#2BB3A3,#147F73)" },
-    teachers:   { ic: "cap",    g: "linear-gradient(135deg,#5B9BE8,#2F6BB8)" },
-    architects: { ic: "ruler",  g: "linear-gradient(135deg,#A77FE8,#7452B5)" },
-    stores:     { ic: "bag",    g: "linear-gradient(135deg,#E7BC4C,#C08E24)" },
-    pharmacies: { ic: "pill",   g: "linear-gradient(135deg,#6FC55C,#459635)" },
-    services:   { ic: "bell",   g: "linear-gradient(135deg,#E8798F,#BC4A63)" },
-    repair:     { ic: "tool",   g: "linear-gradient(135deg,#E8704C,#BC4425)" }
+    doctors:    { ic: "health", g: "linear-gradient(135deg,#2BB3A3,#147F73)", e: "🩺" },
+    teachers:   { ic: "cap",    g: "linear-gradient(135deg,#5B9BE8,#2F6BB8)", e: "🎓" },
+    architects: { ic: "ruler",  g: "linear-gradient(135deg,#A77FE8,#7452B5)", e: "📐" },
+    stores:     { ic: "bag",    g: "linear-gradient(135deg,#E7BC4C,#C08E24)", e: "🛍️" },
+    pharmacies: { ic: "pill",   g: "linear-gradient(135deg,#6FC55C,#459635)", e: "💊" },
+    services:   { ic: "bell",   g: "linear-gradient(135deg,#E8798F,#BC4A63)", e: "🛎️" },
+    repair:     { ic: "tool",   g: "linear-gradient(135deg,#E8704C,#BC4425)", e: "🔧" }
   };
 
   let myPos = null;               /* «Рядом со мной»: {lat,lng} после геолокации */
@@ -7451,6 +7505,7 @@
     return mapObj;
   }
 
+  let mapFilter = "all";          /* v1.4.2 (приказ 17е): фильтр категорий на карте */
   function renderMap() {
     if (!mapObj || !markerLayer) return;
     markerLayer.clearLayers();
@@ -7458,15 +7513,17 @@
       markerLayer.addLayer(L.circleMarker([myPos.lat, myPos.lng],
         { radius: 7, color: "#3E93A4", weight: 2, fillColor: "#6FC3D2", fillOpacity: .95 }));
     }
-    const docs = state.docs.filter(d => !isExpired(d) && inCity(d) && hasCoords(d));
+    renderMapFilter();
+    const docs = state.docs.filter(d => !isExpired(d) && inCity(d) && hasCoords(d)
+      && (mapFilter === "all" || d.category === mapFilter));
     docs.forEach(d => {
       const pin = CAT_PINS[d.category];
-      const pinHtml = `<div class="dalil-pin"${pin ? ` style="--pin-g:${pin.g}"` : ""}>${pin ? icon(pin.ic, 13) : icon("pin", 13)}</div>`;
+      const pinHtml = `<div class="dalil-pin${d.feat ? " vip" : ""}"${pin ? ` style="--pin-g:${pin.g}"` : ""}>${pin ? `<span class="dalil-emoji">${pin.e}</span>` : icon("pin", 13)}</div>`;
       const m = L.marker([Number(d.lat), Number(d.lng)], {
         icon: L.divIcon({
           className: "",
           html: pinHtml,
-          iconSize: [30, 30], iconAnchor: [15, 28], popupAnchor: [0, -26]
+          iconSize: [34, 34], iconAnchor: [17, 30], popupAnchor: [0, -28]
         })
       });
       m.bindPopup(
@@ -7485,25 +7542,63 @@
     setTimeout(() => { if (mapObj) mapObj.invalidateSize(); }, 250);
   }
 
+  /* v1.4.2 (приказ 17е): фильтр на карте — эмодзи-чипы категорий с количеством */
+  function renderMapFilter() {
+    const el = $("mapFilter");
+    if (!el) return;
+    const docs = state.docs.filter(d => !isExpired(d) && inCity(d) && hasCoords(d));
+    const cats = [];
+    docs.forEach(d => { if (!cats.includes(d.category)) cats.push(d.category); });
+    const mk = (id, label, n, on) =>
+      `<button type="button" class="mf-chip${on ? " on" : ""}" data-mf="${id}">${label}<span class="n">${n}</span></button>`;
+    el.innerHTML =
+      mk("all", esc(t("all")), docs.length, mapFilter === "all") +
+      cats.map(cid => {
+        const pin = CAT_PINS[cid];
+        const n = docs.filter(d => d.category === cid).length;
+        return mk(cid, (pin ? `<span class="me">${pin.e}</span>` : "") + esc(catName(cid)), n, mapFilter === cid);
+      }).join("");
+    el.hidden = docs.length === 0;
+  }
+
   function openMapSection() {
     $("mapSection").hidden = false;
     ensureMap().then(m => { if (m) renderMap(); });
     setTimeout(() => { try { $("mapSection").scrollIntoView({ behavior: "smooth", block: "start" }); } catch {} }, 90);
   }
 
-  $("nearMeBtn").addEventListener("click", () => {
+  $("mapFilter").addEventListener("click", e => {
+    const b = e.target.closest("[data-mf]");
+    if (!b) return;
+    mapFilter = b.dataset.mf;
+    renderMap();
+  });
+
+  /* v1.4.2 (приказ 17а): GPS на телефонах — сначала высокоточный запрос,
+     если не отвечает (холодный старт GPS/нет приемника) — сетевой, чтобы
+     локация была ОБЯЗАТЕЛЬНО; отказ в разрешении — отдельная подсказка */
+  const geoGet = (opts) => new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, opts));
+  $("nearMeBtn").addEventListener("click", async () => {
     if (!navigator.geolocation) { toast(t("mapNearErr"), "err"); return; }
     toast(t("mapLocating"));
-    navigator.geolocation.getCurrentPosition(pos => {
-      const acc = Number(pos.coords.accuracy) || 0;
-      myPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      renderListTools();
-      renderList();
-      ensureMap().then(m => { if (m) { renderMap(); m.flyTo([myPos.lat, myPos.lng], 13); } });
-      /* Геолокация по Wi-Fi/IP может ошибаться на сотни км (ПК) — честно
-         предупреждаем и даём ввести точные координаты вручную. */
-      if (acc > 10000) toast(t("mapAccWarn").replace("%s", String(Math.round(acc / 1000))), "err", 6000);
-    }, () => toast(t("mapNearErr"), "err"), { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 });
+    let pos = null;
+    try {
+      pos = await geoGet({ enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 });
+    } catch (e1) {
+      try { pos = await geoGet({ enableHighAccuracy: false, timeout: 9000, maximumAge: 60000 }); }
+      catch (e2) {
+        toast(e2 && e2.code === 1 ? t("mapPermDenied") : t("mapNearErr"), "err", 6000);
+        return;
+      }
+    }
+    const acc = Number(pos.coords.accuracy) || 0;
+    myPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    renderListTools();
+    renderList();
+    ensureMap().then(m => { if (m) { renderMap(); m.flyTo([myPos.lat, myPos.lng], 13); } });
+    /* Геолокация по Wi-Fi/IP может ошибаться на сотни км (ПК) — честно
+       предупреждаем и даём ввести точные координаты вручную. */
+    if (acc > 10000) toast(t("mapAccWarn").replace("%s", String(Math.round(acc / 1000))), "err", 6000);
   });
 
   /* ---------- v1.3.0 · Ручные координаты («рядом со мной» промахнулся) и сворот карты ---------- */
