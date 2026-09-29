@@ -62,31 +62,38 @@
      (980px, медиаправило не применяется) работали — отсюда симптомы.
      Исправление: contain перенесён на html (корневой скроллер — там он и
      задуман), у body overflow-x теперь clip (не создаёт scroll-контейнер).
+     v1.4.2 · DAMASCUS GOLD — единая визуальная система (заменила
+     «фирменную полировку», SWISS PAPER и ART POLISH): тёплые чернила,
+     брендовое золото как единственный акцент, сплошные поверхности,
+     спокойные кнопки, Telegram синий, VIP — яркое золото с короной.
      ================================================================ */
-  :root{
-    --bg:#0A101C;
-    --bg2:#0E1626;
-    --panel:#111B2E;            /* поверхности: карточки, модалки, тосты */
-    --panel2:#16223A;
-    --panel-text:#E8EDF4;
-    --card:#DCE4EE;             /* основной текст на странице */
-    --muted:#7E8AA1;
-    --accent:#C2924F;
+    :root{
+    --bg:#0D1015;
+    --bg2:#11151C;
+    --panel:#161B23;            /* поверхности: карточки, модалки, тосты */
+    --panel2:#1B212B;
+    --panel-text:#F0EDE6;
+    --card:#DDD9CE;             /* основной текст на странице */
+    --muted:#8D95A3;
+    --accent:#C9994A;
     --accent2:#C97B4F;
-    --accent-hi:#E2B169;
-    --accent-lo:#6E542C;
+    --accent-hi:#E7BC72;
+    --accent-lo:#7A5E2C;
     --on-accent:#1A130A;
-    --line:rgba(126,138,161,.30);
-    --line-soft:rgba(126,138,161,.16);
-    --surface:rgba(220,228,238,.05);
-    --hover-tint:rgba(194,146,79,.12);
-    --bar-bg:rgba(10,16,28,.86);
-    --overlay-bg:rgba(5,9,17,.62);
-    --input-bg:rgba(255,255,255,.05);
-    --shadow-card:0 14px 34px -22px rgba(0,0,0,.6);
-    --shadow-pop:0 24px 60px -24px rgba(0,0,0,.7);
-    --gold-grad:linear-gradient(135deg,#E2B169,#C2924F 60%,#A87B3F);
-    --r-lg:20px;
+    --line:rgba(231,188,114,.16);
+    --line-soft:rgba(231,188,114,.09);
+    --surface:#1D232E;          /* сплошная — приказ владельца «всё непрозрачное» */
+    --hover-tint:rgba(201,153,74,.10);
+    --bar-bg:#11151C;           /* шапка/док — сплошные */
+    --overlay-bg:rgba(5,7,11,.64);
+    --input-bg:#0F1319;         /* поля — сплошные */
+    --shadow-card:0 16px 38px -24px rgba(0,0,0,.65);
+    --shadow-pop:0 30px 70px -28px rgba(0,0,0,.75);
+    --gold-grad:linear-gradient(135deg,#EDCB8B,#D3A458 55%,#B58236);
+    --mark:rgba(201,153,74,.42);      /* золотой маркер под «Syria» */
+    --vip-wash:rgba(201,153,74,.10);  /* золотая заливка VIP-карточек */
+    --stroke:rgba(240,237,230,.30);   /* моно-номера плиток */
+    --r-lg:18px;
     --r-md:14px;
     --r-sm:10px;
   }
@@ -1749,29 +1756,32 @@
   .gate-enter:hover{ filter:brightness(1.15); }
 
   /* ============ Светлая тема «Warm Sand» ============ */
-  html[data-theme="light"]{
-    --bg:#F1EBE2;
-    --bg2:#E9E2D5;
-    --panel:#FCF8F1;
-    --panel2:#FFFFFF;
-    --panel-text:#22303C;
-    --card:#1B3A50;
-    --muted:#6C7F8C;
-    --accent:#2F7D8E;
-    --accent2:#B0895A;
-    --accent-hi:#3E93A4;
-    --accent-lo:#225967;
-    --on-accent:#062630;
-    --gold-grad:linear-gradient(135deg,#4FA3B2,#2F7D8E 60%,#1F6272);
-    --line:rgba(27,58,80,.3);
-    --line-soft:rgba(27,58,80,.15);
-    --surface:rgba(27,58,80,.05);
-    --hover-tint:rgba(47,125,142,.1);
-    --bar-bg:rgba(241,235,226,.9);
-    --overlay-bg:rgba(27,58,80,.38);
-    --input-bg:rgba(27,58,80,.06);
-    --shadow-card:0 14px 34px -22px rgba(8,58,79,.45);
-    --shadow-pop:0 24px 60px -24px rgba(8,58,79,.55);
+    html[data-theme="light"]{
+    --bg:#F4F0E8;
+    --bg2:#EEE9DF;
+    --panel:#FFFFFF;
+    --panel2:#FAF7F1;
+    --panel-text:#23272F;
+    --card:#3C414B;
+    --muted:#767C87;
+    --accent:#A87B3F;
+    --accent2:#B4703F;
+    --accent-hi:#8A6023;
+    --accent-lo:#6E4E1F;
+    --on-accent:#241A09;
+    --gold-grad:linear-gradient(135deg,#E2BC78,#C9944C 55%,#A5762F);
+    --line:rgba(35,39,47,.16);
+    --line-soft:rgba(35,39,47,.09);
+    --surface:#F1EBE0;
+    --hover-tint:rgba(168,123,63,.10);
+    --bar-bg:#FBF8F2;
+    --overlay-bg:rgba(28,24,16,.44);
+    --input-bg:#F7F4EE;
+    --shadow-card:0 16px 36px -26px rgba(60,42,12,.4);
+    --shadow-pop:0 30px 64px -30px rgba(60,42,12,.5);
+    --mark:rgba(168,123,63,.40);
+    --vip-wash:rgba(168,123,63,.09);
+    --stroke:rgba(35,39,47,.26);
   }
   html[data-theme="light"] .err-banner{ background:rgba(180,84,63,.1); color:#A45340; border-color:rgba(180,84,63,.4); }
   html[data-theme="light"] .orb1{ background:radial-gradient(circle,#E5C285 0%,transparent 70%); opacity:.5; }
@@ -1984,358 +1994,556 @@
     html{ scroll-behavior:auto; }
   }
 
-  /* ═══════ v1.4.2 · РЕДИЗАЙН: фирменная полировка (те же цвета, логика не тронута) ═══════ */
+  /* ═══════════════════════════════════════════════════════════════════
+     v1.4.2 · DAMASCUS GOLD — единая визуальная система (полная замена
+     трёх старых слоёв: «фирменная полировка», SWISS PAPER, ART POLISH).
+     Идея: тёплые чернила + брендовое золото как ЕДИНСТВЕННЫЙ акцент;
+     все поверхности сплошные (приказ владельца), кнопки спокойные,
+     Telegram — фирменный синий, VIP — яркое золото с короной.
+     Имена классов и JS не тронуты — только кожа.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* — Сцена: два мягких тепла, без месяца/звёзд/сетки — */
   body{
     background:
-      radial-gradient(1100px 480px at 88% -120px, rgba(255,193,7,.075), transparent 60%),
-      radial-gradient(900px 520px at -120px 25%, rgba(64,126,140,.12), transparent 55%),
+      radial-gradient(1100px 500px at 82% -140px, rgba(201,153,74,.10), transparent 62%),
+      radial-gradient(900px 560px at -140px 34%, rgba(64,126,140,.07), transparent 58%),
       var(--bg);
   }
-  .topbar{ backdrop-filter: blur(12px) saturate(1.15); -webkit-backdrop-filter: blur(12px) saturate(1.15);
-    border-bottom:1px solid rgba(255,193,7,.16); box-shadow:0 8px 30px rgba(0,0,0,.22); }
-  .cities-head h2::before, .list-head h2::before, .map-head h2::before{
-    content:""; display:inline-block; width:26px; height:3px; border-radius:3px;
-    margin-inline-end:10px; vertical-align:.24em;
-    background:linear-gradient(90deg,#FFE082,#FFC107 45%,#FF8F00);
-    box-shadow:0 0 8px rgba(255,193,7,.5);
-  }
-  article.row{ transition:transform .16s ease, box-shadow .16s ease; }
-  article.row:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(0,0,0,.26); }
-  article.row.vip-card:hover{ box-shadow:0 10px 30px rgba(255,193,7,.22); }
-  .city-card, .btn, .chip{ will-change:transform; }
-  .modal{ scrollbar-color: rgba(255,193,7,.35) transparent; }
-  /* ═══════════════════════════════════════════════════════════════════
-     v1.4.2 · SWISS PAPER — единственная визуальная система.
-     Светлая типографическая школа (№1 премиум-стиль по статье):
-     бумага, чернила, волосяные линии, модульная сетка, ноль украшений.
-     Вся графика удалена по приказу владельца. Логика не тронута.
-     ═══════════════════════════════════════════════════════════════════ */
-  body{
-    background:var(--bg);
-    background-image:none;
-  }
-  body::before, body::after{ content:none; }
-
-  /* декоративная графика отключена полностью */
-  .glyph-field, .vip-orn, .vip-strip{ display:none !important; }
+  .bg-grid, .moon-wrap, .tw{ display:none !important; }
+  .orb1{ width:640px; height:640px; top:-220px; inset-inline-start:-200px;
+         background:radial-gradient(circle,rgba(201,153,74,.16) 0%,transparent 68%); opacity:1; filter:blur(80px); }
+  .orb2{ width:700px; height:700px; bottom:-300px; inset-inline-end:-240px;
+         background:radial-gradient(circle,rgba(46,90,110,.14) 0%,transparent 68%); opacity:1; filter:blur(90px); }
   .dunes{ display:none !important; }
+  .hero-star{ filter:none; opacity:.95; animation-duration:70s; }
 
-  /* — Hero: типографический плакат — */
-  .hero{ max-width:1080px; padding:64px 24px 24px; }
-  .hero-grid{ display:grid; grid-template-columns:1.4fr .6fr; gap:36px; align-items:end; }
-  @media (max-width:900px){ .hero-grid{ grid-template-columns:1fr; gap:28px; } }
-  .hero-meta{
-    display:inline-flex; align-items:center; gap:12px;
-    color:var(--muted); letter-spacing:.3em; font-size:11px; font-weight:700;
-    text-transform:uppercase;
-  }
-  .hero-meta::after{ content:""; width:110px; height:2px; background:var(--panel-text); }
-  .hero h1{
-    font-size:clamp(2.7rem, 6.4vw, 4.4rem);
-    font-weight:900; line-height:1.0; letter-spacing:-.03em;
-    margin:20px 0 8px; color:var(--panel-text);
-  }
-  .hero h1 em{
-    font-style:normal; color:var(--accent-hi);
-    background:none; -webkit-text-fill-color:currentColor;
-    box-shadow:inset 0 -0.14em 0 rgba(176,137,90,.35);
-  }
-  .hero-alt{ color:var(--muted); font-weight:600;
-    border-inline-start:3px solid var(--panel-text); padding-inline-start:12px; margin-top:10px; }
-  .hero-desc{ color:var(--card); max-width:620px; margin-top:18px;
-    line-height:1.7; font-size:1.03rem; opacity:.85; }
+  /* — Мастхед: сплошной, волосяная линия + золотая нить — */
+  .topbar{ background:var(--bar-bg) !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    border-bottom:1px solid var(--line-soft) !important; box-shadow:none !important;
+    height:62px; position:relative; }
+  .topbar::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+    background:linear-gradient(90deg, transparent, var(--accent) 18%, var(--accent-hi) 50%, var(--accent) 82%, transparent);
+    opacity:.5; }
+  .brand{ font-weight:900; letter-spacing:.14em; font-size:.98rem; gap:9px; }
+  .brand svg{ color:var(--accent-hi); filter:none; }
+  .brand-sub{ color:var(--muted); font-weight:400; }
 
-  /* — Карточка фактов: строгая таблица — */
-  .hero-card{
-    height:100%; display:flex; flex-direction:column; gap:18px;
-    padding:24px; border-radius:14px;
-    background:var(--panel); border:1.5px solid var(--line);
-    box-shadow:var(--shadow-card);
-  }
-  .hc-title{ font-size:11px; font-weight:900; letter-spacing:.3em; color:var(--panel-text);
-    text-transform:uppercase; padding-bottom:12px; margin-bottom:2px;
-    border-bottom:2px solid var(--panel-text); }
-  .hc-stat{ display:flex; align-items:baseline; gap:14px; }
-  .hc-stat b{
-    font-size:2.5rem; font-weight:900; line-height:1; min-width:88px; text-align:center;
-    color:var(--panel-text); background:none; -webkit-text-fill-color:currentColor;
-  }
-  .hc-stat.gold b{ color:var(--accent2); }
-  .hc-stat span{ font-size:12.5px; color:var(--muted); line-height:1.45;
-    text-transform:uppercase; letter-spacing:.06em; }
-
-  /* — Бейджи: контурные ярлыки — */
-  .hero-badges{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
-  .h-badge{
-    display:inline-flex; align-items:center; gap:8px; padding:8px 14px;
-    border-radius:10px; font-size:12.5px; font-weight:700; color:var(--panel-text);
-    background:var(--panel); border:1.5px solid var(--line);
-    transition:border-color .15s ease, transform .15s ease;
-  }
-  .h-badge:hover{ background:var(--panel-text); color:var(--bg); }
-  .h-badge svg{ width:14px; height:14px; }
-
-  /* — Поиск: чернильное подчёркивание — */
-  .search{
-    display:flex; align-items:center; gap:11px; max-width:620px; margin-top:26px;
-    border:1.5px solid var(--line); border-radius:12px; padding:12px 16px;
-    background:var(--panel); box-shadow:none;
-    transition:border-color .2s;
-  }
-  .search:focus-within{ border-color:var(--accent-hi); box-shadow:none; }
-
-  /* — Плитки: белые модули с номерами — */
-  .ft-sec{ max-width:1080px; margin:30px auto 0; padding:0 24px; }
-  .ft-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
-  .ft-tile{ position:relative; display:flex; flex-direction:column; gap:7px; padding:20px 18px;
-    border-radius:14px; background:var(--panel); border:1.5px solid var(--line);
-    box-shadow:none;
-    transition:transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease; }
-  .ft-tile:first-child{ grid-column:span 2; }
-  .ft-tile:nth-child(6){ grid-column:span 2; }
-  @media (max-width:760px){
-    .ft-grid{ grid-template-columns:repeat(2,1fr); }
-    .ft-tile:first-child, .ft-tile:nth-child(6){ grid-column:span 2; }
-  }
-  @media (max-width:440px){
-    .ft-grid{ grid-template-columns:1fr; }
-    .ft-tile:first-child, .ft-tile:nth-child(6){ grid-column:auto; }
-  }
-  .ft-tile::after{
-    position:absolute; top:10px; inset-inline-end:12px;
-    font-size:26px; font-weight:900; line-height:1;
-    color:transparent; -webkit-text-stroke:1px rgba(16,19,20,.28);
-  }
-  .ft-tile:nth-child(1)::after{ content:"01"; }
-  .ft-tile:nth-child(2)::after{ content:"02"; }
-  .ft-tile:nth-child(3)::after{ content:"03"; }
-  .ft-tile:nth-child(4)::after{ content:"04"; }
-  .ft-tile:nth-child(5)::after{ content:"05"; }
-  .ft-tile:nth-child(6)::after{ content:"06"; }
-  .ft-tile:hover{ transform:translateY(-2px);
-    box-shadow:var(--shadow-card); }
-  .ft-ic{ width:38px; height:38px; border-radius:0; display:flex; align-items:center;
-    justify-content:center; margin-bottom:3px; color:var(--panel-text);
-    background:transparent; border:1.5px solid var(--panel-text); }
-  .ft-ic svg{ width:19px; height:19px; }
-  .ft-tile b{ font-size:14.5px; line-height:1.3; }
-  .ft-tile span{ font-size:12px; color:var(--muted); line-height:1.5; }
-
-  /* — Заголовки секций: черта + номер — */
-  .cities-head h2, .list-head h2, .map-head h2{
-    font-size:clamp(1.5rem, 3.6vw, 2.1rem) !important; font-weight:900; letter-spacing:-.01em;
-  }
-  .cities-head h2::before, .list-head h2::before, .map-head h2::before{
-    content:""; display:inline-block; width:30px; height:4px;
-    margin-inline-end:12px; vertical-align:.22em;
-    background:var(--panel-text); box-shadow:none;
-  }
-  .cities-head h2::after, .list-head h2::after{
-    margin-inline-start:12px; font-size:.5em; font-weight:900;
-    color:var(--muted); letter-spacing:.2em; vertical-align:.3em;
-  }
-  .cities-head h2::after{ content:" / 01"; }
-  .list-head h2::after{ content:" / 02"; }
-
-  /* — Города: чернильная модульная таблица — */
-  #cityGrid{ gap:1.5px; background:var(--panel-text); border:2px solid var(--panel-text); }
-  .city-card{
-    border-radius:12px;
-    background:var(--panel); border:none; box-shadow:none;
-    transition:background .13s ease, color .13s ease;
-  }
-  .city-card:nth-child(5n+1){ grid-column:span 2; }
-  .city-card:hover{ background:var(--panel-text); }
-  .city-card:hover .cc-name, .city-card:hover .cc-pin, .city-card:hover .lc-cnt{ color:var(--bg); }
-  .city-card::after{ content:none; }
-
-  /* — Анкеты: белые карточки с чернильным прессом — */
-  .row{
-    border-radius:14px;
-    background:var(--panel);
-    border:1.5px solid var(--line);
-    box-shadow:none;
-    transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease;
-  }
-  .row:hover{ transform:translateY(-2px); border-color:var(--panel-text); }
-  article.row.vip-card{
-    border-width:2px;
-    background:linear-gradient(180deg,rgba(176,137,90,.08),transparent 55%), var(--panel);
-    box-shadow:6px 6px 0 rgba(176,137,90,.55);
-  }
-  .tag{ border-radius:0; border:1px solid var(--line);
-    background:transparent; font-weight:700; }
-
-  /* — Кнопки: чернила и бумага — */
-  .btn{ border-radius:10px; font-weight:700; letter-spacing:.01em;
-    font-size:13.5px;
-    transition:transform .12s ease, box-shadow .12s ease, background .12s ease, color .12s ease; }
-  .btn:hover{ transform:translate(-2px,-2px); }
-  .btn:active{ transform:translate(1px,1px); }
-  .btn-solid{ background:var(--panel-text); color:var(--bg); border:1.5px solid var(--panel-text);
-    box-shadow:none; }
-  .btn-solid:hover{ transform:translateY(-1px); box-shadow:0 8px 20px -10px rgba(0,0,0,.5); }
-  .btn-outline{ background:var(--panel); border:1.5px solid var(--line); color:var(--panel-text); }
-  .btn-outline:hover{ border-color:var(--panel-text); }
-  .btn-vip{ border:1.5px solid var(--accent2);
-    background:var(--accent2); color:var(--bg); font-weight:800; }
-  .btn-vip:hover{ transform:translateY(-1px); box-shadow:0 8px 20px -10px rgba(0,0,0,.5); }
-  .btn-solid::after{ display:none; }
-  .btn-login.gold, .btn-sub, .btn-admin, .btn-tg{ border-radius:10px !important; }
-
-  /* — Шапка и док: бумага с чернильными линиями — */
-  .topbar{ background:var(--bar-bg) !important; backdrop-filter:none; -webkit-backdrop-filter:none;
-    border-bottom:1.5px solid var(--line) !important; box-shadow:none; }
-  .bottom-nav{ background:var(--bar-bg) !important; backdrop-filter:none; -webkit-backdrop-filter:none;
-    border:1.5px solid var(--line) !important; border-radius:16px;
-    box-shadow:var(--shadow-card); }
-
-  /* — Модалки и формы: бумага, чернильная рамка — */
-  .modal{ border-radius:16px; border:1.5px solid var(--line) !important;
-    background:var(--panel); backdrop-filter:none; -webkit-backdrop-filter:none;
-    box-shadow:var(--shadow-pop) !important; }
-  .modal-head{ border-bottom:2px solid var(--panel-text); }
-  .vip-modal{ border-color:var(--accent2) !important;
-    box-shadow:var(--shadow-pop) !important; }
-  input, select, textarea{ border:1.5px solid var(--line); border-radius:0; background:var(--panel); }
-  .search input{ border:none; background:transparent; }
-  .toast{ border:1.5px solid var(--line) !important; border-radius:12px;
-    background:var(--panel); box-shadow:var(--shadow-card); font-weight:600; }
-  .foot-ad-btns .btn, .vip-pack, .vip-plan{ border-radius:0; }
-  .hero-star{ filter:none; }
-
-  @media (prefers-reduced-motion:reduce){
-    *{ animation:none !important; }
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════
-     v1.4.2 · ART DIRECTOR POLISH — доводка системы Swiss Paper.
-     Шрифты: Golos Text 900 (дисплей) + IBM Plex Mono (лейблы/цифры).
-     Дисциплина цвета: бумага, чернила, золото — единственное пятно.
-     ═══════════════════════════════════════════════════════════════════ */
-
-  /* — Типографическая система — */
-  body{ font-weight:450; letter-spacing:.002em; }
-  .hero h1{
-    font-weight:900; letter-spacing:-.035em; line-height:.96;
-    font-size:clamp(3rem, 7vw, 4.8rem);
-  }
-  /* «Syria»: чернила + золотой маркер — один акцент вместо двух */
-  .hero h1 em{
-    color:var(--panel-text); -webkit-text-fill-color:currentColor;
-    background:linear-gradient(180deg, transparent 66%, rgba(176,137,90,.38) 66%, rgba(176,137,90,.38) 92%, transparent 92%);
-    padding:0 .06em; margin:0 -.02em;
-  }
-  .hero-meta, .hc-title, .cities-head h2::after, .list-head h2::after, .ft-tile::after{
-    font-family:'IBM Plex Mono','Golos Text',monospace;
-  }
-  .hero-meta{ font-size:10.5px; letter-spacing:.34em; }
-  .hc-title{ letter-spacing:.32em; font-size:10.5px; }
-  .cities-head h2::after, .list-head h2::after{
-    font-size:.42em; font-weight:600; letter-spacing:.24em; color:var(--muted);
-  }
-  .ft-tile::after{
-    font-size:24px; font-weight:600;
-    -webkit-text-stroke:1px rgba(16,19,20,.32); color:transparent;
-  }
-  .hero-desc{ font-size:1.05rem; line-height:1.72; letter-spacing:.002em; }
-  .hero-alt{ font-size:.95rem; letter-spacing:.01em; }
-
-  /* — Мастхед: двойная линейка газеты + монохромные кнопки — */
-  .topbar{ padding-top:10px; padding-bottom:10px; }
-  .topbar::after{
-    content:""; position:absolute; left:0; right:0; bottom:-5px; height:1px;
-    background:var(--panel-text); opacity:.55;
-  }
-  .brand{ font-weight:900; letter-spacing:.16em; font-size:15px; }
+  /* — Кнопки шапки: спокойные, сплошные — */
+  .btn-gear{ background:var(--surface); border:1px solid var(--line-soft); color:var(--panel-text);
+    border-radius:11px; }
+  .btn-gear:hover{ border-color:var(--accent); color:var(--accent-hi); background:var(--hover-tint); }
   .btn-login, .btn-sub, .btn-admin{
-    border-radius:10px !important;
-    font-weight:700; letter-spacing:.01em; font-size:13px;
-    border:1.5px solid var(--line) !important;
+    border-radius:11px !important;
+    font-weight:700; font-size:13px; letter-spacing:.01em;
     background:var(--panel) !important; color:var(--panel-text) !important;
+    border:1px solid var(--line) !important;
     box-shadow:none !important; backdrop-filter:none !important;
   }
   .btn-login:hover, .btn-sub:hover, .btn-admin:hover{
-    border-color:var(--panel-text) !important;
-    transform:translateY(-1px); box-shadow:none !important;
+    border-color:var(--accent) !important; color:var(--accent-hi) !important;
+    background:var(--hover-tint) !important; transform:none !important; box-shadow:none !important;
   }
-  /* Telegram — фирменный синий (требование владельца) */
   .btn-tg{
-    border-radius:10px !important;
-    font-weight:700; font-size:13px;
+    border-radius:11px !important; font-weight:700; font-size:13px;
     background:#229ED9 !important; color:#FFFFFF !important;
-    border:1.5px solid #229ED9 !important;
+    border:1px solid #229ED9 !important;
     box-shadow:none !important; backdrop-filter:none !important;
   }
-  .btn-tg:hover{ background:#1B8CC2 !important; border-color:#1B8CC2 !important;
-    transform:translateY(-1px); }
+  .btn-tg:hover{ background:#1B8CC2 !important; border-color:#1B8CC2 !important; transform:translateY(-1px); }
   .btn-tg svg{ color:#FFFFFF !important; }
   .btn-vip{
-    border-radius:10px !important; border:1.5px solid var(--accent2) !important;
-    background:var(--accent2) !important; color:var(--bg) !important;
-    font-weight:800; letter-spacing:.02em; font-size:13px;
+    border-radius:11px !important;
+    border:1px solid var(--accent-lo) !important;
+    background:var(--gold-grad) !important; color:var(--on-accent) !important;
+    font-weight:800; letter-spacing:.04em; font-size:13px;
     box-shadow:none !important;
   }
-  .btn-vip:hover{ transform:translateY(-1px);
-    box-shadow:0 8px 20px -10px rgba(0,0,0,.5) !important; }
+  .btn-vip:hover{ transform:translateY(-1px); filter:brightness(1.06);
+    box-shadow:0 8px 18px -10px rgba(201,153,74,.55) !important; }
 
-  /* — FAB: чернильный квадрат вместо золотого круга — */
-  .bn-fab .fab-disc{
-    border-radius:14px !important;
-    background:var(--panel-text) !important;
-    border:none !important;
-    box-shadow:0 8px 20px -10px rgba(0,0,0,.5) !important;
-  }
-  .bn-fab .bn-t{ color:var(--panel-text) !important; font-weight:700;
-    letter-spacing:.01em; font-size:10.5px; }
-  .bn-fab .fab-disc svg, .subFab .fab-disc svg{ color:var(--bg) !important; }
-  .bottom-nav{ border-radius:0 !important; }
+  /* — Hero: издательская шапка — */
+  .hero{ max-width:1080px; padding:58px 24px 18px; }
+  .hero-grid{ display:grid; grid-template-columns:1.35fr .65fr; gap:40px; align-items:end; }
+  @media (max-width:900px){ .hero-grid{ grid-template-columns:1fr; gap:26px; } }
+  .hero-meta{ display:inline-flex; align-items:center; gap:12px;
+    font-family:'IBM Plex Mono','Golos Text',monospace;
+    color:var(--accent-hi); font-size:10.5px; font-weight:600;
+    letter-spacing:.34em; text-transform:uppercase; }
+  .hero-meta::after{ content:""; width:96px; height:1px;
+    background:linear-gradient(90deg,var(--accent),transparent); }
+  .hero h1{ font-size:clamp(2.8rem, 6.6vw, 4.6rem); font-weight:900;
+    line-height:.98; letter-spacing:-.035em; margin:18px 0 6px; color:var(--panel-text); }
+  .hero h1 em{ font-style:normal; color:var(--panel-text); -webkit-text-fill-color:currentColor;
+    background:linear-gradient(180deg, transparent 68%, var(--mark) 68%, var(--mark) 94%, transparent 94%);
+    padding:0 .05em; margin:0 -.02em; }
+  .hero-alt{ color:var(--muted); font-weight:600; font-size:.95rem;
+    border-inline-start:2px solid var(--accent); padding-inline-start:12px; margin-top:12px; }
+  .hero-desc{ color:var(--card); max-width:640px; margin-top:16px;
+    line-height:1.72; font-size:1.04rem; opacity:.9; }
 
-  /* — Поиск: моно-плейсхолдер, чернильная иконка — */
-  .search input{ font-size:1rem; }
-  #searchIcon{ color:var(--panel-text); }
-  #searchIcon svg{ color:var(--accent2); }
+  /* — Бейджи доверия: контурные ярлыки — */
+  .hero-badges{ display:flex; flex-wrap:wrap; gap:9px; margin-top:20px; }
+  .h-badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 13px;
+    border-radius:11px; font-size:12.5px; font-weight:700; color:var(--panel-text);
+    background:var(--panel); border:1px solid var(--line);
+    box-shadow:none; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    transition:border-color .15s ease, color .15s ease, background .15s ease; }
+  .h-badge:hover{ border-color:var(--accent); color:var(--accent-hi); }
+  .h-badge svg{ width:14px; height:14px; color:var(--accent); }
 
-  /* — Плитки: моно-номера, воздух — */
-  .ft-grid{ gap:16px; }
-  .ft-tile{ padding:22px 20px; }
-  .ft-tile b{ font-weight:800; letter-spacing:-.01em; font-size:15px; }
-  .ft-tile:hover::after{ -webkit-text-stroke-color:rgba(176,137,90,.7); }
-
-  /* — Статистика: моно-подписи, золото только у $0 — */
-  .hc-stat b{ font-family:'Golos Text',sans-serif; }
+  /* — Карточка фактов: строгая таблица — */
+  .hero-card{ height:100%; display:flex; flex-direction:column; gap:16px;
+    padding:24px; border-radius:16px;
+    background:var(--panel); border:1px solid var(--line);
+    box-shadow:var(--shadow-card); }
+  .hc-title{ font-family:'IBM Plex Mono','Golos Text',monospace;
+    font-size:10.5px; font-weight:600; letter-spacing:.3em; color:var(--panel-text);
+    text-transform:uppercase; padding-bottom:12px; margin-bottom:2px;
+    border-bottom:1px solid var(--line); }
+  .hc-stat{ display:flex; align-items:baseline; gap:14px; }
+  .hc-stat b{ font-size:2.4rem; font-weight:900; line-height:1; min-width:86px; text-align:center;
+    color:var(--panel-text); font-variant-numeric:tabular-nums; }
+  .hc-stat.gold b{ color:var(--accent-hi); }
   .hc-stat span{ font-family:'IBM Plex Mono','Golos Text',monospace;
-    font-size:11px; letter-spacing:.12em; }
+    font-size:10.5px; color:var(--muted); line-height:1.5;
+    text-transform:uppercase; letter-spacing:.1em; }
 
-  /* — Анкеты: типографика карточки — */
-  .row h3{ font-weight:800; letter-spacing:-.01em; }
-  .row .tag{ font-size:11px; letter-spacing:.04em; text-transform:uppercase; }
-
-  /* — Селект и чипы — */
-  .chip{ border-radius:10px !important; border:1.5px solid var(--line);
-    font-size:12px; letter-spacing:.01em; font-weight:700; background:var(--panel); }
-  .chip.on{ background:var(--panel-text); color:var(--bg); border-color:var(--panel-text); }
-
-  /* — Мелкая типографика UI — */
-  ::selection{ background:rgba(176,137,90,.35); }
-  .modal-head h3{ font-weight:900; letter-spacing:-.015em; }
-
-  /* — Футер: чернильная линейка сверху — */
-  footer{ border-top:1.5px solid var(--line); margin-top:34px; }
-
-  /* ═══ v1.4.2: непрозрачность — все поверхности сплошные (приказ владельца) ═══ */
-  .row, .ft-tile, .city-card, .modal, .search, .h-badge, .tag, .chip, .toast{
+  /* — Поиск: сплошная капсула, золотое кольцо фокуса — */
+  .search{ display:flex; align-items:center; gap:11px; max-width:640px; margin-top:24px;
+    border:1.5px solid var(--line); border-radius:14px; padding:13px 16px;
+    background:var(--panel) !important; box-shadow:none;
     backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    transition:border-color .18s ease, box-shadow .18s ease; }
+  .search:focus-within{ border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(201,153,74,.16); }
+  .search input{ font-size:1rem; }
+  #searchIcon{ color:var(--accent); }
+
+  /* — Плитки преимуществ: пронумерованные модули — */
+  .ft-sec{ max-width:1080px; margin:26px auto 0; padding:0 24px; }
+  .ft-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .ft-tile:first-child{ grid-column:span 2; }
+  .ft-tile:nth-child(6){ grid-column:span 2; }
+  @media (max-width:760px){ .ft-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:440px){ .ft-grid{ grid-template-columns:1fr; }
+    .ft-tile:first-child, .ft-tile:nth-child(6){ grid-column:auto; } }
+  .ft-tile{ position:relative; display:flex; flex-direction:column; gap:7px; padding:20px 18px;
+    border-radius:16px; background:var(--panel) !important; border:1px solid var(--line);
+    box-shadow:none; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    transition:transform .15s ease, border-color .15s ease; }
+  .ft-tile::after{ position:absolute; top:10px; inset-inline-end:14px;
+    font-family:'IBM Plex Mono','Golos Text',monospace;
+    font-size:24px; font-weight:600; line-height:1;
+    color:transparent; -webkit-text-stroke:1px var(--stroke); }
+  .ft-tile:nth-child(1)::after{ content:"01"; } .ft-tile:nth-child(2)::after{ content:"02"; }
+  .ft-tile:nth-child(3)::after{ content:"03"; } .ft-tile:nth-child(4)::after{ content:"04"; }
+  .ft-tile:nth-child(5)::after{ content:"05"; } .ft-tile:nth-child(6)::after{ content:"06"; }
+  .ft-tile:hover{ transform:translateY(-2px); border-color:var(--accent); }
+  .ft-tile:hover::after{ -webkit-text-stroke-color:var(--accent); }
+  .ft-ic{ width:38px; height:38px; border-radius:11px; display:flex; align-items:center;
+    justify-content:center; margin-bottom:3px; color:var(--accent-hi);
+    background:var(--hover-tint); border:1px solid var(--line-soft); }
+  .ft-ic svg{ width:19px; height:19px; }
+  .ft-tile b{ font-size:14.5px; font-weight:800; line-height:1.3; }
+  .ft-tile span{ font-size:12px; color:var(--muted); line-height:1.55; }
+
+  /* — Заголовки секций: золотая черта + моно-номер — */
+  .cities-head h2, .list-head h2, .map-head h2{
+    font-size:clamp(1.45rem, 3.4vw, 2rem) !important; font-weight:900; letter-spacing:-.015em; }
+  .cities-head h2::before, .list-head h2::before, .map-head h2::before{
+    content:""; display:inline-block; width:26px; height:4px; border-radius:2px;
+    margin-inline-end:12px; vertical-align:.24em;
+    background:var(--gold-grad); box-shadow:none; }
+  .cities-head h2::after, .list-head h2::after{
+    font-family:'IBM Plex Mono','Golos Text',monospace;
+    margin-inline-start:12px; font-size:.42em; font-weight:600;
+    color:var(--muted); letter-spacing:.24em; vertical-align:.32em; }
+  .cities-head h2::after{ content:" / 01"; }
+  .list-head h2::after{ content:" / 02"; }
+  .cities-sub{ color:var(--muted); margin-top:6px; font-size:.95rem; }
+
+  /* — Города: плитки с чернильной заливкой при наведении — */
+  #cityGrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  @media (max-width:860px){ #cityGrid{ grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:560px){ #cityGrid{ grid-template-columns:repeat(2,1fr); } }
+  .city-card{ border-radius:14px; background:var(--panel) !important;
+    border:1px solid var(--line-soft); box-shadow:none;
+    backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    transition:background .14s ease, color .14s ease, border-color .14s ease; }
+  .city-card::after{ content:none; }
+  .city-card:hover{ background:var(--panel-text) !important; border-color:var(--panel-text); }
+  .city-card:hover .cc-name, .city-card:hover .cc-pin, .city-card:hover .cc-cnt{ color:var(--bg); }
+  .cc-cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; font-size:11px;
+    color:var(--muted); border:1px solid var(--line-soft); border-radius:99px;
+    padding:1px 8px; transition:color .14s ease, border-color .14s ease; }
+  .city-card:hover .cc-cnt{ border-color:transparent; }
+  .city-card.on{ border-color:var(--accent); }
+  .city-card.on .cc-name{ color:var(--accent-hi); }
+
+  /* — Категории: пилюли с золотым активным состоянием — */
+  .cat-pill{ border-radius:13px; background:var(--panel); border:1px solid var(--line-soft);
+    font-weight:700; font-size:13px; color:var(--panel-text); }
+  .cat-pill:hover{ border-color:var(--accent); color:var(--accent-hi); }
+  .cat-pill.on{ background:var(--gold-grad); border-color:var(--accent-lo); color:var(--on-accent);
+    box-shadow:0 6px 16px -8px rgba(201,153,74,.5); }
+  .cat-pill.on .cnt{ color:var(--on-accent); border-color:rgba(0,0,0,.22); }
+  .cat-pill .cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; font-size:10.5px;
+    color:var(--muted); border:1px solid var(--line-soft); border-radius:99px; padding:0 7px; }
+  .cat-pill .cic{ color:var(--accent); }
+  .cat-pill.on .cic{ color:var(--on-accent); }
+
+  /* — Уровни/подкатегории — */
+  .level-card{ border-radius:14px; background:var(--panel); border:1px solid var(--line-soft);
+    transition:border-color .14s ease, transform .14s ease; }
+  .level-card:hover{ border-color:var(--accent); }
+  .level-card.on{ border-color:var(--accent); background:var(--hover-tint); }
+  .lc-title{ font-weight:800; }
+  .lc-cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; color:var(--muted); }
+
+  /* — Инструменты списка — */
+  .chip{ border-radius:11px !important; border:1px solid var(--line);
+    font-size:12px; font-weight:700; letter-spacing:.01em;
+    background:var(--panel) !important; color:var(--panel-text);
+    box-shadow:none; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+  .chip:hover{ color:var(--accent-hi); border-color:var(--accent); }
+  .chip.on{ background:var(--panel-text) !important; color:var(--bg); border-color:var(--panel-text); }
+  .chip-fav.fav-on{ border-color:var(--accent); color:var(--accent-hi); }
+  .chip-fav.fav-on svg{ fill:var(--accent); }
+  .sort-sep{ width:1px; height:18px; background:var(--line); }
+  .cnt{ font-family:'IBM Plex Mono','Golos Text',monospace; }
+
+  /* — Анкеты: карточки — */
+  .list-wrap{ max-width:1080px; }
+  .sheet{ gap:12px; }
+  .row{ border-radius:16px; background:var(--panel) !important;
+    border:1px solid var(--line); box-shadow:none;
+    backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  .row:hover{ transform:translateY(-2px); border-color:var(--accent);
+    box-shadow:0 12px 26px -18px rgba(0,0,0,.55); }
+  .row .num{ font-family:'IBM Plex Mono','Golos Text',monospace; font-weight:600;
+    color:var(--muted); font-size:12px; }
+  .row h3{ font-weight:800; letter-spacing:-.01em; color:var(--panel-text); }
+  .row-desc{ color:var(--card); opacity:.86; }
+  .row-meta span{ color:var(--muted); }
+  .row-meta svg{ color:var(--accent); }
+  .tag{ border-radius:9px; border:1px solid var(--line-soft);
+    background:var(--surface); color:var(--muted); font-weight:700;
+    font-size:11px; letter-spacing:.04em; text-transform:uppercase; }
+  .vip-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    padding:3px 10px 3px 7px; border-radius:8px; font-weight:900; font-size:11px;
+    color:var(--on-accent); border:1px solid var(--accent-lo);
+    background:var(--gold-grad);
+    box-shadow:0 2px 10px -4px rgba(201,153,74,.6); letter-spacing:.05em;
   }
-  .row, .ft-tile{ background:var(--panel) !important; }
-  .city-card{ background:var(--panel) !important; }
-  .modal{ background:var(--panel) !important; }
-  .search{ background:var(--panel) !important; }
-  .topbar{ background:var(--bar-bg) !important; }
-  .bottom-nav{ background:var(--bar-bg) !important; }
-  .toast{ background:var(--panel) !important; }
-  .tag{ background:var(--surface); }
-  .chip{ background:var(--panel); }
+  .vip-badge::before{ content:""; width:13px; height:10px; display:inline-block;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 34'%3E%3Cpath d='M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z' fill='white' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+    opacity:.92; }
+  .vrf-badge{ width:17px; height:17px; border-radius:50%;
+    color:#FFFFFF; border:none; background:var(--accent2);
+    box-shadow:0 2px 6px -2px rgba(0,0,0,.45); vertical-align:middle;
+    display:inline-flex; align-items:center; justify-content:center; }
+  .vrf-badge svg{ width:10px; height:10px; stroke-width:4.5; }
+  article.row.vip-card{ border:1.5px solid var(--accent);
+    background:linear-gradient(180deg, var(--vip-wash), transparent 62%), var(--panel) !important;
+    box-shadow:0 12px 30px -20px rgba(201,153,74,.5); }
+  article.row.vip-card:hover{ box-shadow:0 14px 34px -18px rgba(201,153,74,.55); }
+  .vip-orn{ width:34px; height:34px; color:var(--accent); opacity:.30; }
+  .vip-strip{ background:var(--gold-grad); }
+
+  /* — Кнопки действий: спокойная система — */
+  .btn{ border-radius:11px; font-weight:700; font-size:13.5px; letter-spacing:.01em;
+    transition:transform .13s ease, filter .13s ease, border-color .13s ease, background .13s ease; }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn:active{ transform:translateY(0) scale(.98); }
+  .btn-solid{ background:var(--gold-grad); color:var(--on-accent);
+    border:1px solid var(--accent-lo); box-shadow:none; }
+  .btn-solid:hover{ filter:brightness(1.06); transform:translateY(-1px); }
+  .btn-outline{ background:var(--panel); border:1px solid var(--line); color:var(--panel-text); }
+  .btn-outline:hover{ border-color:var(--accent); color:var(--accent-hi); }
+  .btn-danger{ background:var(--panel); border:1px solid rgba(180,84,63,.5); color:#C86A54; }
+  .btn-danger:hover{ border-color:#C86A54; }
+  .btn-sq{ border-radius:11px; }
+  .btn-solid::after{ display:none; }
+  .wa-link{ border-color:rgba(37,211,102,.4); color:#25D366; }
+  .wa-link:hover{ border-color:#25D366; color:#25D366; }
+  .fav-on svg{ fill:#E0645C; color:#E0645C; }
+
+  /* — Пустое состояние, соединение, ошибки — */
+  .empty svg{ color:var(--accent); }
+  .conn .dot{ background:#4CAF7D; }
+  .conn.off .dot{ background:#E0645C; }
+  .err-banner{ background:rgba(180,84,63,.1); color:#C86A54; border-color:rgba(180,84,63,.4); }
+
+  /* — Карта — */
+  .mapsec{ max-width:1080px; margin:26px auto 0; padding:0 24px; }
+  .map-shell{ border-radius:18px; border:1px solid var(--line); overflow:hidden;
+    box-shadow:var(--shadow-card); }
+  .map-head .chip{ border-radius:11px; }
+
+  /* — Рекламный слот: честная рамка — */
+  .ad-slot{ border-radius:16px; border:1px dashed var(--accent); background:var(--hover-tint); }
+  .ad-tag{ background:var(--gold-grad); color:var(--on-accent); border:none; border-radius:8px;
+    font-weight:800; font-size:10.5px; padding:2px 8px; }
+
+  /* — Футер: волосяная линия, моно-версия — */
+  footer{ max-width:1080px; margin:34px auto 0; padding:26px 24px 30px;
+    border-top:1px solid var(--line-soft); }
+  .footer-agent{ color:var(--muted); }
+  .footer-phone{ color:var(--accent-hi); font-weight:800; }
+  .ver-badge{ font-family:'IBM Plex Mono','Golos Text',monospace; font-size:10.5px;
+    color:var(--muted); border:1px solid var(--line-soft); border-radius:99px; padding:2px 10px; }
+
+  /* — Плавающая панель админа и нижний док — */
+  .float-panel{ background:var(--panel) !important; border:1px solid var(--accent);
+    color:var(--accent-hi); border-radius:14px; font-weight:800;
+    box-shadow:var(--shadow-card); backdrop-filter:none !important; }
+  .reqs-badge{ background:#E0645C; color:#fff; border:2px solid var(--panel); }
+  .bottom-nav{ background:var(--bar-bg) !important; backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    border:1px solid var(--line) !important; border-radius:18px !important;
+    box-shadow:0 18px 40px -22px rgba(0,0,0,.6); }
+  .bn-item{ color:var(--muted); font-weight:700; }
+  .bn-item:hover{ color:var(--accent-hi); }
+  .bn-fab .fab-disc{ border-radius:50% !important;
+    background:var(--gold-grad) !important; border:1px solid var(--accent-lo) !important;
+    box-shadow:0 10px 22px -10px rgba(201,153,74,.6) !important; }
+  .bn-fab .fab-disc svg{ color:var(--on-accent) !important; }
+  .bn-fab .bn-t{ color:var(--panel-text) !important; font-weight:700; }
+  .bn-badge{ background:#E0645C; color:#fff; border:2px solid var(--bar-bg); }
+  .bn-item.on{ color:var(--accent-hi); }
+
+  /* — Модалки: сплошные панели — */
+  .overlay{ background:var(--overlay-bg); }
+  .modal{ border-radius:18px; border:1px solid var(--line) !important;
+    background:var(--panel) !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+    box-shadow:var(--shadow-pop) !important; }
+  .modal-head{ border-bottom:1px solid var(--line-soft); }
+  .modal-head h3{ font-weight:900; letter-spacing:-.015em; color:var(--panel-text); }
+  .modal-desc{ color:var(--muted); }
+  .modal-close{ border:1px solid var(--line-soft); background:var(--surface); border-radius:10px; }
+  .modal-close:hover{ transform:rotate(90deg); border-color:var(--accent); color:var(--accent-hi); }
+  .modal-back{ color:var(--muted); }
+  .gate-modal{ border-radius:18px; }
+  .gate-ic{ color:var(--accent-hi); background:var(--hover-tint);
+    border:1px solid var(--line-soft); border-radius:16px; }
+  .gate-ic.del-ic{ color:#C86A54; border-color:transparent; background:rgba(180,84,63,.1); }
+  .gate-enter{ color:var(--accent-hi); font-weight:700; }
+  .del-acc{ }
+  .acc-del{ color:#C86A54; border-color:rgba(180,84,63,.4); background:rgba(180,84,63,.07); border-radius:12px; }
+  .acc-del:hover{ background:rgba(180,84,63,.14); border-color:rgba(180,84,63,.65); }
+  .acc-del-note{ color:var(--muted); }
+
+  /* — Формы — */
+  .field label{ color:var(--muted); font-weight:700; font-size:12px;
+    text-transform:uppercase; letter-spacing:.06em; }
+  input, select, textarea{ border:1.5px solid var(--line); border-radius:11px;
+    background:var(--input-bg); color:var(--panel-text); }
+  input:focus, select:focus, textarea:focus{ border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(201,153,74,.14); outline:none; }
+  .field select option{ background:var(--panel); color:var(--panel-text); }
+  html[data-theme="light"] .field select option{ background:#FFFFFF; color:#23272F; }
+  .counter{ font-family:'IBM Plex Mono','Golos Text',monospace; color:var(--muted); font-size:10.5px; }
+  .steps .step{ background:var(--line-soft); border-radius:99px; }
+  .steps .step.on{ background:var(--gold-grad); }
+  .steps-cap{ color:var(--muted); font-size:12px; }
+  .rule-num{ background:var(--hover-tint); color:var(--accent-hi);
+    border:1px solid var(--line-soft); border-radius:50%; font-weight:900; }
+  .agree-text{ color:var(--card); }
+  .agent-card{ background:var(--surface); border:1px solid var(--line-soft); border-radius:14px; }
+  .agent-phone{ color:var(--accent-hi); font-weight:800; }
+  .done-ic{ color:var(--accent-hi); }
+
+  /* — VIP-раздел: люкс — */
+  .vip-modal{ border:1.5px solid var(--accent) !important;
+    box-shadow:0 30px 80px -30px rgba(201,153,74,.35), var(--shadow-pop) !important; }
+  .vip-crown{ width:52px; height:37px; filter:drop-shadow(0 4px 10px rgba(201,153,74,.4)); }
+  .vip-h-title{ font-weight:900; letter-spacing:.02em; color:var(--panel-text); }
+  .vip-h-title b{ color:var(--accent-hi); }
+  .vip-h-sub{ color:var(--muted); }
+  .orn-line{ opacity:.85; }
+  .vip-plan{ border-radius:16px; border:1px solid var(--line);
+    background:var(--panel2); transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  .vip-plan:hover{ transform:translateY(-3px); border-color:var(--accent);
+    box-shadow:0 16px 30px -20px rgba(201,153,74,.5); }
+  .vip-plan.best{ border:1.5px solid var(--accent); background:linear-gradient(180deg,var(--vip-wash),transparent 60%), var(--panel2); }
+  .vip-plan-per{ color:var(--muted); font-weight:700; }
+  .vip-plan-price{ font-size:1.7rem; font-weight:900; color:var(--accent-hi); line-height:1.15; }
+  .vip-save{ background:var(--hover-tint); color:var(--accent-hi); border:1px solid var(--line-soft);
+    border-radius:99px; font-weight:800; font-size:11px; padding:2px 10px; }
+  .vip-plan-cta{ margin-top:5px; font-size:11.5px; font-weight:700; color:var(--accent-hi);
+    text-decoration:underline; text-underline-offset:3px; }
+  .vip-ribbon{ background:var(--gold-grad); color:var(--on-accent); font-weight:900;
+    font-size:10.5px; letter-spacing:.06em; border-radius:99px; padding:3px 12px; }
+  .vip-plan-badge.vrf{ color:var(--accent2); }
+  .vip-ben svg{ color:var(--accent); }
+  .vip-ben{ color:var(--card); }
+  .vip-step .n{ background:var(--gold-grad); color:var(--on-accent);
+    border-radius:50%; font-weight:900; }
+  .vip-step{ color:var(--muted); }
+  .vip-block{ border:1px solid var(--line-soft); border-radius:14px;
+    background:var(--surface); padding:14px; }
+  .vip-hint{ color:var(--muted); }
+  .vip-toggle{ border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+  .vip-toggle.on{ border-color:var(--accent); background:var(--hover-tint); }
+
+  /* — Приветственный экран — */
+  .wv-bg{ background:var(--bg); }
+  .wv-orb1{ background:radial-gradient(circle,rgba(201,153,74,.18) 0%,transparent 68%); }
+  .wv-orb2{ background:radial-gradient(circle,rgba(46,90,110,.16) 0%,transparent 68%); }
+  .wv-grid{ background-image:radial-gradient(var(--stroke) 1px, transparent 1px);
+    background-size:26px 26px; opacity:.5; }
+  .wv-card{ background:var(--panel); border:1px solid var(--line); border-radius:22px;
+    box-shadow:var(--shadow-pop); }
+  .wv-mark{ background:var(--gold-grad); color:var(--on-accent); border-radius:16px; }
+  .wv-brand{ font-weight:900; letter-spacing:.16em; color:var(--panel-text); }
+  .wv-tag{ color:var(--accent-hi); font-weight:700; }
+  .wv-title{ color:var(--panel-text); font-weight:900; letter-spacing:-.03em; }
+  .wv-sub{ color:var(--muted); }
+  .wv-soc{ background:var(--panel2); border:1px solid var(--line); color:var(--panel-text);
+    border-radius:14px; font-weight:700; }
+  .wv-soc:hover{ border-color:var(--accent); }
+  .wv-soc.soon{ opacity:.55; }
+  .soon-b{ background:var(--surface); color:var(--muted); border-radius:99px;
+    font-style:normal; font-size:10px; padding:1px 8px; border:1px solid var(--line-soft); }
+  .wv-guest{ color:var(--panel-text); font-weight:700; border:1px solid var(--line);
+    border-radius:14px; background:transparent; }
+  .wv-guest:hover{ border-color:var(--accent); color:var(--accent-hi); }
+  .wv-have{ color:var(--muted); }
+  .wv-have button{ color:var(--accent-hi); font-weight:800; }
+  .wv-real{ color:var(--muted); }
+  .wv-langs button{ color:var(--muted); border:1px solid transparent; border-radius:10px;
+    background:transparent; font-weight:700; }
+  .wv-langs button:hover{ color:var(--accent-hi); border-color:var(--line-soft); }
+
+  /* — Вход/регистрация — */
+  .au-methods button{ border:1px solid var(--line); background:var(--panel2);
+    color:var(--panel-text); border-radius:12px; font-weight:700; }
+  .au-methods button.on{ border-color:var(--accent); color:var(--accent-hi); background:var(--hover-tint); }
+  .au-methods button.soon{ opacity:.55; }
+  .auth-tabs button{ color:var(--muted); }
+  .auth-tabs button.on{ color:var(--accent-hi); }
+
+  /* — Настройки — */
+  .theme-seg{ border:1px solid var(--line); border-radius:13px; background:var(--surface); padding:3px; gap:3px; }
+  .theme-seg button{ border-radius:10px; color:var(--muted); font-weight:700; }
+  .theme-seg button.on{ background:var(--panel); color:var(--accent-hi);
+    box-shadow:0 2px 8px -4px rgba(0,0,0,.4); }
+  .set-label{ color:var(--muted); font-weight:700; font-size:12px;
+    text-transform:uppercase; letter-spacing:.06em; }
+  .set-langs{ border:1px solid var(--line-soft); border-radius:14px; padding:4px; }
+  .set-langs button{ color:var(--panel-text); border-radius:10px; font-weight:600; }
+  .set-langs button:hover{ background:var(--hover-tint); }
+  .set-langs button.on{ background:var(--hover-tint); color:var(--accent-hi); font-weight:800; }
+
+  /* — Админ-панель — */
+  .adm-modal{ }
+  .adm-stats{ gap:8px; }
+  .stat-card{ background:var(--surface); border:1px solid var(--line-soft); border-radius:13px;
+    padding:10px 6px 9px; }
+  .stat-num{ color:var(--panel-text); font-variant-numeric:tabular-nums; }
+  .stat-num.hot{ color:#E0645C; }
+  .stat-lbl{ color:var(--muted); }
+  .adm-tab{ color:var(--muted); border:1px solid transparent; border-radius:11px; font-weight:700; }
+  .adm-tab:hover{ color:var(--accent-hi); }
+  .adm-tab.on{ color:var(--accent-hi); background:var(--hover-tint); border-color:var(--line-soft); }
+  .adm-badge{ background:#E0645C; color:#fff; }
+  .adm-search{ border:1.5px solid var(--line); border-radius:12px; background:var(--input-bg); }
+  .adm-search svg{ color:var(--accent); }
+  .req-card, .adm-doc{ background:var(--panel2); border:1px solid var(--line-soft); border-radius:14px; }
+  .req-name{ color:var(--panel-text); font-weight:800; }
+  .req-meta, .req-date{ color:var(--muted); }
+  .req-plan{ color:var(--accent-hi); font-weight:800; }
+  .rem-warn{ color:#E0645C; }
+  .adm-doc-name{ color:var(--panel-text); font-weight:700; }
+  .tool-btn{ background:var(--panel2); border:1px solid var(--line); border-radius:14px; }
+  .tool-btn .tt{ color:var(--panel-text); font-weight:800; }
+  .tool-btn .td{ color:var(--muted); }
+  .tool-btn:hover{ border-color:var(--accent); }
+  .tool-btn.danger{ border-color:rgba(180,84,63,.45); }
+  .tool-btn.danger .tt{ color:#C86A54; }
+  .test-block{ border:1.5px dashed var(--accent); border-radius:16px;
+    background:var(--hover-tint); padding:16px; }
+  .test-head{ color:var(--accent-hi); font-weight:900; }
+  .test-desc{ color:var(--muted); }
+  .views-admin{ border:1px dashed var(--line); border-radius:12px; }
+  .views-admin-l{ color:var(--muted); }
+  .views-dec-btn{ border:1px solid var(--line); background:var(--surface); color:var(--accent-hi); border-radius:9px; }
+
+  /* — Детальная карточка — */
+  .detail-card .detail-tag{ background:var(--surface); }
+  .detail-meta{ color:var(--muted); }
+  .detail-meta svg{ color:var(--accent); }
+  .detail-meta .ltr-num{ color:var(--panel-text); font-weight:700; }
+  .rate-stars svg{ color:var(--accent); }
+  .rate-star{ color:var(--muted); }
+  .rate-star.on svg{ fill:var(--accent); color:var(--accent); }
+  .rate-sum{ color:var(--muted); }
+
+  /* — Уведомления — */
+  .notif-item{ background:var(--panel2); border:1px solid var(--line-soft); border-radius:14px; }
+  .ni-ic{ color:var(--accent-hi); background:var(--hover-tint); border-radius:12px; }
+  .ni-time{ color:var(--muted); font-family:'IBM Plex Mono','Golos Text',monospace; font-size:10.5px; }
+  .ni-desc{ color:var(--muted); }
+  .notif-empty{ color:var(--muted); }
+  .unread{ border-inline-start:3px solid var(--accent); }
+
+  /* — Тосты — */
+  .toast{ border:1px solid var(--line) !important; border-inline-start:3px solid var(--accent) !important;
+    border-radius:13px; background:var(--panel) !important; color:var(--panel-text);
+    box-shadow:var(--shadow-card); font-weight:600;
+    backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+
+  /* — Скроллбар, выделение, ripple — */
+  ::selection{ background:rgba(201,153,74,.38); color:#fff; }
+  html[data-theme="light"] ::selection{ background:rgba(168,123,63,.32); color:inherit; }
+  ::-webkit-scrollbar-thumb{ background:linear-gradient(180deg,var(--accent-hi),var(--accent-lo)); border-radius:99px; }
+  *{ scrollbar-width:thin; scrollbar-color:rgba(201,153,74,.45) transparent; }
+  .rip{ background:rgba(201,153,74,.32); }
+  .rip.on-solid{ background:rgba(255,255,255,.45); }
+  html[data-theme="light"] .rip{ background:rgba(168,123,63,.28); }
+  html[data-theme="light"] .rip.on-solid{ background:rgba(255,255,255,.55); }
+
+  /* — p-tag / misc — */
+  .p-tag{ color:var(--muted); }
+  .dest-label{ color:var(--muted); font-weight:700; }
+  .list-tools, .dest-filter{ }
+
+  /* ═══ Светлая тема: бумага и чернила, то же золото ═══ */
+  html[data-theme="light"] body{
+    background:
+      radial-gradient(1100px 500px at 82% -140px, rgba(168,123,63,.10), transparent 62%),
+      radial-gradient(900px 560px at -140px 34%, rgba(64,126,140,.06), transparent 58%),
+      var(--bg);
+  }
+  html[data-theme="light"] .orb1{ background:radial-gradient(circle,rgba(201,153,74,.20) 0%,transparent 68%); opacity:1; }
+  html[data-theme="light"] .orb2{ background:radial-gradient(circle,rgba(64,126,140,.14) 0%,transparent 68%); opacity:1; }
+  html[data-theme="light"] .hero h1 em{
+    color:var(--panel-text); -webkit-text-fill-color:currentColor; }
+  html[data-theme="light"] .city-card:hover .cc-cnt{ color:var(--bg); }
+  html[data-theme="light"] .toast{ color:var(--panel-text); }
+
+  /* — Мобильная типографика отступов (слой идёт после базовых медиа) — */
+  @media (max-width:820px){
+    .hero{ padding:44px 16px 12px; }
+    .ft-sec{ padding:0 16px; }
+    .mapsec{ padding:0 14px; }
+    footer{ padding:22px 16px 28px; }
+  }
+
+  /* ═══ Гарантии владельца: всё сплошное, никакого стекла ═══ */
+  .row, .ft-tile, .city-card, .modal, .search, .h-badge, .tag, .chip, .toast,
+  .topbar, .bottom-nav, .float-panel, .wv-card, .vip-plan, .hero-card,
+  .stat-card, .req-card, .adm-doc, .notif-item, .tool-btn, .level-card{
+    backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+
+  @media (prefers-reduced-motion:reduce){
+    *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:.01ms !important; }
+    html{ scroll-behavior:auto; }
+  }
 </style>
 </head>
 <body>
