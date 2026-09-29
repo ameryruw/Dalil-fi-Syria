@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 <title>دليل سوريا · DALIL SURIYA — Справочник Сирии</title>
+<link rel="preload" as="image" href="assets/img/cities/hero_raqqa.jpg">
 <script>
   /* Тема до первой отрисовки — без вспышки тёмного фона у выбравших светлую */
   try { if (localStorage.getItem("dalil_theme") === "light") document.documentElement.setAttribute("data-theme", "light"); } catch (e) {}
@@ -2544,6 +2545,183 @@
       transition-duration:.01ms !important; }
     html{ scroll-behavior:auto; }
   }
+
+  /* ================================================================
+     v1.4.2 · SYRIA GRAND — максимализм с фото Сирии (приказ 29.09.2026)
+     Владелец: «кнопки близко очень» → воздух в каждой панели;
+     «максимализм» → крупные фотоплитки городов, большой hero,
+     богатые отступы; «на фон подгрузи фотки Сирии, тёмная
+     узнаваемая Ракка» → hero = Багдадские ворота Ракки под тёмной
+     вуалью, города — реальные фото (assets/img/cities/*.jpg).
+     ТОЛЬКО презентация: классы, разметка и JS не тронуты.
+     ================================================================ */
+
+  /* ---------- HERO: фото Ракки под тёмной вуалью ---------- */
+  .hero{
+    position:relative; overflow:hidden; isolation:isolate;
+    max-width:1080px;
+    border-radius:28px; border:1px solid rgba(231,188,114,.26);
+    margin:26px auto 0;
+    padding:clamp(36px,6vw,76px) clamp(22px,4.5vw,56px) clamp(30px,4.5vw,50px);
+    background:
+      linear-gradient(180deg, rgba(11,14,19,.60) 0%, rgba(11,14,19,.82) 52%, rgba(10,13,18,.96) 100%),
+      url("assets/img/cities/hero_raqqa.jpg") center 30% / cover no-repeat,
+      #0D1015;
+    box-shadow:0 36px 90px -44px rgba(0,0,0,.85);
+    /* светлый текст на фото — в обеих темах */
+    --panel-text:#F4F1E8;
+    --card:#F4F1E8;
+    --muted:#BAC1CD;
+  }
+  .hero::before{
+    content:""; position:absolute; inset:11px; z-index:0; pointer-events:none;
+    border:1px solid rgba(231,188,114,.20); border-radius:19px;
+  }
+  .hero::after{
+    content:""; position:absolute; top:0; left:10%; right:10%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(231,188,114,.6),transparent);
+  }
+  .hero > *{ position:relative; z-index:1; }
+  .hero h1{ text-shadow:0 3px 26px rgba(0,0,0,.6); }
+  .hero .search{
+    background:rgba(13,17,23,.74) !important;
+    border-color:rgba(244,241,232,.17) !important;
+    border-radius:17px; padding:15px 18px;
+  }
+  .hero .search input{ color:#F4F1E8; }
+  .hero .search input::placeholder{ color:#A7AFBC; }
+  .hero .search svg{ color:#C7CEDA; }
+  .hero .hero-card{
+    background:rgba(13,17,23,.74) !important;
+    border-color:rgba(244,241,232,.15) !important;
+    backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px);
+    border-radius:20px;
+  }
+  .hero .h-badge{
+    background:rgba(13,17,23,.66) !important;
+    border-color:rgba(244,241,232,.16) !important;
+    padding:10px 16px; font-size:13px; border-radius:13px;
+  }
+  .hero .h-badge:hover{ background:rgba(13,17,23,.88) !important; }
+
+  /* ---------- ГОРОДА: крупные фотоплитки ---------- */
+  .cities{ margin-top:34px; }
+  .cities-head{ margin-bottom:20px; gap:7px; }
+  #cityGrid{ display:grid; gap:16px;
+    grid-template-columns:repeat(auto-fill, minmax(172px,1fr)); }
+  @media (max-width:860px){ #cityGrid{ grid-template-columns:repeat(3,1fr); gap:12px; } }
+  @media (max-width:560px){ #cityGrid{ grid-template-columns:repeat(2,1fr); gap:11px; } }
+  .city-card{
+    position:relative; overflow:hidden; isolation:isolate;
+    min-height:clamp(152px,19vw,196px);
+    padding:0; border-radius:20px;
+    display:flex; flex-direction:column; justify-content:flex-end; gap:0;
+    --cc-photo:none;
+    background:var(--cc-photo) center 38% / cover no-repeat var(--surface) !important;
+    border:1px solid rgba(244,241,232,.15);
+    box-shadow:0 20px 44px -24px rgba(0,0,0,.8);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .city-card::before{ /* тёмная вуаль: фото читается, текст тем более */
+    content:""; position:absolute; inset:0; z-index:-1;
+    background:linear-gradient(180deg, rgba(9,12,17,.34) 0%, rgba(9,12,17,.14) 44%, rgba(7,10,14,.9) 100%);
+  }
+  .city-card:hover{
+    transform:translateY(-4px) scale(1.014);
+    border-color:var(--accent);
+    box-shadow:0 28px 60px -26px rgba(0,0,0,.85), 0 10px 30px -14px rgba(194,146,79,.35);
+    background:var(--cc-photo) center 30% / cover no-repeat var(--surface) !important;
+  }
+  .city-card:active{ transform:scale(.975); }
+  .city-card.on{
+    border-color:var(--accent);
+    box-shadow:0 0 0 2px rgba(201,153,74,.6), 0 24px 52px -22px rgba(194,146,79,.42);
+  }
+  .city-card .cc-top{
+    position:static; width:100%;
+    display:flex; align-items:center; gap:8px; padding:13px 15px 14px;
+  }
+  .city-card .cc-pin{
+    color:var(--accent-hi);
+    filter:drop-shadow(0 2px 5px rgba(0,0,0,.9));
+  }
+  .city-card .cc-name{
+    font-size:1.06rem; font-weight:800; line-height:1.22;
+    color:#FFFFFF;
+    text-shadow:0 2px 12px rgba(0,0,0,.9), 0 0 3px rgba(0,0,0,.6);
+  }
+  .city-card.on .cc-name{ color:#FFD98F; }
+  .city-card .cc-cnt{
+    position:absolute; z-index:2; top:11px; inset-inline-end:11px; margin:0;
+    font-size:.68rem; font-weight:800; color:#FFE3A6;
+    background:rgba(9,12,17,.62); border:1px solid rgba(231,188,114,.38);
+    border-radius:99px; padding:3px 10px;
+    backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  }
+  .city-card.on .cc-cnt{
+    background:var(--gold-grad); color:var(--on-accent); border-color:transparent;
+  }
+  /* реальные фото городов Сирии */
+  .city-card[data-city="damascus"]  { --cc-photo:url("assets/img/cities/damascus.jpg"); }
+  .city-card[data-city="rifdimashq"]{ --cc-photo:url("assets/img/cities/rifdimashq.jpg"); }
+  .city-card[data-city="aleppo"]    { --cc-photo:url("assets/img/cities/aleppo.jpg"); }
+  .city-card[data-city="homs"]      { --cc-photo:url("assets/img/cities/homs.jpg"); }
+  .city-card[data-city="hama"]      { --cc-photo:url("assets/img/cities/hama.jpg"); }
+  .city-card[data-city="latakia"]   { --cc-photo:url("assets/img/cities/latakia.jpg"); }
+  .city-card[data-city="tartus"]    { --cc-photo:url("assets/img/cities/tartus.jpg"); }
+  .city-card[data-city="idlib"]     { --cc-photo:url("assets/img/cities/idlib.jpg"); }
+  .city-card[data-city="daraa"]     { --cc-photo:url("assets/img/cities/daraa.jpg"); }
+  .city-card[data-city="suwayda"]   { --cc-photo:url("assets/img/cities/suwayda.jpg"); }
+  .city-card[data-city="deirezzor"] { --cc-photo:url("assets/img/cities/deirezzor.jpg"); }
+  .city-card[data-city="hasakah"]   { --cc-photo:url("assets/img/cities/hasakah.jpg"); }
+  .city-card[data-city="qamishli"]  { --cc-photo:url("assets/img/cities/qamishli.jpg"); }
+  .city-card[data-city="manbij"]    { --cc-photo:url("assets/img/cities/manbij.jpg"); }
+  .city-card[data-city="raqqa"]     { --cc-photo:url("assets/img/cities/raqqa.jpg"); }
+
+  /* ---------- КАТЕГОРИИ: разрядить и укрупнить ---------- */
+  .cats{ gap:12px; }
+  .cat-pill{ padding:12px 21px; font-size:.94rem; border-radius:16px; gap:10px; }
+  .cat-pill .cnt{ font-size:.72rem; padding:2px 9px; }
+  .cat-pill.on{ box-shadow:0 12px 28px -10px rgba(194,146,79,.6); }
+  @media (max-width:760px){
+    .cats{ gap:9px; }
+    .cat-pill{ padding:10px 16px; font-size:.87rem; }
+  }
+
+  /* ---------- ШАПКА: воздух между кнопками ---------- */
+  .topbar{ gap:12px; }
+  .topbar .btn-login, .topbar .btn-sub, .topbar .btn-admin,
+  .topbar .btn-vip, .topbar .btn-tg{ height:42px; border-radius:14px; }
+  .btn-sub{ padding:0 18px; font-size:.86rem; }
+  .btn-admin{ padding:0 16px; font-size:.86rem; }
+  .btn-gear{ width:42px; height:42px; border-radius:14px; }
+  @media (max-width:760px){
+    .topbar{ height:60px; padding:0 12px; gap:8px; }
+    .topbar .btn-login, .topbar .btn-tg{ height:36px; }
+    .btn-gear{ width:38px; height:38px; }
+    .btn-admin{ height:36px; }
+  }
+  @media (max-width:400px){ .topbar{ gap:6px; } }
+
+  /* ---------- ДОК: крупные кнопки, больше зазор ---------- */
+  .bottom-nav{ gap:8px; padding:10px 14px; border-radius:26px; }
+  .bn-item{ gap:4px; padding:8px 4px 6px; font-size:.64rem; border-radius:16px; }
+  .bn-fab .fab-disc{ width:50px; height:50px; }
+
+  /* ---------- ЧИПЫ / УРОВНИ / ПРЕИМУЩЕСТВА: крупнее ---------- */
+  .subs{ margin-top:18px; }
+  .subjects-block{ gap:10px; }
+  .chip{ padding:8px 15px; font-size:.84rem; border-radius:12px; }
+  @media (max-width:760px){ .chip{ padding:7px 13px; font-size:.79rem; } }
+  .level-cards{ gap:12px; }
+  .level-card{ padding:14px 15px; border-radius:16px; }
+  .level-card .lc-title{ font-size:.94rem; }
+  .ft-sec{ margin-top:30px; }
+  .ft-grid{ gap:16px; }
+  .ft-tile{ padding:24px 22px; gap:9px; border-radius:20px; }
+  .ft-ic{ width:44px; height:44px; border-radius:14px; }
+  .ft-tile b{ font-size:15.5px; }
+  .ft-tile span{ font-size:12.5px; }
 </style>
 </head>
 <body>
