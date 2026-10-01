@@ -10027,14 +10027,14 @@
       try {
         const r0 = await withTimeout(fetch(API + "/api/auth/telegram/start", {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ deviceId })
+          body: JSON.stringify({ deviceId, lang: (typeof state !== "undefined" && state.lang) ? state.lang : "ar" })
         }), 15000);
         const j0 = await r0.json();
         if (!j0.ok) throw Object.assign(new Error(j0.error || "tg"), { code: j0.error });
         window.open("https://t.me/" + j0.bot + "?start=" + j0.code, "_blank", "noopener");
         btn.textContent = t("auTgWait");
         for (let i = 0; i < 40; i++) {
-          const r1 = await withTimeout(fetch(API + "/api/auth/telegram/wait?code=" + encodeURIComponent(j0.code)), 30000);
+          const r1 = await withTimeout(fetch(API + "/api/auth/telegram/wait?code=" + encodeURIComponent(j0.code)), 60000);
           const j1 = await r1.json();
           if (j1.ok && j1.token) {
             finishLogin({ p: "telegram", id: j1.user.id, n: j1.user.name || "", e: "", token: j1.token }, false);
