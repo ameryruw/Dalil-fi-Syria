@@ -20,6 +20,20 @@
      нижняя навигация-док, карта, уведомления, рейтинг.
      Токены сохраняют старые имена (--bg/--card/--accent…) — JS не тронут.
 
+     v1.4.3 (п.19 владельца, 02.10.2026) — ЗАЯВКИ БЕЗ ЗАДЕРЖЕК И ПОТЕРЬ:
+     1) МГНОВЕННЫЙ КАТАЛОГ: сервер держит версию каталога, клиент опрашивает
+        лёгкий /api/catalog/version раз в 25с — любое действие админа видно
+        у всех в первые секунды (раньше кэш отдавал старое 1-3 минуты).
+     2) АВТО-ОДОБРЕНИЕ ПЕРВОЙ АНКЕТЫ: любой ЗАЛОГИНЕНЫЙ пользователь подаёт
+        свою ПЕРВУЮ анкету — она публикуется СРАЗУ (лёгкая проверка: номер
+        валиден, точка на карте стоит и совпадает с городом). Вторая и далее —
+        через модерацию, как раньше.
+     3) ОЧЕРЕДЬ dalil_appq: нет сети в момент отправки — заявка сохраняется
+        в телефоне и долетает сама (сеть вернулась / возврат в приложение /
+        каждые 30с). Заявки больше не теряются.
+     4) СОРТИРОВКА «Проверённые» и «VIP» в строке сортировки списка
+        (VIP как и прежде всегда вверху любого списка).
+
      v1.3.4 — фикс «нет интернета» при оценке: голос уходит коротким
      HTTPS POST с очередью dalil_voteq (автодолёт при появлении связи).
      v1.4.0 — Firebase удалён полностью: каталог, заявки, жалобы, оценки,
@@ -4068,6 +4082,12 @@
       appRule4: "Заявка появится в справочнике только после проверки администратором.",
       appAgree: "Я прочитал правила и согласен с ними",
       appSentToast: "Заявка отправлена на проверку",
+      sortVer: "Проверённые", sortVip: "VIP",
+      appAutoToast: "Ваша анкета опубликована мгновенно",
+      appQueued: "Нет связи — заявка сохранена и отправится автоматически",
+      appQueueSent: "Заявка из очереди отправлена",
+      pointFar: "Точка на карте далеко от выбранного города — передвиньте её",
+      appDoneAutoT: "Анкета опубликована!", appDoneAutoD: "Ваша анкета уже в справочнике — она видна всем. Спасибо, что вошли в аккаунт.",
       appDoneTitle: "Анкета отправлена на рассмотрение!",
       appDoneDesc: "Заявка уходит на проверку администратору. Публикация обычно занимает до 24 часов.",
       appDoneWaBtn: "Написать нам в WhatsApp",
@@ -4473,6 +4493,12 @@
       appRule4: "لن تظهر الاستمارة في الدليل إلا بعد مراجعة المشرف.",
       appAgree: "قرأت القواعد وأوافق عليها",
       appSentToast: "تم إرسال الطلب للمراجعة",
+      sortVer: "موثّقة", sortVip: "VIP",
+      appAutoToast: "تم نشر بطاقتك فوراً",
+      appQueued: "لا يوجد اتصال — تم حفظ الطلب وسيُرسل تلقائياً",
+      appQueueSent: "تم إرسال الطلب من قائمة الانتظار",
+      pointFar: "النقطة على الخريطة بعيدة عن المدينة المختارة — حرّكها",
+      appDoneAutoT: "تم نشر البطاقة!", appDoneAutoD: "بطاقتك في الدليل الآن ويراها الجميع. شكراً لتسجيل الدخول.",
       appDoneTitle: "تم إرسال النموذج للمراجعة!",
       appDoneDesc: "يُرسل النموذج إلى المسؤول للمراجعة. تستغرق الموافقة عادةً حتى 24 ساعة.",
       appDoneWaBtn: "اكتب لنا واتساب",
@@ -4878,6 +4904,12 @@
       appRule4: "Forma tenê piştî kontrola rêveber di rêbernameyê de xuya dibe.",
       appAgree: "Ez rêbazan xwendin û qebûl dikim",
       appSentToast: "Daxwaz ji bo kontrolê hate şandin",
+      sortVer: "Piştrastkirî", sortVip: "VIP",
+      appAutoToast: "Karta te tavilê hate weşandin",
+      appQueued: "Tor tune ye — daxwaz hat tomarkirin û bixweber ê were şandin",
+      appQueueSent: "Daxwaz ji rêzê hate şandin",
+      pointFar: "Xal li ser nexşeyê dûrî bajarê hilbijartî ye — wê biguhere",
+      appDoneAutoT: "Karta te hate weşandin!", appDoneAutoD: "Karta te niha di rêbernameyê de ye û herkesî dibîne. Spas ji bo têketinê.",
       appDoneTitle: "Form ji bo kontrolê hate şandin!",
       appDoneDesc: "Form ji bo kontrolê diçe rêveber. Pejirandin bi gelemperî heta 24 saetan digire.",
       appDoneWaBtn: "Bi WhatsAppê ji me re binivîsin",
@@ -5284,6 +5316,12 @@
       appRule4: "Your card appears in the directory only after the administrator approves it.",
       appAgree: "I have read the rules and agree with them",
       appSentToast: "Application sent for review",
+      sortVer: "Verified", sortVip: "VIP",
+      appAutoToast: "Your listing was published instantly",
+      appQueued: "No connection — the listing is saved and will be sent automatically",
+      appQueueSent: "Queued listing has been sent",
+      pointFar: "The map point is far from the selected city — please move it",
+      appDoneAutoT: "Listing published!", appDoneAutoD: "Your listing is already live in the directory for everyone to see. Thanks for signing in.",
       appDoneTitle: "Application submitted for review!",
       appDoneDesc: "Your application goes to the administrator for review. Approval usually takes up to 24 hours.",
       appDoneWaBtn: "Message us on WhatsApp",
@@ -5690,6 +5728,12 @@
       appRule4: "Ihr Eintrag erscheint erst nach der Prüfung durch den Administrator im Verzeichnis.",
       appAgree: "Ich habe die Regeln gelesen und akzeptiere sie",
       appSentToast: "Antrag zur Prüfung gesendet",
+      sortVer: "Verifiziert", sortVip: "VIP",
+      appAutoToast: "Dein Eintrag wurde sofort veröffentlicht",
+      appQueued: "Keine Verbindung — der Eintrag wurde gespeichert und wird automatisch gesendet",
+      appQueueSent: "Eintrag aus der Warteschlange gesendet",
+      pointFar: "Der Kartenpunkt ist weit vom gewählten Ort — bitte verschieben",
+      appDoneAutoT: "Eintrag veröffentlicht!", appDoneAutoD: "Dein Eintrag ist jetzt im Verzeichnis für alle sichtbar. Danke fürs Anmelden.",
       appDoneTitle: "Antrag zur Prüfung gesendet!",
       appDoneDesc: "Ihr Antrag geht zur Prüfung an den Administrator. Die Freigabe dauert meist bis zu 24 Stunden.",
       appDoneWaBtn: "Schreiben Sie uns per WhatsApp",
@@ -6096,6 +6140,12 @@
       appRule4: "Kayıt, yönetici onayından sonra rehberde görünür.",
       appAgree: "Kuralları okudum ve kabul ediyorum",
       appSentToast: "Talep incelemeye gönderildi",
+      sortVer: "Onaylı", sortVip: "VIP",
+      appAutoToast: "İlanın hemen yayınlandı",
+      appQueued: "Bağlantı yok — ilan kaydedildi ve otomatik gönderilecek",
+      appQueueSent: "Kuyruktaki ilan gönderildi",
+      pointFar: "Haritadaki nokta seçilen şehirden uzak — lütfen taşıyın",
+      appDoneAutoT: "İlan yayınlandı!", appDoneAutoD: "İlanın şu anda rehberde ve herkes görüyor. Giriş yaptığın için teşekkürler.",
       appDoneTitle: "Form incelemeye gönderildi!",
       appDoneDesc: "Talebiniz onay için yöneticiye gider. Onay genellikle 24 saate kadar sürer.",
       appDoneWaBtn: "WhatsApp'tan bize yazın",
@@ -6418,6 +6468,32 @@
   ];
   const cityById = (id) => CITIES.find(c => c.id === id);
   const cityName = (id) => { const c = cityById(id); return c ? nm(c) : (id || ""); };
+  /* v1.4.3 (п.19в): центры городов для лёгкой проверки «точка ↔ город»
+     (зеркало CITY_GEO сервера): точка на карте должна быть в пределах
+     80 км от центра города анкеты (Риф Дамаска — 100 км). */
+  const CITY_GEO = {
+    damascus: [33.5138, 36.2765], rifdimashq: [33.5138, 36.2765],
+    aleppo: [36.2021, 37.1343],   homs: [34.7324, 36.7137],
+    hama: [35.1318, 36.7578],     latakia: [35.7995, 35.7875],
+    tartus: [34.8890, 35.8866],   idlib: [35.9306, 36.6340],
+    daraa: [32.6189, 36.1020],    suwayda: [32.7090, 36.5715],
+    deirezzor: [35.3402, 40.1408], raqqa: [35.95, 39.0167],
+    hasakah: [36.5065, 40.7478],  qamishli: [37.0421, 41.2293],
+    manbij: [36.5261, 37.9512]
+  };
+  const CITY_RADIUS_KM = { rifdimashq: 100 };
+  function kmBetween(lat1, lng1, lat2, lng2) {
+    const R = 6371, rad = Math.PI / 180;
+    const dLat = (lat2 - lat1) * rad, dLng = (lng2 - lng1) * rad;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+  function cityPointOk(city, lat, lng) {
+    const g = CITY_GEO[String(city || "")];
+    if (!g || typeof lat !== "number" || typeof lng !== "number" ||
+        !Number.isFinite(lat) || !Number.isFinite(lng)) return false;
+    return kmBetween(lat, lng, g[0], g[1]) <= (CITY_RADIUS_KM[city] || 80);
+  }
   /* Карточки без города (старые данные) считаем раккскими — сайт начинался как справочник Ракки.
      Анкеты удалённого Кобани показываем как Риф Дамаска (миграция без перезаписи данных) */
   const docCityId = (d) => d.city === "kobani" ? "rifdimashq" : (d.city || "raqqa");
@@ -6523,7 +6599,7 @@
     sub: "all",
     dest: "all",
     search: "",
-    sort: (() => { const s = store.get("dalil_sort"); return ["new","name","views","rate","near"].includes(s) ? s : "new"; })(),
+    sort: (() => { const s = store.get("dalil_sort"); return ["new","ver","vip","name","views","rate","near"].includes(s) ? s : "new"; })(),   /* v1.4.3: +ver/+vip */
     favOnly: false,
     admin: false,
     docs: [],
@@ -6701,6 +6777,7 @@
       const r = await withTimeout(fetch(API + "/api/catalog"), 15000);
       const j = await r.json();
       if (j.ok && Array.isArray(j.docs)) {
+        noteCatV(j);   /* v1.4.3: синхронизируем версию каталога с сервером */
         applySnapshot(j.docs, false);
         /* v1.4.3: ОФЛАЙН — весь каталог в localStorage; приложение
            открывает и показывает данные без сети (APK/слабый интернет) */
@@ -6754,6 +6831,28 @@
   }
   setInterval(() => { if (!document.hidden) resyncOnce(); }, 60000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) resyncOnce(); });
+
+  /* ================= v1.4.3 (п.19а) · МГНОВЕННЫЙ КАТАЛОГ =================
+     Сервер держит версию каталога (meta.catver): ЛЮБОЕ действие админа
+     (одобрение/отклонение/правка/удаление) и авто-публикация первой анкеты
+     вошедшего пользователя поднимают версию. Клиент раз в 25с опрашивает
+     лёгкий /api/catalog/version (~20 Б) — версия сдвинулась, тянет каталог
+     сразу, не дожидаясь минутного сторожа. Так «одобрил админ — все увидели
+     за секунды», а не через 1-3 минуты, как раньше (edge-кэш). */
+  let lastCatV = 0;
+  function noteCatV(j) { if (j && j.v) lastCatV = Number(j.v) || lastCatV; }
+  async function pollCatVer() {
+    if (document.hidden || !navigator.onLine) return;
+    try {
+      const r = await withTimeout(fetch(API + "/api/catalog/version"), 8000);
+      const j = await r.json();
+      if (!j.ok) return;
+      if (!lastCatV) { lastCatV = Number(j.v) || 0; return; }   /* первый опрос — только запомнить */
+      if (Number(j.v) !== lastCatV) { lastCatV = Number(j.v); loadOnce(); }
+    } catch (e) {}
+  }
+  setInterval(pollCatVer, 25000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) pollCatVer(); });
 
   /* ---- Админские операции -> наш сервер (Bearer-токен админа) ---- */
   async function admFetch(path, opts = {}) {
@@ -6971,6 +7070,13 @@
       items.sort((a, b) => rateAvgNum(b) - rateAvgNum(a));
     if (state.sort === "near" && myPos)
       items.sort((a, b) => distTo(a) - distTo(b));
+    /* v1.4.3 (п.19е): «Проверённые» — сверху карточки с галочкой موثّق;
+       «VIP» — явная сортировка по VIP-статусу (ниже vipPinSort всё равно
+       закрепит VIP первыми — это порядок владельца) */
+    if (state.sort === "ver")
+      items.sort((a, b) => (b.ver ? 1 : 0) - (a.ver ? 1 : 0));
+    if (state.sort === "vip")
+      items.sort((a, b) => (b.feat ? 1 : 0) - (a.feat ? 1 : 0));
     /* v1.4.2: VIP всегда вверху любого списка (внутри VIP — по просмотрам,
        при равных — случайно) */
     vipPinSort(items);
@@ -7001,7 +7107,7 @@
     el.innerHTML =
       `<button type="button" class="chip chip-fav${state.favOnly ? " fav-on" : ""}" data-favtoggle>${icon("heart", 13)}${esc(t("favChip"))}${favCount ? ` <b>${favCount}</b>` : ""}</button>` +
       `<span class="sort-sep"></span>` +
-      [["new","sortNew"],["name","sortName"],["views","sortViews"],["rate","sortRate"]].concat(myPos ? [["near","sortNear"]] : []).map(([v, k]) =>
+      [["new","sortNew"],["ver","sortVer"],["vip","sortVip"],["name","sortName"],["views","sortViews"],["rate","sortRate"]].concat(myPos ? [["near","sortNear"]] : []).map(([v, k]) =>
         `<button type="button" class="chip${state.sort === v ? " on" : ""}" data-sort="${v}">${esc(t(k))}</button>`
       ).join("");
     el.hidden = false;
@@ -8368,7 +8474,47 @@
     c.classList.toggle("over", n > 600);
   });
 
-  /* Отправка заявки: пишем в applications (pending), публикует админ */
+  /* ================= v1.4.3 (п.19г) · ОЧЕРЕДЬ ЗАЯВОК dalil_appq =================
+     «Некоторые теряются»: сеть пропала в момент отправки — раньше заявка
+     просто исчезала (toast об ошибке, данные никуда не шли). Теперь она
+     падает в dalil_appq (localStorage, до 20) и ДОЛЕТАЕТ САМА: сеть
+     вернулась / возврат на вкладку / раз в 30с. Серверные отказы
+     (invalid, rate limit) в очередь НЕ попадают — это честные ошибки,
+     их пользователь видит сразу. */
+  const APPQ_KEY = "dalil_appq";
+  const appQNet = (err) => !err || !err.code || /network|fetch|timeout|abort/i.test(String(err.message || ""));
+  let appqBusy = false;
+  async function flushAppQ() {
+    if (appqBusy || document.hidden || !navigator.onLine) return;
+    let q = [];
+    try { q = JSON.parse(store.get(APPQ_KEY) || "[]") || []; } catch {}
+    if (!q.length) return;
+    appqBusy = true;
+    try {
+      const item = q[0];
+      const r = await withTimeout(fetch(API + "/api/application", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item.p)
+      }), 20000);
+      const j = await r.json();
+      q.shift();
+      try { store.set(APPQ_KEY, JSON.stringify(q)); } catch {}
+      if (j.ok) {
+        /* v1.4.3 (п.19б): очередь тоже умеет авто-публиковать первую анкету */
+        toast(j.auto ? t("appAutoToast") : t("appQueueSent"));
+        if (j.auto) loadOnce();
+      } else {
+        toast(writeErrText(Object.assign(new Error(j.error || "app_failed"), { code: j.error })), "err", 7000);
+      }
+    } catch (e) { /* сеть опять недоступна — попробуем в следующий такт */ }
+    appqBusy = false;
+  }
+  setInterval(flushAppQ, 30000);
+  window.addEventListener("online", flushAppQ);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) flushAppQ(); });
+
+  /* Отправка заявки: v1.4.3 — вошедший получает ПЕРВУЮ анкету сразу (auto),
+     остальные — на модерации; нет сети — заявка ждёт в dalil_appq */
   $("appForm").addEventListener("submit", async e => {
     e.preventDefault();
     /* v1.4.2: тариф фиксируется автоматически (m1 · $0.00) */
@@ -8402,35 +8548,42 @@
     if (subcat === "transport" && !carMake) { banner($("appErr"), "carMakeRequired"); return; }
     if (description.length > 600) { banner($("appErr"), "descLimit"); return; }
 
+    /* v1.4.3 (п.19в): лёгкая проверка — точка на карте совпадает с городом
+       анкеты (раньше неверно поставленная точка молча ехала в модерацию) */
+    const aCoord = aPick.get();
+    if (aCoord.lat != null && aCoord.lng != null && !cityPointOk(city, aCoord.lat, aCoord.lng)) {
+      banner($("appErr"), "pointFar"); return;
+    }
+
+    /* v1.4.3: payload собирается ДО try — при сетевом сбое он же уйдёт в очередь */
+    const payload = {
+      plan: selectedPlan || "m1",
+      planPrice: planPriceStr(selectedPlan || "m1"),   /* v1.4.2: всегда $0.00 */
+      type: cat.base === "stores" || cat.base === "pharmacies" ? "store"
+           : cat.base === "services" || cat.base === "repair" ? "service" : "person",
+      category: cat.base,
+      group: groupId,
+      subcategory: subcat,
+      city,
+      carMake: subcat === "transport" ? carMake : "",
+      routes,
+      title, phone, location, description,
+      names: { ar: title },
+      uiLang: state.lang            /* на каком языке заполняли — подсказка админу */
+    };
+    if (aCoord.lat != null && aCoord.lng != null) { payload.lat = aCoord.lat; payload.lng = aCoord.lng; }
+    if (titleEn) payload.names.en = titleEn;
+
     const btn = $("appSendBtn");
     btn.disabled = true;
     btn.textContent = t("appSending");
 
     try {
-      const payload = {
-        plan: selectedPlan || "m1",
-        planPrice: planPriceStr(selectedPlan || "m1"),   /* v1.4.2: всегда $0.00 */
-        type: cat.base === "stores" || cat.base === "pharmacies" ? "store"
-             : cat.base === "services" || cat.base === "repair" ? "service" : "person",
-        category: cat.base,
-        group: groupId,
-        subcategory: subcat,
-        city,
-        carMake: subcat === "transport" ? carMake : "",
-        routes,
-        title, phone, location, description,
-        names: { ar: title },
-        uiLang: state.lang            /* на каком языке заполняли — подсказка админу */
-      };
-      /* v1.3.0: точка на карте (необязательно) — едет в заявку, потом в карточку */
-      const aCoord = aPick.get();
-      if (aCoord.lat != null && aCoord.lng != null) { payload.lat = aCoord.lat; payload.lng = aCoord.lng; }
       /* v1.3.0: отметка времени — уведомление «заявка одобрена» сработает после него */
       notifState.lastSent = Date.now();
       saveNotifState();
-      if (titleEn) payload.names.en = titleEn;
-      /* v1.4.2: если пользователь вошёл — передаём токен, сервер запомнит
-         автора заявки: после одобрения он сможет удалять свою карточку сам */
+      /* v1.4.2: если пользователь вошёл — передаём токен: сервер запомнит автора,
+         v1.4.3: и ПЕРВАЯ его анкета опубликуется автоматически */
       const appHeaders = { "Content-Type": "application/json" };
       const _tok = store.get(TOKEN_KEY);
       if (_tok && state.user && !state.user.g) appHeaders.Authorization = "Bearer " + _tok;
@@ -8462,10 +8615,29 @@
       $("appForm").reset();
       $("aDescCounter").textContent = "0 / 600";
       goAppStep(4);
-      toast(t("appSentToast"));
+      /* v1.4.3 (п.19б): первая анкета вошедшего опубликована сразу —
+         сообщаем об этом и мгновенно показываем её в каталоге */
+      if (appJ.auto) {
+        const dt = document.querySelector('[data-i18n="appDoneTitle"]');
+        const dd = document.querySelector('[data-i18n="appDoneDesc"]');
+        if (dt) dt.textContent = t("appDoneAutoT");
+        if (dd) dd.textContent = t("appDoneAutoD");
+        toast(t("appAutoToast")); loadOnce();
+      } else toast(t("appSentToast"));
     } catch (err) {
       console.error(err);
-      toast(writeErrText(err), "err", 7000);
+      /* v1.4.3 (п.19г): сетевой сбой — заявка НЕ теряется: уходит в очередь
+         dalil_appq и долетает сама. Серверные отказы (code) — честная ошибка. */
+      if (appQNet(err)) {
+        try {
+          const q = JSON.parse(store.get(APPQ_KEY) || "[]") || [];
+          q.push({ p: { ...payload, deviceId }, t: Date.now() });
+          store.set(APPQ_KEY, JSON.stringify(q.slice(-20)));
+          toast(t("appQueued"), "err", 6000);
+        } catch (e2) { toast(writeErrText(err), "err", 7000); }
+      } else {
+        toast(writeErrText(err), "err", 7000);
+      }
     } finally {
       btn.disabled = false;
       btn.textContent = t("appSend");
