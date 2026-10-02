@@ -3733,7 +3733,7 @@
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "1.4.3";
+  const APP_VERSION = "1.4.4";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -10111,11 +10111,17 @@
   $("wvEmail").addEventListener("click", () => openAuth("reg", "email"));
   $("wvWhats").addEventListener("click", () => openAuth("reg", "whatsapp"));
   $("wvTg").addEventListener("click", () => openAuth("reg", "telegram"));
+  /* v1.4.4 (п.21): в APK Google-OAuth завершается ВНУТРИ приложения —
+     передаём серверу back=appassets…, callback вернётся с #lt= в приложение.
+     На обычном сайте back не нужен (сервер вернёт на сам сайт). */
+  const GOOGLE_START = API + "/api/auth/google/start"
+    + (IS_APK ? "?back=" + encodeURIComponent("https://appassets.androidplatform.net/assets/index.html") : "");
+
   /* v1.4.2: Google прямо с экрана приветствия */
   $("wvGoogle").addEventListener("click", async () => {
     try {
       const c = await withTimeout(fetch(API + "/api/auth/config"), 10000).then(r => r.json());
-      if (c && c.google) { window.location.href = API + "/api/auth/google/start"; return; }
+      if (c && c.google) { window.location.href = GOOGLE_START; return; }
       toast(t("auSoonW"));
     } catch { toast(t("eNet")); }
   });
@@ -10181,7 +10187,7 @@
       auProv = pp; auWaStep = "phone";
       $("authErr").classList.remove("show");
       if (pp === "google") {
-        window.location.href = API + "/api/auth/google/start";
+        window.location.href = GOOGLE_START;
         return;
       }
       updateAuthUI();
@@ -10203,7 +10209,11 @@
         }), 15000);
         const j0 = await r0.json();
         if (!j0.ok) throw Object.assign(new Error(j0.error || "tg"), { code: j0.error });
-        window.open("https://t.me/" + j0.bot + "?start=" + j0.code, "_blank", "noopener");
+        /* v1.4.4 (п.21): в APK window.open не работает — бота открываем
+           навигацией, WebView отдаёт t.me системному Telegram (MainActivity),
+           опрос wait продолжается в приложении и доводит вход до конца. */
+        const tgU = "https://t.me/" + j0.bot + "?start=" + j0.code;
+        if (IS_APK) location.href = tgU; else window.open(tgU, "_blank", "noopener");
         btn.textContent = t("auTgWait");
         for (let i = 0; i < 40; i++) {
           const r1 = await withTimeout(fetch(API + "/api/auth/telegram/wait?code=" + encodeURIComponent(j0.code)), 60000);
