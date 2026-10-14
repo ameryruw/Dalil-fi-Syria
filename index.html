@@ -4170,6 +4170,7 @@
       auCodeSent: "Код отправлен в WhatsApp",
       auTgOpen: "Открыть Telegram и войти",
       auTgWait: "Ждём подтверждение в Telegram…",
+      auOauthFail: "Не удалось войти через Google. Попробуйте ещё раз",
       admErrs: "Ошибки",
       errsEmpty: "Ошибок нет — всё чисто",
       errsClear: "Очистить все",
@@ -4581,6 +4582,7 @@
       auCodeSent: "تم إرسال الرمز إلى واتساب",
       auTgOpen: "افتح تيليجرام وادخل",
       auTgWait: "بانتظار التأكيد في تيليجرام…",
+      auOauthFail: "تعذّر تسجيل الدخول عبر Google. حاول مرة أخرى",
       admErrs: "الأخطاء",
       errsEmpty: "لا أخطاء — كل شيء نظيف",
       errsClear: "حذف الكل",
@@ -4992,6 +4994,7 @@
       auCodeSent: "Kod çû WhatsApp",
       auTgOpen: "Telegram veke û têkeve",
       auTgWait: "Li benda erêkirinê di Telegram…",
+      auOauthFail: "Têketina bi Google re neserketî. Dîsa biceribîne",
       admErrs: "Çewtî",
       errsEmpty: "Çewtî nînin",
       errsClear: "Hemû jê bibe",
@@ -5404,6 +5407,7 @@
       auCodeSent: "Code sent to WhatsApp",
       auTgOpen: "Open Telegram & sign in",
       auTgWait: "Waiting for confirmation in Telegram…",
+      auOauthFail: "Google sign-in failed. Please try again",
       admErrs: "Errors",
       errsEmpty: "No errors — all clean",
       errsClear: "Clear all",
@@ -5816,6 +5820,7 @@
       auCodeSent: "Code an WhatsApp gesendet",
       auTgOpen: "Telegram öffnen & anmelden",
       auTgWait: "Warte auf Bestätigung in Telegram…",
+      auOauthFail: "Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen",
       admErrs: "Fehler",
       errsEmpty: "Keine Fehler — alles sauber",
       errsClear: "Alle löschen",
@@ -6228,6 +6233,7 @@
       auCodeSent: "Kod WhatsApp'a gönderildi",
       auTgOpen: "Telegram'i aç ve giriş yap",
       auTgWait: "Telegram'da onay bekleniyor…",
+      auOauthFail: "Google girişi başarısız. Lütfen tekrar deneyin",
       admErrs: "Hatalar",
       errsEmpty: "Hata yok — her şey temiz",
       errsClear: "Tümünü temizle",
@@ -10210,6 +10216,10 @@
         }), 15000);
         const j0 = await r0.json();
         if (!j0.ok) throw Object.assign(new Error(j0.error || "tg"), { code: j0.error });
+        /* v1.4.4 (п.25): код ждём в localStorage — если Android убьёт WebView,
+           пока пользователь в Telegram, страница при возврате возобновит
+           опрос (tgResume) и вход завершится сам, без ручного ввода кода. */
+        try { localStorage.setItem("dl_tg_code", String(j0.code)); localStorage.setItem("dl_tg_at", String(Date.now())); } catch (e) {}
         /* v1.4.4 (п.21): в APK window.open не работает — бота открываем
            навигацией, WebView отдаёт t.me системному Telegram (MainActivity),
            опрос wait продолжается в приложении и доводит вход до конца. */
@@ -10220,6 +10230,7 @@
           const r1 = await withTimeout(fetch(API + "/api/auth/telegram/wait?code=" + encodeURIComponent(j0.code)), 60000);
           const j1 = await r1.json();
           if (j1.ok && j1.token) {
+            try { localStorage.removeItem("dl_tg_code"); localStorage.removeItem("dl_tg_at"); } catch (e) {}
             finishLogin({ p: "telegram", id: j1.user.id, n: j1.user.name || "", e: "", token: j1.token }, false);
             auBusy = false; btn.disabled = false;
             return;
@@ -10229,6 +10240,7 @@
         }
         throw Object.assign(new Error("tg_timeout"), { code: "tg_timeout" });
       } catch (e2) {
+        try { localStorage.removeItem("dl_tg_code"); localStorage.removeItem("dl_tg_at"); } catch (e) {}
         bannerMsg(err, e2.code === "telegram_not_configured" ? t("auSoonW") : t("eNet"));
       }
       auBusy = false; btn.disabled = false; btn.textContent = t("auTgOpen");
@@ -10354,15 +10366,67 @@
       if (j.ok) renderAll();   /* открытая карточка перерисуется с кнопкой удаления */
     } catch (e) { /* офлайн — просто считаем, что своих карточек не видно */ }
   }
-  /* --- v1.4.2: возврат из Google OAuth — токен приходит в #lt= --- */
-  (function googleBack() {
+  /* --- v1.4.4 (п.25, приказ владельца): возврат из Google OAuth — токен в
+     #lt= или ?lt=. Раньше обработчик запускался ОДИН раз при загрузке, а
+     возврат из Chrome в APK (loadUrl того же адреса + фрагмент) — это
+     same-document навигация: скрипты НЕ перезапускаются и вход не завершался.
+     Теперь: сканируем при загрузке И на hashchange; MainActivity может
+     передать токен напрямую (__dlGoogleBack) — вход завершается мгновенно
+     на текущей странице. Повтор одного токена исключён (lastLt).
+     Ошибки провайдера (#ea=/?ea=) — понятный тост вместо тишины. --- */
+  let lastLt = "";
+  function googleBackProcess(tok) {
     try {
-      const mm = location.hash.match(/(?:^#|&)lt=([A-Za-z0-9_\-.]+)/);
-      if (mm && mm[1]) {
-        finishLogin({ p: "google", n: "", e: "", token: mm[1] }, false);
-        history.replaceState(null, "", location.pathname + location.search);
+      if (!tok || tok === lastLt) return;
+      lastLt = tok;
+      finishLogin({ p: "google", n: "", e: "", token: tok }, false);
+      try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    } catch {}
+  }
+  function googleBackScan() {
+    try {
+      const mm = location.hash.match(/(?:^#|&)lt=([A-Za-z0-9_\-.]+)/)
+             || location.search.match(/[?&]lt=([A-Za-z0-9_\-.]+)/);
+      if (mm && mm[1]) { googleBackProcess(mm[1]); return; }
+      const me = location.hash.match(/(?:^#|&)ea=([A-Za-z0-9_\-]+)/)
+             || location.search.match(/[?&]ea=([A-Za-z0-9_\-]+)/);
+      if (me && me[1]) {
+        lastLt = "ea:" + me[1];
+        toast(t("auOauthFail"));
+        try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
       }
     } catch {}
+  }
+  googleBackScan();
+  window.addEventListener("hashchange", googleBackScan);
+  window.__dlGoogleBack = (tok) => googleBackProcess(String(tok || "").replace(/[^A-Za-z0-9_\-.]/g, ""));
+  window.__dlOauthErr = () => { try { toast(t("auOauthFail")); } catch (e) {} };
+
+  /* --- v1.4.4 (п.25, приказ владельца): «приложение и сайт сами проверяют
+     код» — ожидание Telegram-входа переживает перезапуск приложения: Android
+     мог убить WebView, пока пользователь был в Telegram. Код ждём в
+     localStorage и при загрузке страницы возобновляем опрос /wait до токена
+     (на сервере код живёт 15 минут — после чистим). --- */
+  (async function tgResume() {
+    try {
+      const c = (localStorage.getItem("dl_tg_code") || "").toUpperCase();
+      const at = Number(localStorage.getItem("dl_tg_at") || 0);
+      if (!c || !/^[A-Z0-9]{6,12}$/.test(c)) return;
+      const stop = () => { try { localStorage.removeItem("dl_tg_code"); localStorage.removeItem("dl_tg_at"); } catch (e) {} };
+      if (state.user && !state.user.g) { stop(); return; }
+      if (at && Date.now() - at > 16 * 60 * 1000) { stop(); return; }
+      for (let i = 0; i < 40; i++) {
+        const r = await withTimeout(fetch(API + "/api/auth/telegram/wait?code=" + encodeURIComponent(c)), 62000);
+        const j = await r.json();
+        if (j && j.ok && j.token) {
+          stop();
+          finishLogin({ p: "telegram", id: j.user.id, n: j.user.name || "", e: "", token: j.token }, false);
+          return;
+        }
+        if (r.status === 404 || r.status === 410) { stop(); return; }
+        if (at && Date.now() - at > 16 * 60 * 1000) { stop(); return; }
+      }
+    } catch { /* тихо — фоновой процесс */ }
   })();
 
   (async function restoreSession() {
