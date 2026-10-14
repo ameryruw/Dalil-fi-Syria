@@ -8554,8 +8554,9 @@
     if (subcat === "transport" && !carMake) { banner($("appErr"), "carMakeRequired"); return; }
     if (description.length > 600) { banner($("appErr"), "descLimit"); return; }
 
-    /* v1.4.3 (п.19в): лёгкая проверка — точка на карте совпадает с городом
-       анкеты (раньше неверно поставленная точка молча ехала в модерацию) */
+    /* v1.4.3: точка на карте совпадает с городом анкеты — подсказка качества
+       (v1.4.4 п.26: сервер публикует анкету в любом случае, без модерации;
+       эта проверка лишь помогает поставить точку правильно — или убрать её) */
     const aCoord = aPick.get();
     if (aCoord.lat != null && aCoord.lng != null && !cityPointOk(city, aCoord.lat, aCoord.lng)) {
       banner($("appErr"), "pointFar"); return;
@@ -10352,9 +10353,9 @@
     } catch (e) { /* не критично */ }
   }
 
-  /* --- Реальная сессия: восстанавливаем/проверяем профиль по токену сервера --- */
-  /* v1.4.2: «Мои анкеты» — id карточек текущего пользователя (сервер сверяет
-     владельца по подписанному токену; гость и чужие карточки не видят кнопки) */
+  /* --- Реальная сессия: восстанавливаем/проверяем профиль по токену сервера.
+     v1.4.4 (п.26): логика перенесена в syncMe() — она же обновляет имя из
+     Google-аккаунта сразу после OAuth-возврата. --- */
   let myListingIds = new Set();
   async function loadMyListings() {
     try {
@@ -10373,21 +10374,48 @@
      Теперь: сканируем при загрузке И на hashchange; MainActivity может
      передать токен напрямую (__dlGoogleBack) — вход завершается мгновенно
      на текущей странице. Повтор одного токена исключён (lastLt).
-     Ошибки провайдера (#ea=/?ea=) — понятный тост вместо тишины. --- */
+     Ошибки провайдера (#ea=/?ea=) — понятный тост вместо тишины.
+     v1.4.4 (п.26, приказ владельца «пусть берет имя с ака гугл»): воркер
+     передаёт рядом с токеном и имя аккаунта (un=) — шапка сразу показывает
+     настоящее имя из Google; имя сверяем с сервером (/api/me, syncMe) —
+     он источник истины и для APK-пути, где un= не доходит. --- */
+  async function syncMe() {
+    try {
+      const tok = store.get(TOKEN_KEY);
+      if (!tok || !state.user || state.user.g) return false;
+      const r = await withTimeout(fetch(API + "/api/me", { headers: { Authorization: "Bearer " + tok } }), 12000);
+      if (r.status === 401 || r.status === 404) { setUser(null); return false; }  /* токен истёк/аккаунт удалён */
+      const j = await r.json();
+      if (j.ok && j.user) {
+        state.user = { ...state.user, id: j.user.id, n: j.user.name || state.user.n, e: j.user.ident || state.user.e };
+        try { localStorage.setItem(USER_KEY, JSON.stringify(state.user)); } catch (e) {}
+        renderAuthUI();
+        loadMyListings();
+        ownerAdminCheck();  /* v1.4.2: владелец получает админку автоматически */
+        return true;
+      }
+    } catch (e) { /* офлайн — оставляем локальный профиль */ }
+    return false;
+  }
   let lastLt = "";
-  function googleBackProcess(tok) {
+  function googleBackProcess(tok, name) {
     try {
       if (!tok || tok === lastLt) return;
       lastLt = tok;
-      finishLogin({ p: "google", n: "", e: "", token: tok }, false);
+      const nm = String(name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
+      finishLogin({ p: "google", n: nm, e: "", token: tok }, false);
       try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+      syncMe();   /* п.26: настоящее имя аккаунта Google — с сервера */
     } catch {}
   }
   function googleBackScan() {
     try {
+      const mu = location.hash.match(/(?:^#|&)un=([^&]+)/) || location.search.match(/[?&]un=([^&]+)/);
+      let nm = "";
+      if (mu && mu[1]) { try { nm = decodeURIComponent(mu[1]); } catch (e) { nm = mu[1]; } }
       const mm = location.hash.match(/(?:^#|&)lt=([A-Za-z0-9_\-.]+)/)
              || location.search.match(/[?&]lt=([A-Za-z0-9_\-.]+)/);
-      if (mm && mm[1]) { googleBackProcess(mm[1]); return; }
+      if (mm && mm[1]) { googleBackProcess(mm[1], nm); return; }
       const me = location.hash.match(/(?:^#|&)ea=([A-Za-z0-9_\-]+)/)
              || location.search.match(/[?&]ea=([A-Za-z0-9_\-]+)/);
       if (me && me[1]) {
@@ -10430,20 +10458,8 @@
   })();
 
   (async function restoreSession() {
-    const tok = store.get(TOKEN_KEY);
-    if (!tok || !state.user || state.user.g) return;
-    try {
-      const r = await fetch(API + "/api/me", { headers: { Authorization: "Bearer " + tok } });
-      if (r.status === 401 || r.status === 404) { setUser(null); return; }  /* токен истёк или аккаунт удалён — чистим */
-      const j = await r.json();
-      if (j.ok && j.user) {
-        state.user = { ...state.user, id: j.user.id, n: j.user.name || state.user.n, e: j.user.ident || state.user.e };
-        try { localStorage.setItem(USER_KEY, JSON.stringify(state.user)); } catch (e) {}
-        renderAuthUI();
-        loadMyListings();
-        ownerAdminCheck();  /* v1.4.2: владелец получает админку автоматически */   /* v1.4.2: свои карточки — после подтверждения сессии */
-      }
-    } catch (e) { /* офлайн — оставляем локальный профиль */ }
+    /* v1.4.4 (п.26): проверка сессии и подтяжка имени — общий syncMe() */
+    if (store.get(TOKEN_KEY) && state.user && !state.user.g) await syncMe();
   })();
 
   /* v1.4.0: Google/Facebook через Firebase удалены ПОЛНОСТЬЮ.
