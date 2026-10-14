@@ -1804,6 +1804,60 @@
   html[data-theme="light"] .acc-del:hover{ background:rgba(180,84,63,.14); border-color:rgba(180,84,63,.65); }
   html[data-theme="light"] .btn-danger{ color:#A45340; border-color:rgba(180,84,63,.45); }
 
+  /* ============ v1.4.5 · Кабинет владельца анкеты (приказ п.27) ============ */
+  .cab-btn{
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    border:1px solid var(--line); border-radius:12px;
+    background:var(--vip-wash); color:var(--accent-hi);
+    font:inherit; font-weight:800; font-size:.9rem;
+    padding:12px 10px; cursor:pointer;
+    transition:background .2s, border-color .2s, transform .15s;
+    touch-action: manipulation;
+  }
+  .cab-btn:hover{ background:rgba(201,153,74,.16); border-color:rgba(201,153,74,.5); }
+  .cab-btn:active{ transform:scale(.97); }
+  .cab-btn svg{ width:16px; height:16px; flex-shrink:0; }
+  html[data-theme="light"] .cab-btn{ color:#8A6420; border-color:rgba(160,115,40,.35); background:rgba(201,153,74,.10); }
+  .cab-sub{ font-size:.78rem; color:var(--muted); margin-bottom:2px; }
+  .cab-summary{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:10px 0 12px; }
+  .cab-stat{
+    display:flex; flex-direction:column; gap:2px; align-items:flex-start;
+    padding:11px 13px; border-radius:14px;
+    background:var(--surface); border:1px solid var(--line-soft);
+  }
+  .cab-stat b{ font-size:1.25rem; font-weight:900; color:var(--accent-hi); line-height:1.15; }
+  .cab-stat b i{ font-style:normal; font-size:.68rem; font-weight:600; color:var(--muted); }
+  .cab-stat span{ font-size:.72rem; color:var(--muted); }
+  .cab-list{ display:flex; flex-direction:column; gap:10px; }
+  .cab-item{
+    padding:13px 14px; border-radius:16px;
+    background:var(--surface); border:1px solid var(--line-soft);
+    animation: fadeUp .3s backwards; position:relative;
+  }
+  .cab-item.vip{ border-color:rgba(201,153,74,.45); background:var(--vip-wash); }
+  .cab-item-h h4{ margin:0; font-size:.95rem; font-weight:800; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .cab-item-stats{ display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; font-size:.8rem; color:var(--muted); }
+  .cab-item-stats span{ display:inline-flex; align-items:center; gap:5px; }
+  .cab-item-stats b{ color:var(--panel-text); }
+  .cab-item-meta{ display:flex; flex-direction:column; gap:5px; margin-top:9px; font-size:.75rem; color:var(--muted); }
+  .cab-item-meta span{ display:inline-flex; align-items:center; gap:6px; }
+  .cab-expired{ color:#E07A6C; font-weight:700; }
+  .cab-item-act{ display:flex; gap:8px; margin-top:11px; flex-wrap:wrap; }
+  .cab-item-act .btn{ padding:8px 12px; font-size:.78rem; }
+  .cab-empty{ text-align:center; padding:26px 10px 12px; }
+  .cab-empty-ic{ display:inline-flex; width:64px; height:64px; border-radius:20px; align-items:center; justify-content:center;
+    background:var(--vip-wash); color:var(--accent-hi); margin-bottom:12px; }
+  .cab-empty h4{ margin:0 0 6px; font-size:1rem; }
+  .cab-empty p{ margin:0 auto 14px; font-size:.8rem; color:var(--muted); max-width:30ch; }
+  .cab-add{
+    display:inline-flex; align-items:center; gap:8px;
+    border:none; border-radius:12px; background:var(--gold-grad); color:var(--on-accent);
+    font:inherit; font-weight:800; font-size:.85rem; padding:12px 18px; cursor:pointer;
+    transition:transform .15s, box-shadow .2s;
+  }
+  .cab-add:hover{ box-shadow:0 6px 18px -8px rgba(201,153,74,.6); }
+  .cab-add:active{ transform:scale(.97); }
+
   /* ============ v1.5.0 · Гейт «Создайте аккаунт или войдите» ============ */
   .gate-modal{ text-align:center; max-width:380px; }
   .gate-ic{
@@ -3571,6 +3625,25 @@
   </div>
 </div>
 
+<!-- v1.4.5 · Модальное окно: Кабинет владельца анкеты — статистика своих анкет -->
+<div class="overlay" id="cabOverlay" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 data-i18n="cabTitle"></h3>
+      <button class="modal-close" type="button" data-close="cabOverlay" aria-label="Close"></button>
+    </div>
+    <div class="cab-sub" id="cabSub"></div>
+    <div class="cab-summary" id="cabSummary"></div>
+    <div class="cab-list" id="cabList"></div>
+    <div class="cab-empty" id="cabEmpty" hidden>
+      <span class="cab-empty-ic" id="cabEmptyIc"></span>
+      <h4 data-i18n="cabNoList"></h4>
+      <p data-i18n="cabNoListD"></p>
+      <button type="button" class="cab-add" id="cabAddBtn"></button>
+    </div>
+  </div>
+</div>
+
 <!-- Модальное окно: настройки (шестерёнка) — тема + языки -->
 <div class="overlay" id="settingsOverlay" role="dialog" aria-modal="true">
   <div class="modal">
@@ -3595,6 +3668,14 @@
         <button type="button" data-lang="de">Deutsch</button>
         <button type="button" data-lang="tr">Türkçe</button>
       </div>
+    </div>
+    <!-- v1.4.5 · Кабинет владельца анкеты — видно только вошедшим -->
+    <div class="set-block" id="cabEntry" hidden>
+      <div class="set-label"><span id="cabEntryIc"></span><span data-i18n="cabEntry"></span></div>
+      <button type="button" class="cab-btn" id="cabBtn">
+        <span id="cabBtnIc"></span><span data-i18n="cabEntry"></span>
+      </button>
+      <div class="acc-del-note" data-i18n="cabEntryD"></div>
     </div>
     <!-- v1.4.0 · Удаление аккаунта — видно только вошедшим (не гостю) -->
     <div class="set-block" id="accDanger" hidden>
@@ -3733,7 +3814,7 @@
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "1.4.4";
+  const APP_VERSION = "1.4.5";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -4254,7 +4335,26 @@
       agoNow: "только что",
       agoMin: "{n} мин назад",
       agoH: "{n} ч назад",
-      agoD: "{n} дн назад"
+      agoD: "{n} дн назад",
+      cabTitle: "Кабинет анкеты",
+      cabEntry: "Кабинет анкеты",
+      cabEntryD: "Статистика ваших анкет: просмотры, оценки, место в городе",
+      cabHello: "Статистика анкет · {n}",
+      cabListings: "Анкеты",
+      cabTotal: "Просмотры",
+      cabViews: "Просмотры",
+      cabRating: "Рейтинг",
+      cabVotes: "{n} оценок",
+      cabVip: "VIP",
+      cabNoList: "У вас пока нет анкет",
+      cabNoListD: "Добавьте свою анкету — публикация сразу и бесплатно",
+      cabCreated: "Опубликовано",
+      cabExpiresIn: "Истекает через {n} дн.",
+      cabNever: "Бессрочно",
+      cabExpired: "Истекла",
+      cabRank: "Место: {a} из {b} по просмотрам в городе",
+      cabOpen: "Открыть",
+      cabStatBtn: "Статистика"
     },
     ar: {
       adminBtn: "لوحة المشرف",
@@ -4666,7 +4766,26 @@
       agoNow: "الآن",
       agoMin: "قبل {n} د",
       agoH: "قبل {n} س",
-      agoD: "قبل {n} ي"
+      agoD: "قبل {n} ي",
+      cabTitle: "لوحة إعلانك",
+      cabEntry: "لوحة الإعلان",
+      cabEntryD: "إحصاءات بطاقاتك: المشاهدات، التقييم، المركز في المدينة",
+      cabHello: "إحصاءات بطاقات · {n}",
+      cabListings: "البطاقات",
+      cabTotal: "المشاهدات",
+      cabViews: "المشاهدات",
+      cabRating: "التقييم",
+      cabVotes: "{n} تقييم",
+      cabVip: "VIP",
+      cabNoList: "لا توجد بطاقات بعد",
+      cabNoListD: "أضف بطاقتك — النشر فوري ومجاني",
+      cabCreated: "نُشرت",
+      cabExpiresIn: "تنتهي بعد {n} يوم",
+      cabNever: "دائمة",
+      cabExpired: "منتهية",
+      cabRank: "المركز: {a} من {b} بالمشاهدات في المدينة",
+      cabOpen: "فتح",
+      cabStatBtn: "الإحصاءات"
     },
     ku: {
       adminBtn: "Panela rêveberiyê",
@@ -5078,7 +5197,26 @@
       agoNow: "niha",
       agoMin: "berî {n} xul",
       agoH: "berî {n} saet",
-      agoD: "berî {n} roj"
+      agoD: "berî {n} roj",
+      cabTitle: "Panela agahdarîyê",
+      cabEntry: "Panela agahdarîyê",
+      cabEntryD: "Îstatîstîkên agahdarîyên te: dîtin, nirxandin, cihê bajêr",
+      cabHello: "Îstatîstîkên agahdarîyan · {n}",
+      cabListings: "Agahdarî",
+      cabTotal: "Dît",
+      cabViews: "Dît",
+      cabRating: "Nirxandin",
+      cabVotes: "{n} nirxandin",
+      cabVip: "VIP",
+      cabNoList: "Hîn agahdarîya te nîne",
+      cabNoListD: "Agahdarîya xwe zêde bike — weşandin tavilê û belaş",
+      cabCreated: "Hat weşandin",
+      cabExpiresIn: "Di {n} rojan de diqede",
+      cabNever: "Bêdemahir",
+      cabExpired: "Qediya",
+      cabRank: "Cih: {a} ji {b} bi dîtinan li bajêr",
+      cabOpen: "Veke",
+      cabStatBtn: "Îstatîstîk"
     },
 
     en: {
@@ -5491,7 +5629,26 @@
       agoNow: "just now",
       agoMin: "{n} min ago",
       agoH: "{n} h ago",
-      agoD: "{n} d ago"
+      agoD: "{n} d ago",
+      cabTitle: "Listing dashboard",
+      cabEntry: "Listing dashboard",
+      cabEntryD: "Stats of your listings: views, ratings, city rank",
+      cabHello: "Listing stats · {n}",
+      cabListings: "Listings",
+      cabTotal: "Views",
+      cabViews: "Views",
+      cabRating: "Rating",
+      cabVotes: "{n} votes",
+      cabVip: "VIP",
+      cabNoList: "You have no listings yet",
+      cabNoListD: "Add your listing — instant and free publication",
+      cabCreated: "Published",
+      cabExpiresIn: "Expires in {n} days",
+      cabNever: "No expiry",
+      cabExpired: "Expired",
+      cabRank: "Rank: {a} of {b} by views in the city",
+      cabOpen: "Open",
+      cabStatBtn: "Stats"
     },
 
     de: {
@@ -5904,7 +6061,26 @@
       agoNow: "gerade eben",
       agoMin: "vor {n} Min.",
       agoH: "vor {n} Std.",
-      agoD: "vor {n} Tg."
+      agoD: "vor {n} Tg.",
+      cabTitle: "Eintrags-Kabinett",
+      cabEntry: "Eintrags-Kabinett",
+      cabEntryD: "Statistik Ihrer Einträge: Aufrufe, Bewertungen, Platz in der Stadt",
+      cabHello: "Eintrags-Statistik · {n}",
+      cabListings: "Einträge",
+      cabTotal: "Aufrufe",
+      cabViews: "Aufrufe",
+      cabRating: "Bewertung",
+      cabVotes: "{n} Stimmen",
+      cabVip: "VIP",
+      cabNoList: "Sie haben noch keine Einträge",
+      cabNoListD: "Fügen Sie Ihren Eintrag hinzu — sofort und kostenlos",
+      cabCreated: "Veröffentlicht",
+      cabExpiresIn: "Läuft in {n} Tagen ab",
+      cabNever: "Unbegrenzt",
+      cabExpired: "Abgelaufen",
+      cabRank: "Platz: {a} von {b} nach Aufrufen in der Stadt",
+      cabOpen: "Öffnen",
+      cabStatBtn: "Statistik"
     },
 
     tr: {
@@ -6317,7 +6493,26 @@
       agoNow: "şimdi",
       agoMin: "{n} dk önce",
       agoH: "{n} sa önce",
-      agoD: "{n} gün önce"
+      agoD: "{n} gün önce",
+      cabTitle: "İlan paneli",
+      cabEntry: "İlan paneli",
+      cabEntryD: "İlanlarınızın istatistikleri: görüntüleme, puan, şehir sırası",
+      cabHello: "İlan istatistikleri · {n}",
+      cabListings: "İlanlar",
+      cabTotal: "Görüntüleme",
+      cabViews: "Görüntüleme",
+      cabRating: "Puan",
+      cabVotes: "{n} oy",
+      cabVip: "VIP",
+      cabNoList: "Henüz ilanınız yok",
+      cabNoListD: "İlanınızı ekleyin — anında ve ücretsiz yayınlanır",
+      cabCreated: "Yayınlandı",
+      cabExpiresIn: "{n} gün içinde bitiyor",
+      cabNever: "Süresiz",
+      cabExpired: "Süresi bitti",
+      cabRank: "Sıra: şehirde görüntülemeye göre {a}/{b}",
+      cabOpen: "Aç",
+      cabStatBtn: "İstatistik"
     }
   };
 
@@ -6576,7 +6771,8 @@
     star: '<path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.4L12 17.4l-5.8 3 1.1-6.4L2.6 9.4l6.5-.9L12 2.6z"/>',
     home: '<path d="M3 11.2 12 4l9 7.2"/><path d="M5.5 9.8V20h13V9.8"/><path d="M9.5 20v-6h5v6"/>',
     map: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>',
-    locate: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/>'
+    locate: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7.5"/>',
+    chart: '<path d="M3 3v18h18"/><path d="M8 17v-6M13 17V7M18 17v-9"/>'
   };
   const icon = (n, s = 16) =>
     `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]}</svg>`;
@@ -6775,6 +6971,8 @@
     updateNotifications();   /* v1.3.0: три сценария уведомлений */
     /* v1.3.0: если админ-панель открыта — статистика и вкладки обновляются сразу */
     if (state.admin && $("admOverlay").classList.contains("show")) renderAdmPane();
+    /* v1.4.5: если Кабинет открыт — статистика обновляется сразу (автообновление 25с/60с) */
+    try { if ($("cabOverlay").classList.contains("show")) renderCabinet(); } catch (e) {}
     setConn(cached ? "cache" : "online");
   }
 
@@ -7321,6 +7519,7 @@
         <button type="button" class="btn btn-outline btn-sq detail-fav${isFav(p.id) ? " fav-on" : ""}" data-id="${esc(p.id)}" aria-label="${esc(t("favChip"))}">${icon("heart", 15)}</button>
         <button type="button" class="btn btn-outline detail-rep" data-id="${esc(p.id)}">${icon("flag", 14)}${esc(t("repBtn"))}</button>
         <button type="button" class="btn btn-outline detail-adcopy" data-id="${esc(p.id)}">${icon("copy", 14)}${esc(t("adCopyBtn"))}</button>
+        ${myListingIds.has(p.id) ? `<button type="button" class="btn btn-outline detail-cab" data-id="${esc(p.id)}">${icon("chart", 14)}${esc(t("cabStatBtn"))}</button>` : ""}
         ${myListingIds.has(p.id) ? `<button type="button" class="btn btn-danger detail-mydel" data-id="${esc(p.id)}">${icon("trash", 14)}${esc(t("myDelBtn"))}</button>` : ""}
         ${state.admin ? `<button type="button" class="btn btn-outline detail-edit" data-id="${esc(p.id)}">${icon("edit", 14)}${esc(t("edit"))}</button>` : ""}
         ${state.admin ? `<button type="button" class="btn btn-danger detail-del" data-id="${esc(p.id)}">${icon("trash", 14)}${esc(t("delete"))}</button>` : ""}
@@ -7383,6 +7582,9 @@
       }
     });
 
+    /* v1.4.5: «Статистика» в карточке своей анкеты — открывает Кабинет */
+    const cabBtnD = body.querySelector(".detail-cab");
+    if (cabBtnD) cabBtnD.addEventListener("click", () => openCabinet());
     const cp = body.querySelector(".detail-copy");
     if (cp) cp.addEventListener("click", () => {
       countView(p.id);
@@ -8306,12 +8508,12 @@
   const closeOv = (id) => $(id).classList.remove("show");
   document.querySelectorAll("[data-close]").forEach(b =>
     b.addEventListener("click", () => closeOv(b.dataset.close)));
-  ["loginOverlay", "addOverlay", "confirmOverlay", "detailOverlay", "subOverlay", "settingsOverlay", "admOverlay", "repOverlay", "notifOverlay", "authOverlay", "gateOverlay", "delAccOverlay"].forEach(id => {
+  ["loginOverlay", "addOverlay", "confirmOverlay", "detailOverlay", "subOverlay", "settingsOverlay", "cabOverlay", "admOverlay", "repOverlay", "notifOverlay", "authOverlay", "gateOverlay", "delAccOverlay"].forEach(id => {
     $(id).addEventListener("click", e => { if (e.target === $(id)) closeOv(id); });
   });
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
-      ["loginOverlay", "addOverlay", "confirmOverlay", "detailOverlay", "subOverlay", "settingsOverlay", "admOverlay", "repOverlay", "notifOverlay", "authOverlay", "gateOverlay", "delAccOverlay"].forEach(id => closeOv(id));
+      ["loginOverlay", "addOverlay", "confirmOverlay", "detailOverlay", "subOverlay", "settingsOverlay", "cabOverlay", "admOverlay", "repOverlay", "notifOverlay", "authOverlay", "gateOverlay", "delAccOverlay"].forEach(id => closeOv(id));
       state.detailId = null;
     }
   });
@@ -10002,6 +10204,8 @@
     if (wv) wv.hidden = !!state.user;   /* гость/аккаунт — экран приветствия не нужен */
     const ad = $("accDanger");          /* v1.4.0: удаление аккаунта видно только вошедшим */
     if (ad) ad.hidden = !isAuthed();
+    const ce = $("cabEntry");           /* v1.4.5: кабинет — только вошедшим */
+    if (ce) ce.hidden = !isAuthed();
     syncWelcomeLangs();
   }
   function syncWelcomeLangs() {
@@ -10367,6 +10571,109 @@
       if (j.ok) renderAll();   /* открытая карточка перерисуется с кнопкой удаления */
     } catch (e) { /* офлайн — просто считаем, что своих карточек не видно */ }
   }
+  /* ================= v1.4.5 · КАБИНЕТ ВЛАДЕЛЬЦА АНКЕТЫ =================
+     Приказ владельца: «сделай кабинет с статистекой для владельцв=а анкеты».
+     Полностью на клиенте — работающий сервер не затронут:
+     · список своих анкет: /api/my/providers (ids), метаданные — из каталога;
+     · метрики: просмотры (сервер, дедуп 1/день/устройство), оценки
+       (rateSum/rateCount), VIP (feat), проверено (ver), срок (expiresAt),
+       дата публикации (createdAt);
+     · место по просмотрам — среди анкет того же города и категории,
+       в том же порядке, что и в списке (VIP первыми, затем просмотры). --- */
+  const CAB_DAY = 86400000;
+  function cabRateAvg(p) {
+    const c = Number(p.rateCount) || 0;
+    return c > 0 ? (Number(p.rateSum) || 0) / c : -1;
+  }
+  function cabRankOf(p) {
+    const pool = state.docs.filter(d => d.group === p.group && docCityId(d) === docCityId(p));
+    pool.sort((a, b) => (b.feat ? 1 : 0) - (a.feat ? 1 : 0)
+      || (Number(b.views) || 0) - (Number(a.views) || 0)
+      || (Number(b.rateSum) || 0) - (Number(a.rateSum) || 0));
+    const i = pool.findIndex(d => d.id === p.id);
+    return { pos: i < 0 ? pool.length : i + 1, total: pool.length };
+  }
+  function cabDateStr(p) {
+    try {
+      const ts = p.createdAt && p.createdAt.seconds ? p.createdAt.seconds * 1000 : 0;
+      return ts ? new Date(ts).toLocaleDateString(state.lang === "ar" ? "ar" : state.lang,
+        { day: "numeric", month: "short", year: "numeric" }) : "—";
+    } catch (e) { return "—"; }
+  }
+  function renderCabinet() {
+    const sumEl = $("cabSummary"), listEl = $("cabList"), empEl = $("cabEmpty");
+    if (!sumEl || !listEl || !empEl) return;
+    const docs = [...myListingIds].map(id => state.docs.find(d => d.id === id)).filter(Boolean);
+    const sub = $("cabSub");
+    if (sub) sub.textContent = t("cabHello").replace("{n}", accLabel());
+    if (!docs.length) {
+      sumEl.innerHTML = ""; listEl.innerHTML = ""; empEl.hidden = false;
+      $("cabEmptyIc").innerHTML = icon("chart", 40);
+      $("cabAddBtn").textContent = t("applyBtn");
+      return;
+    }
+    empEl.hidden = true;
+    const views = docs.reduce((s, d) => s + (Number(d.views) || 0), 0);
+    const vCnt = docs.reduce((s, d) => s + (Number(d.rateCount) || 0), 0);
+    const vSum = docs.reduce((s, d) => s + (Number(d.rateSum) || 0), 0);
+    const avg = vCnt > 0 ? (Math.round((vSum / vCnt) * 10) / 10).toFixed(1) : "—";
+    const vip = docs.filter(d => d.feat).length;
+    const stat = (num, lbl) => `<div class="cab-stat"><b class="ltr-num">${num}</b><span>${esc(lbl)}</span></div>`;
+    sumEl.innerHTML =
+      stat(String(docs.length), t("cabListings")) +
+      stat(fmtViews(views), t("cabTotal")) +
+      stat(avg + (vCnt ? ` <i>· ${esc(t("cabVotes").replace("{n}", String(vCnt)))}</i>` : ""), t("cabRating")) +
+      stat(String(vip), t("cabVip"));
+    listEl.innerHTML = docs.map(p => {
+      const rk = cabRankOf(p);
+      const ra = cabRateAvg(p);
+      const exp = p.expiresAt ? Math.ceil((Number(p.expiresAt) - Date.now()) / CAB_DAY) : 0;
+      const expTxt = p.expiresAt
+        ? (exp <= 0 ? `<span class="cab-expired">${esc(t("cabExpired"))}</span>`
+                    : `<span class="ltr-num">${esc(t("cabExpiresIn").replace("{n}", String(exp)))}</span>`)
+        : esc(t("cabNever"));
+      return `
+      <div class="cab-item${p.feat ? " vip" : ""}">
+        <div class="cab-item-h">
+          <h4>${esc(pname(p))}${p.feat ? ' <span class="vip-badge"><b>VIP</b></span>' : ""}${p.ver ? ` <span class="vrf-badge" title="${esc(t("verBadge"))}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>` : ""}</h4>
+        </div>
+        <div class="cab-item-stats">
+          <span>${icon("eye", 14)}<b class="ltr-num">${fmtViews(p.views)}</b> ${esc(t("cabViews"))}</span>
+          <span>${icon("star", 14)}<b class="ltr-num">${ra < 0 ? "—" : (Math.round(ra * 10) / 10).toFixed(1)}</b>${Number(p.rateCount) > 0 ? ` ${esc(t("cabVotes").replace("{n}", String(Number(p.rateCount) || 0)))}` : ""}</span>
+        </div>
+        <div class="cab-item-meta">
+          <span>${icon("crown", 14)}${esc(t("cabRank").replace("{a}", String(rk.pos)).replace("{b}", String(rk.total)))}</span>
+          <span>${icon("city", 14)}${esc(cityName(docCityId(p)))} · ${esc(subName(p.group, p.subcategory))}</span>
+          <span>${icon("check", 14)}${esc(t("cabCreated"))}: ${esc(cabDateStr(p))} · ${expTxt}</span>
+        </div>
+        <div class="cab-item-act">
+          <button type="button" class="btn btn-outline cab-open" data-id="${esc(p.id)}">${icon("eye", 14)}${esc(t("cabOpen"))}</button>
+          <button type="button" class="btn btn-outline cab-share" data-id="${esc(p.id)}">${icon("share", 14)}${esc(t("shareBtn"))}</button>
+        </div>
+      </div>`;
+    }).join("");
+    listEl.querySelectorAll(".cab-open").forEach(b => b.addEventListener("click", () => {
+      const id = b.dataset.id;
+      closeOv("cabOverlay");
+      renderDetail(id);
+    }));
+    listEl.querySelectorAll(".cab-share").forEach(b => b.addEventListener("click", () => {
+      const d = state.docs.find(x => x.id === b.dataset.id);
+      if (d) shareProvider(d);
+    }));
+  }
+  async function openCabinet() {
+    if (!isAuthed()) { askAuth("apply"); return; }
+    closeOv("settingsOverlay");
+    closeOv("detailOverlay");
+    openOv("cabOverlay");
+    renderCabinet();
+    try { await loadMyListings(); } catch (e) { /* ids останутся прежними */ }
+    renderCabinet();   /* перерисовка после подтяжки свежих ids с сервера */
+  }
+  $("cabBtn").addEventListener("click", openCabinet);
+  $("cabAddBtn").addEventListener("click", () => { closeOv("cabOverlay"); guardedApply(); });
+
   /* --- v1.4.4 (п.25, приказ владельца): возврат из Google OAuth — токен в
      #lt= или ?lt=. Раньше обработчик запускался ОДИН раз при загрузке, а
      возврат из Chrome в APK (loadUrl того же адреса + фрагмент) — это
@@ -10479,6 +10786,9 @@
       $("setWarnIc").innerHTML = icon("trash", 13);   /* v1.4.0: удаление аккаунта */
       $("accDelIc").innerHTML = icon("trash", 16);
       $("delAccIc").innerHTML = icon("trash", 30);
+      $("cabEntryIc").innerHTML = icon("chart", 13);   /* v1.4.5: кабинет */
+      $("cabBtnIc").innerHTML = icon("chart", 16);
+      $("cabEmptyIc").innerHTML = icon("chart", 40);
       $("searchIcon").innerHTML = lensSVG(18);   /* v1.4.2: фирменная золотая лупа */
       /* v1.3.0: иконки новых блоков */
       $("notifBtnIc").innerHTML = icon("bell", 18);
