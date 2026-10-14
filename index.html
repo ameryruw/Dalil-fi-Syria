@@ -10111,11 +10111,12 @@
   $("wvEmail").addEventListener("click", () => openAuth("reg", "email"));
   $("wvWhats").addEventListener("click", () => openAuth("reg", "whatsapp"));
   $("wvTg").addEventListener("click", () => openAuth("reg", "telegram"));
-  /* v1.4.4 (п.21): в APK Google-OAuth завершается ВНУТРИ приложения —
-     передаём серверу back=appassets…, callback вернётся с #lt= в приложение.
-     На обычном сайте back не нужен (сервер вернёт на сам сайт). */
+  /* v1.4.4 (п.24): в APK Google-OAuth идёт через БРАУЗЕР (Chrome) — там
+     сохранённые аккаунты Google видны сразу («выбор аккаунта» не пустой);
+     back=dalil://oauth — callback воркера вернёт токен в приложение через
+     deep link. На обычном сайте back не нужен (сервер вернёт на сам сайт). */
   const GOOGLE_START = API + "/api/auth/google/start"
-    + (IS_APK ? "?back=" + encodeURIComponent("https://appassets.androidplatform.net/assets/index.html") : "");
+    + (IS_APK ? "?back=" + encodeURIComponent("dalil://oauth") : "");
 
   /* v1.4.2: Google прямо с экрана приветствия */
   $("wvGoogle").addEventListener("click", async () => {
