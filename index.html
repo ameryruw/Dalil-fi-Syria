@@ -2742,14 +2742,14 @@
   /* ---------- ГОРОДА: крупные фотоплитки ---------- */
   .cities{ margin-top:34px; }
   .cities-head{ margin-bottom:20px; gap:7px; }
-  #cityGrid{ display:grid; gap:16px;
-    grid-template-columns:repeat(auto-fill, minmax(172px,1fr)); }
-  @media (max-width:860px){ #cityGrid{ grid-template-columns:repeat(3,1fr); gap:12px; } }
-  @media (max-width:560px){ #cityGrid{ grid-template-columns:repeat(2,1fr); gap:11px; } }
+  #cityGrid{ display:grid; gap:12px;
+    grid-template-columns:repeat(auto-fill, minmax(132px,1fr)); }
+  @media (max-width:860px){ #cityGrid{ grid-template-columns:repeat(4,1fr); gap:9px; } }
+  @media (max-width:560px){ #cityGrid{ grid-template-columns:repeat(3,1fr); gap:8px; } }
   .city-card{
     position:relative; overflow:hidden; isolation:isolate;
-    min-height:clamp(152px,19vw,196px);
-    padding:0; border-radius:20px;
+    min-height:clamp(104px,12.5vw,136px);
+    padding:0; border-radius:15px;
     display:flex; flex-direction:column; justify-content:flex-end; gap:0;
     --cc-photo:none;
     background:var(--cc-photo) center 38% / cover no-repeat var(--surface) !important;
@@ -2774,27 +2774,33 @@
   }
   .city-card .cc-top{
     position:static; width:100%;
-    display:flex; align-items:center; gap:8px; padding:13px 15px 14px;
+    display:flex; align-items:center; gap:6px; padding:9px 11px 10px;
   }
   .city-card .cc-pin{
     color:var(--accent-hi);
     filter:drop-shadow(0 2px 5px rgba(0,0,0,.9));
   }
   .city-card .cc-name{
-    font-size:1.06rem; font-weight:800; line-height:1.22;
+    font-size:.9rem; font-weight:800; line-height:1.2;
     color:#FFFFFF;
     text-shadow:0 2px 12px rgba(0,0,0,.9), 0 0 3px rgba(0,0,0,.6);
   }
   .city-card.on .cc-name{ color:#FFD98F; }
   .city-card .cc-cnt{
-    position:absolute; z-index:2; top:11px; inset-inline-end:11px; margin:0;
-    font-size:.68rem; font-weight:800; color:#FFE3A6;
+    position:absolute; z-index:2; top:8px; inset-inline-end:8px; margin:0;
+    font-size:.62rem; font-weight:800; color:#FFE3A6;
     background:rgba(9,12,17,.62); border:1px solid rgba(231,188,114,.38);
-    border-radius:99px; padding:3px 10px;
+    border-radius:99px; padding:2px 8px;
     backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
   }
   .city-card.on .cc-cnt{
     background:var(--gold-grad); color:var(--on-accent); border-color:transparent;
+  }
+  /* п.29: на узких экранах имя компактнее — без переносов посреди слова */
+  @media (max-width:560px){
+    .city-card .cc-top{ padding:8px 10px 9px; gap:5px; }
+    .city-card .cc-name{ font-size:.74rem; }
+    .city-card .cc-cnt{ top:6px; inset-inline-end:6px; padding:2px 7px; }
   }
   /* реальные фото городов Сирии */
   .city-card[data-city="damascus"]  { --cc-photo:url("assets/img/cities/damascus.webp"); }
