@@ -3030,6 +3030,8 @@
   <button type="button" class="bn-item" id="bnMap"><span class="bn-ic" id="bnMapIc"></span><span class="bn-t" data-i18n="mapTab"></span></button>
   <button type="button" class="bn-fab" id="subFab"><span class="fab-disc" id="subFabIcon"></span><span class="bn-t" data-i18n="applyBtn"></span></button>
   <button type="button" class="bn-item" id="bnNotif"><span class="bn-ic" id="bnNotifIc"></span><span class="bn-badge" id="notifBadge" hidden></span><span class="bn-t" data-i18n="notifTab"></span></button>
+  <!-- п.28: кабинет владельца анкеты — вкладка на нижней панели (приказ владельца) -->
+  <button type="button" class="bn-item" id="bnCab"><span class="bn-ic" id="bnCabIc"></span><span class="bn-t" data-i18n="navCab"></span></button>
   <button type="button" class="bn-item" id="bnFav"><span class="bn-ic" id="bnFavIc"></span><span class="bn-t" data-i18n="favChip"></span></button>
 </nav>
 
@@ -4354,7 +4356,9 @@
       cabExpired: "Истекла",
       cabRank: "Место: {a} из {b} по просмотрам в городе",
       cabOpen: "Открыть",
-      cabStatBtn: "Статистика"
+      cabStatBtn: "Статистика",
+      navCab: "Кабинет",
+      appLim2: "Не более 2 анкет на аккаунт"
     },
     ar: {
       adminBtn: "لوحة المشرف",
@@ -4785,7 +4789,9 @@
       cabExpired: "منتهية",
       cabRank: "المركز: {a} من {b} بالمشاهدات في المدينة",
       cabOpen: "فتح",
-      cabStatBtn: "الإحصاءات"
+      cabStatBtn: "الإحصاءات",
+      navCab: "لوحتي",
+      appLim2: "بطاقتان كحد أقصى لكل حساب"
     },
     ku: {
       adminBtn: "Panela rêveberiyê",
@@ -5216,7 +5222,9 @@
       cabExpired: "Qediya",
       cabRank: "Cih: {a} ji {b} bi dîtinan li bajêr",
       cabOpen: "Veke",
-      cabStatBtn: "Îstatîstîk"
+      cabStatBtn: "Îstatîstîk",
+      navCab: "Panela min",
+      appLim2: "Herî zêde 2 agahdarî ji bo hesabekî"
     },
 
     en: {
@@ -5648,7 +5656,9 @@
       cabExpired: "Expired",
       cabRank: "Rank: {a} of {b} by views in the city",
       cabOpen: "Open",
-      cabStatBtn: "Stats"
+      cabStatBtn: "Stats",
+      navCab: "My panel",
+      appLim2: "Max 2 listings per account"
     },
 
     de: {
@@ -6080,7 +6090,9 @@
       cabExpired: "Abgelaufen",
       cabRank: "Platz: {a} von {b} nach Aufrufen in der Stadt",
       cabOpen: "Öffnen",
-      cabStatBtn: "Statistik"
+      cabStatBtn: "Statistik",
+      navCab: "Kabinett",
+      appLim2: "Maximal 2 Einträge pro Konto"
     },
 
     tr: {
@@ -6512,7 +6524,9 @@
       cabExpired: "Süresi bitti",
       cabRank: "Sıra: şehirde görüntülemeye göre {a}/{b}",
       cabOpen: "Aç",
-      cabStatBtn: "İstatistik"
+      cabStatBtn: "İstatistik",
+      navCab: "Panelim",
+      appLim2: "Hesap başına en fazla 2 ilan"
     }
   };
 
@@ -8325,6 +8339,8 @@
   });
   $("bnNotif").addEventListener("click", openNotifs);
   $("notifBtn").addEventListener("click", openNotifs);
+  /* п.28: вкладка «Кабинет» — статистика анкет в один тап; гостю предложит вход */
+  $("bnCab").addEventListener("click", openCabinet);
   $("bnFav").addEventListener("click", () => {
     document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnFav"));
     if (!state.favOnly) { state.favOnly = true; renderListTools(); renderList(); }
@@ -8593,6 +8609,9 @@
   /* v1.5.0: анкета — только для аккаунтов; гостям сначала «Создайте аккаунт или войдите» */
   function guardedApply() {
     if (!isAuthed()) { askAuth("apply"); return; }
+    /* п.28: у аккаунта не более 2 анкет — быстрая проверка по кэшу
+       (свежая сверка с сервером выполняется при отправке анкеты) */
+    if (myListingIds.size >= 2) { toast(t("appLim2"), "err", 6000); return; }
     openApply();
   }
   $("subBtn").addEventListener("click", guardedApply);
@@ -8700,6 +8719,17 @@
     appqBusy = true;
     try {
       const item = q[0];
+      /* п.28: лимит «не более 2 анкет на аккаунт» — действует и для очереди */
+      if (isAuthed()) {
+        try { await loadMyListings(); } catch {}
+        if (myListingIds.size >= 2) {
+          q.shift();
+          try { store.set(APPQ_KEY, JSON.stringify(q)); } catch {}
+          toast(t("appLim2"), "err", 6000);
+          appqBusy = false;
+          return;
+        }
+      }
       const r = await withTimeout(fetch(API + "/api/application", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(item.p)
@@ -8762,6 +8792,11 @@
     const aCoord = aPick.get();
     if (aCoord.lat != null && aCoord.lng != null && !cityPointOk(city, aCoord.lat, aCoord.lng)) {
       banner($("appErr"), "pointFar"); return;
+    }
+    /* п.28: лимит «не более 2 анкет на аккаунт» — свежая сверка с сервером */
+    if (isAuthed()) {
+      try { await loadMyListings(); } catch {}
+      if (myListingIds.size >= 2) { banner($("appErr"), "appLim2"); return; }
     }
 
     /* v1.4.3: payload собирается ДО try — при сетевом сбое он же уйдёт в очередь */
@@ -10605,7 +10640,7 @@
     if (!sumEl || !listEl || !empEl) return;
     const docs = [...myListingIds].map(id => state.docs.find(d => d.id === id)).filter(Boolean);
     const sub = $("cabSub");
-    if (sub) sub.textContent = t("cabHello").replace("{n}", accLabel());
+    if (sub) sub.textContent = t("cabHello").replace("{n}", accLabel()) + " · " + docs.length + "/2";   /* п.28: счётчик X/2 */
     if (!docs.length) {
       sumEl.innerHTML = ""; listEl.innerHTML = ""; empEl.hidden = false;
       $("cabEmptyIc").innerHTML = icon("chart", 40);
@@ -10673,6 +10708,14 @@
   }
   $("cabBtn").addEventListener("click", openCabinet);
   $("cabAddBtn").addEventListener("click", () => { closeOv("cabOverlay"); guardedApply(); });
+  /* п.28: вкладка «Кабинет» подсвечена, пока открыто окно кабинета; при закрытии
+     (крестик/фон/Esc) подсветка возвращается на «Главная» — если та не занята */
+  new MutationObserver(() => {
+    const on = $("cabOverlay").classList.contains("show");
+    $("bnCab").classList.toggle("on", on);
+    if (on) $("bnHome").classList.remove("on");
+    else if (!document.querySelector(".bn-item.on")) $("bnHome").classList.add("on");
+  }).observe($("cabOverlay"), { attributes: true, attributeFilter: ["class"] });
 
   /* --- v1.4.4 (п.25, приказ владельца): возврат из Google OAuth — токен в
      #lt= или ?lt=. Раньше обработчик запускался ОДИН раз при загрузке, а
@@ -10797,6 +10840,7 @@
       $("bnHomeIc").innerHTML = icon("home", 21);
       $("bnMapIc").innerHTML = icon("map", 21);
       $("bnNotifIc").innerHTML = icon("bell", 21);
+      $("bnCabIc").innerHTML = icon("chart", 21);   /* п.28: кабинет на нижней панели */
       $("bnFavIc").innerHTML = icon("heart", 21);
       $("fMapBtnIc").innerHTML = icon("pin", 15);
       $("aMapBtnIc").innerHTML = icon("pin", 15);
