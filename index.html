@@ -16,22 +16,21 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/NotoSansArabic-arabic.woff2" crossorigin>
 <style>
   /* ================================================================
-     DALIL SURIYA · v1.4.9 — «СУМЕРКИ ДАМАСКА»: спокойная сине-стальная палитра + полная перестановка расстановки (п.36)
-     Приказ владельца (п.35): «нет не зеленый… я сказал сделай там другое
-     расположение васего а не цвета».
-     · ПАЛИТРА: зелёная тема v1.4.7 УДАЛЕНА ПОЛНОСТЬЮ;
-       восстановлена тёплая палитра v1.4.6: charcoal #11161F + золото
-       #8FA8C8 — спокойная сталь, весь интерактив (v1.4.9).
-     · РАССТАНОВКА КНОПОК v1.4.7 СОХРАНЕНА (единственное, что просил
-       владелец): нижний док = Главная·Карта·[+FAB]·Избранное·Кабинет·Увед.;
-       активная вкладка — золотой индикатор сверху; FAB 52px с пульс-хало
-       и золотым кольцом; «Добавить анкету» — первичная CTA после бренда.
-     · ШАПКА: «Добавить анкету» — первичная CTA сразу после бренда.
+     DALIL SURIYA · v1.4.10 — «СУМЕРКИ ДАМАСКА» (п.36) + фильтр клиентских
+     ошибок (п.37): сторонние расширения (MetaMask и др.) в бот и тосты
+     НЕ попадают — только реальные ошибки DALIL; дедуп + лимит 6/сессия.
+     · ПАЛИТРА (спокойная, зелёного нет — п.35): тёмная — сине-графит
+       #11161F + пыльная сталь #8FA8C8 (весь интерактив); VIP — спокойное
+       антикварное золото #C9A96A (--vip-grad/--vip-strong).
+       Светлая «Утро Алеппо»: фарфор #EFF2F7 + сталь #56708F.
+     · РАССТАНОВКА ПОЛНОСТЬЮ НОВАЯ (п.36): шапка = бренд·колокольчик
+       (из дока, с бейджем)·настройки·вход·VIP; поиск — ЛИПКАЯ полоса под
+       шапкой; «Добавить анкету» — CTA в hero; Telegram — в карточке
+       фактов; админ — в футере; док = Карта·Кабинет·[+FAB]·Главная·
+       Избранное; города — горизонтальная лента-snap после категорий;
+       преимущества — в конце страницы.
      Инварианты не тронуты: цены $0.00, VIP, контакты, лимит 2 анкет,
      кабинет на нижней панели, размеры плашек п.29.
-     История (v1.3.4):
-     Мобильное приложение: стеклянная шапка, плавающие карточки,
-     нижняя навигация-док, карта, уведомления, рейтинг.
      Токены сохраняют старые имена (--bg/--card/--accent…) — JS не тронут.
 
      v1.4.3 (п.19 владельца, 02.10.2026) — ЗАЯВКИ БЕЗ ЗАДЕРЖЕК И ПОТЕРЬ:
@@ -3960,7 +3959,7 @@
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "1.4.9";
+  const APP_VERSION = "1.4.10";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -4028,16 +4027,37 @@
 
   /* ============ Глобальные ловушки ============ */
   window.addEventListener("error", e => {
+    if (isErrNoise(e.message, e.error && e.error.stack, e.filename)) return; /* v1.4.10 (п.37): чужие расширения — без тоста */
     toast(e.message || "خطأ في السكربت", "err");
   });
   window.addEventListener("unhandledrejection", e => {
     const r = e.reason;
     const msg = (r && (r.code || r.message)) ? String(r.code || r.message) : "خطأ في الشبكة";
+    const st = (r && r.stack) ? String(r.stack) : "";
+    if (isErrNoise(msg, st)) return; /* v1.4.10 (п.37): чужие расширения — без тоста */
     toast(msg, "err");
   });
-  /* v1.4.2: репорт ошибок владельцу — консольные ошибки → /api/client-error */
+  /* v1.4.2: репорт ошибок владельцу — консольные ошибки → /api/client-error
+     v1.4.10 (п.37): ФИЛЬТР МУСОРА — MetaMask/расширения/шум в бот НЕ попадают.
+     Отчёт из п.37: клиент с расширением MetaMask ронял "Failed to connect to
+     MetaMask" (chrome-extension://…/inpage.js) — это ЧУЖОЙ код, не DALIL. */
+  const EXT_NOISE_RE = /chrome-extension:\/\/|moz-extension:\/\/|safari-(web-)?extension:\/\/|edge-extension:\/\/|extensions::|inpage\.js|content[-_]script/i;
+  const NOISE_MSG_RE = /metamask|ethereum\b|web3\b|window\.ethereum|ResizeObserver loop|Script error\.?|Extension context invalidated|listener indicated an asynchronous response|Non-Error promise rejection|Failed to fetch.*extensions/i;
+  const ERR_SEEN = new Set(); let ERR_SENT = 0;
+  function isErrNoise(msg, stack, src) {
+    const all = String(msg || "") + "\n" + String(stack || "") + "\n" + String(src || "");
+    if (EXT_NOISE_RE.test(all)) return true;  /* код расширений браузера */
+    if (NOISE_MSG_RE.test(all)) return true;  /* известный посторонний шум */
+    return false;
+  }
   function reportClientError(kind, msg, extra) {
     try {
+      const stack = (extra && extra.stack) || "", src = (extra && extra.src) || "";
+      if (isErrNoise(msg, stack, src)) return;      /* п.37: чужое — молча */
+      const key = kind + "|" + String(msg).slice(0, 120);
+      if (ERR_SEEN.has(key)) return;                /* дедуп: одна ошибка — один репорт за сессию */
+      ERR_SEEN.add(key);
+      if (++ERR_SENT > 6) return;                   /* лимит: бот не спамим */
       fetch(API + "/api/client-error", {
         method: "POST", headers: { "Content-Type": "application/json" },
         keepalive: true,
@@ -4059,7 +4079,6 @@
     reportClientError("promise", r.message || String(r).slice(0, 240),
       { stack: (r.stack || "").slice(0, 600) });
   });
-
   /* ============ Безопасный localStorage ============ */
   const store = {
     get(k){ try { return localStorage.getItem(k); } catch { return null; } },
