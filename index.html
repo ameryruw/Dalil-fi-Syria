@@ -3659,7 +3659,7 @@ h4{ font-weight:700; }
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "5.2.1";
+  const APP_VERSION = "5.2.2";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -6867,6 +6867,15 @@ h4{ font-weight:700; }
   }
 
   async function loadOnce() {
+    /* v5.2.2: КАШ ВСЕГДА — мгновенный рендер из localStorage ДО сети
+       (stale-while-revalidate): карточки видны сразу при любом старте,
+       сеть затем обновит. Владелец: «чтобы они в кэше всегда были». */
+    try {
+      const c0 = JSON.parse(store.get("dalil_cache_docs") || "null");
+      if (c0 && Array.isArray(c0.docs) && c0.docs.length && !state.docs.length) {
+        applySnapshot(c0.docs, true);
+      }
+    } catch (e) {}
     try {
       const r = await withTimeout(fetch(API + "/api/catalog"), 15000);
       const j = await r.json();
@@ -7006,17 +7015,18 @@ h4{ font-weight:700; }
   }
 
   function updateCityVisibility() {
+    /* v5.2.2: каталог виден ВСЕГДА — без выбранного города показывается вся Сирия
+       (inCity при пустом городе пропускает все объявления). Владелец: «почему нет
+       ни 1 карточки» — прятать каталог до выбора города больше нельзя. */
     const has = !!state.city;
-    ["cats", "subs", "listWrap", "searchBox"].forEach(id => $(id).classList.toggle("no-city", !has));
-    if (has) {
-      ["cats", "subs", "listWrap"].forEach(id => {
-        const el = $(id);
-        el.classList.remove("vis");
-        void el.offsetWidth;
-        el.classList.add("vis");
-      });
-      animCats = true;
-    }
+    ["cats", "subs", "listWrap", "searchBox"].forEach(id => $(id).classList.remove("no-city"));
+    ["cats", "subs", "listWrap"].forEach(id => {
+      const el = $(id);
+      el.classList.remove("vis");
+      void el.offsetWidth;
+      el.classList.add("vis");   /* v5.2.2: .vis и без города — .reveal не должен прятать каталог */
+    });
+    animCats = true;
   }
 
   function renderCats() {
