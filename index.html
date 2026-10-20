@@ -1720,7 +1720,7 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
 .wv3-div span{ flex:1; height:1px; background:var(--line); }
 .wv3-div em{ font-style:normal; font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
 /* наши способы входа — ОДИН ряд из трёх (инвариант 11 §4) */
-.wv3-social{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.wv3-social{ display:grid; grid-template-columns:repeat(auto-fit, minmax(0,1fr)); gap:10px; } /* v5.10.0: auto-fit — после удаления TG две кнопки на всю ширину, без дыры справа */
 .wv3-oab{
   height:46px; display:flex; align-items:center; justify-content:center; gap:8px;
   font:inherit; font-size:.86rem; font-weight:600; color:var(--card); cursor:pointer;
@@ -1758,8 +1758,10 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
 .wv3-dot{ color:var(--muted); opacity:.6; }
 .wv3-foot{ font-size:.72rem; color:var(--muted); opacity:.85; line-height:1.55; text-align:center; }
 /* ——— ВТОРАЯ СТОРОНА: витрина — v5.8.1 перенесена ДОСЛОВНО из auth-1 (1).html
-      (Ctrl+C Ctrl+V, приказ владельца «не меняй не изменяй»). Сознательных
-      отклонений от макета всего 4, все вынужденные:
+      (Ctrl+C Ctrl+V, приказ владельца «не меняй не изменяй»). v5.8.2: приказ
+      «меняем только цвета шрифты на наши» — значения цветов/шрифтов заменены
+      на токены 7 тем × 2 моды, структура/классы/анимации/разметка — 1-в-1.
+      Сознательных отклонений от макета всего 4, все вынужденные:
       1) Nova-токены объявлены на .showcase-side — изоляция витрины от 7 тем
          приложения (вне витрины темы живут как жили);
       2) зелёный цвет → фиолетовый (--success/живая точка, аватары av-3/av-7):
@@ -1772,25 +1774,25 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
       keyframes scroll-left/right) — 1-в-1. Плашки ДВИГАЮТСЯ ВСЕГДА: приказ
       «двигаться должны» — reduced-motion их не останавливает (rise — можно). ——— */
 .showcase-side{
-  --background:#06060b; --background-2:#0b0b14; --foreground:#f4f4f6;
-  --muted:#9b9ba7; --muted-2:#6d6d7c;
-  --card:rgba(255,255,255,.04); --card-hover:rgba(255,255,255,.07);
-  --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.16);
-  --primary:#7c5cff; --primary-2:#a78bfa; --ring:rgba(124,92,255,.55);
-  --success:#a78bfa; /* в макете зелёный #34d399 — инвариант 10 §4 */
-  --star:#fbbf24; --radius:14px; --radius-sm:10px;
+  --background:var(--bg); --background-2:var(--bg2); --foreground:var(--card);
+  --muted-2:var(--muted); /* --muted не переопределяем — наследуем тему (цикл var запрещён) */
+  --card:var(--surface); --card-hover:var(--hover-tint);
+  --border:var(--line-soft); --border-strong:var(--line);
+  --primary:var(--accent); --primary-2:var(--accent-hi); --ring:rgba(var(--acc-rgb),.55);
+  --success:var(--accent-hi); /* живая точка = accent-hi (зелёный #34d399 макета — инвариант 10 §4) */
+  --star:var(--accent-hi); --radius:14px; --radius-sm:10px;
 
   position:relative; display:flex; flex-direction:column; justify-content:center;
   gap:40px; overflow:hidden; padding:64px 0;
   background:
-    radial-gradient(1100px 600px at 85% -10%, rgba(124,92,255,.22), transparent 60%),
-    radial-gradient(900px 500px at 10% 110%, rgba(56,189,248,.12), transparent 60%),
+    radial-gradient(1100px 600px at 85% -10%, rgba(var(--acc-rgb),.18), transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, rgba(var(--acc-rgb),.10), transparent 60%),
     linear-gradient(180deg, var(--background-2), var(--background));
 }
 /* dot grid texture (дословно auth-1) */
 .showcase-side::before{
   content:""; position:absolute; inset:0; pointer-events:none;
-  background-image:radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px);
+  background-image:radial-gradient(rgba(var(--acc-rgb),.18) 1px, transparent 1px);
   background-size:26px 26px;
   -webkit-mask-image:radial-gradient(75% 70% at 50% 45%, #000 30%, transparent 100%);
           mask-image:radial-gradient(75% 70% at 50% 45%, #000 30%, transparent 100%);
@@ -1811,7 +1813,7 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
   letter-spacing:-.03em; line-height:1.18; text-wrap:balance;
 }
 .showcase-quote em{
-  font-style:normal; background:linear-gradient(90deg,var(--primary-2),#60a5fa);
+  font-style:normal; background:linear-gradient(90deg,var(--primary-2),var(--accent));
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 [dir="rtl"] .showcase-quote{ letter-spacing:0; } /* отриц. трекинг рвёт арабскую вязь */
@@ -1836,20 +1838,21 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
 .t-card:hover{ background:var(--card-hover); border-color:var(--border-strong); transform:translateY(-3px); }
 .stars{ display:flex; gap:3px; color:var(--star); margin-bottom:13px; }
 .stars.dim{ opacity:.35; } /* честный реальный балл: <5 звёзд — тускло */
-.t-quote{ margin:0; font-size:14.5px; line-height:1.65; color:#dcdce4; }
+.t-quote{ margin:0; font-size:14.5px; line-height:1.65; color:rgba(var(--ink-rgb),.88); }
 .t-author{ margin-top:18px; display:flex; align-items:center; gap:12px; }
 .avatar{
   width:38px; height:38px; border-radius:50%; flex:none; display:grid; place-items:center;
-  font-size:13px; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,.2);
+  font-size:13px; font-weight:700; color:var(--on-accent); border:1px solid rgba(var(--ink-rgb),.25);
+  font-family:'Space Grotesk','Rubik',sans-serif;
 }
-.av-1{ background:linear-gradient(135deg,#7c5cff,#4f46e5); }
-.av-2{ background:linear-gradient(135deg,#f472b6,#db2777); }
-.av-3{ background:linear-gradient(135deg,#a78bfa,#7c3aed); } /* макет: зелёный — инвариант 10 */
-.av-4{ background:linear-gradient(135deg,#fbbf24,#d97706); }
-.av-5{ background:linear-gradient(135deg,#60a5fa,#2563eb); }
-.av-6{ background:linear-gradient(135deg,#8b5cf6,#6d28d9); }
-.av-7{ background:linear-gradient(135deg,#38bdf8,#0369a1); } /* макет: тил — инвариант 10 */
-.av-8{ background:linear-gradient(135deg,#fb7185,#e11d48); }
+.av-1{ background:linear-gradient(135deg,var(--accent-hi),var(--accent)); }
+.av-2{ background:linear-gradient(135deg,var(--accent),var(--accent2)); }
+.av-3{ background:linear-gradient(135deg,var(--accent-hi),var(--accent2)); }
+.av-4{ background:linear-gradient(135deg,var(--tg),var(--accent)); }
+.av-5{ background:linear-gradient(135deg,var(--accent2),var(--accent-lo)); }
+.av-6{ background:linear-gradient(135deg,var(--accent-lo),var(--tg)); }
+.av-7{ background:linear-gradient(135deg,var(--accent-hi),var(--accent-lo)); }
+.av-8{ background:linear-gradient(135deg,var(--accent),var(--accent-lo)); }
 .t-name{ font-size:13.5px; font-weight:600; }
 .t-role{ font-size:12.5px; color:var(--muted-2); margin-top:2px; }
 /* ---- статистика под лентами (дословно auth-1) ---- */
@@ -1861,7 +1864,7 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
 .stack .avatar{ width:32px; height:32px; font-size:11px; border:2px solid var(--background-2); }
 .stack .avatar:not(:first-child){ margin-inline-start:-10px; } /* макет: margin-left; RTL — логическое */
 .stat-text{ margin:0; font-size:13.5px; color:var(--muted); }
-.stat-text b{ color:var(--foreground); font-weight:700; }
+.stat-text b{ color:var(--foreground); font-weight:700; font-family:'Space Grotesk','Rubik',sans-serif; }
 .stars-inline{ display:inline-flex; gap:2px; color:var(--star); vertical-align:-2px; }
 /* ---- keyframes (дословно auth-1) ---- */
 @keyframes scroll-left  { from{ transform:translateX(0); }    to{ transform:translateX(-50%); } }
@@ -2606,6 +2609,30 @@ html[data-theme="sand"] .cities::after{ height:5px; }
 }
 .theme-sw.on .sw-check{ display:inline-flex; }
 
+/* ================= v5.9.0 · БЫСТРЫЕ ТЕМЫ В ШАПКЕ =================
+   Приказ владельца: «темы из настроек в верху гдето поставь но не панель
+   а гдето в начале сбоку» — строка дисков внутри липкой шапки (своя строка
+   после основного ряда), прижата к инлайн-старту; в RTL зеркалится сама
+   (flexbox по направлению). Это НЕ панель: оверлей не открывает, клик = тот
+   же ирис-переход, что в настройках; блок тем в настройках остаётся. */
+.quick-themes{
+  flex-basis:100%;
+  display:flex; align-items:center; gap:7px;
+  padding-top:9px; margin-top:9px;
+  border-top:1px solid var(--line-soft);
+  justify-content:flex-start;
+}
+.qt-sw{
+  width:20px; height:20px; border-radius:50%; padding:0; cursor:pointer;
+  border:1px solid rgba(var(--ink-rgb),.28);
+  background:linear-gradient(135deg, var(--sw1) 0 44%, var(--sw2) 44% 72%, var(--sw3) 72% 100%);
+  box-shadow:var(--raise-xs), inset 0 0 0 2px rgba(255,255,255,.14);
+  transition:transform .15s var(--fl-ease), box-shadow .15s;
+}
+.qt-sw:hover{ transform:scale(1.16); }
+.qt-sw:active{ transform:scale(.94); }
+.qt-sw.on{ box-shadow:0 0 0 2px rgba(var(--acc-rgb),.55), var(--raise-xs); }
+
 /* ================= v5.2.1 · ИРИС-ПЕРЕХОД ТЕМ =================
     Градиентная чернильная маска расходится ОТ ЦЕНТРА нажатого свотча
     (мягкий радиальный край — темнота нарастает виньеткой), накрывает экран
@@ -3277,7 +3304,7 @@ h4{ font-weight:700; }
    Центрированный футер секции #subsSec: бренд, тэглайн, соцкнопки
    (Telegram-канал + WhatsApp-поддержка), агент и офис — наша инфа. */
 .ft8{
-  width:100%; max-width:980px; margin-top:6px; padding-top:22px;
+  width:100%; max-width:980px; margin:10px auto 14px; padding-top:22px; /* v5.10.0: auto — центр внизу страницы (перенесён из вкладки «Тарифы») */
   border-top:1px solid var(--line-soft);
   display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center;
 }
@@ -3355,6 +3382,17 @@ h4{ font-weight:700; }
     <span id="notifBtnIc"></span>
     <span class="bn-badge" id="notifBadge" hidden></span>
   </button>
+  <!-- v5.9.0 · Быстрые темы: наверху, у стартовой стороны (RTL — справа сам).
+       Те же 7 тем, тот же ирис-переход; панель не открывает. -->
+  <div class="quick-themes" id="quickThemes" role="group" aria-label="Theme">
+    <button type="button" class="qt-sw" data-thm="sage"  style="--sw1:#243B35;--sw2:#6B8E7B;--sw3:#F1E9D2"></button>
+    <button type="button" class="qt-sw" data-thm="terra" style="--sw1:#F4D6C6;--sw2:#A44A3F;--sw3:#6B2F2F"></button>
+    <button type="button" class="qt-sw" data-thm="tang"  style="--sw1:#EB7D00;--sw2:#2E2910;--sw3:#EBE3A7"></button>
+    <button type="button" class="qt-sw" data-thm="ocean" style="--sw1:#0B2545;--sw2:#5B9BD5;--sw3:#DCEAF7"></button>
+    <button type="button" class="qt-sw" data-thm="sand"  style="--sw1:#F3ECDE;--sw2:#D4AF83;--sw3:#183451"></button>
+    <button type="button" class="qt-sw" data-thm="night" style="--sw1:#24272F;--sw2:#D22C42;--sw3:#EAECF3"></button>
+    <button type="button" class="qt-sw" data-thm="day"   style="--sw1:#E4E7EF;--sw2:#B81630;--sw3:#2B2F3C"></button>
+  </div>
 </header>
 
 <section class="hero reveal">
@@ -3587,21 +3625,6 @@ h4{ font-weight:700; }
     <!-- v5.6.2: CTA 13 «Выделяйся» переехал НАВЕРХ главной страницы
          (после волны-ленты, перед городами) — приказ «выше, заметнее»;
          из раздела «Тарифы» убран. -->
-    <!-- v5.5.0 · Footer 8 (React Bits Pro → vanilla): центрированный футер
-         с соцкнопками — наша реальная инфа: Telegram-канал, WhatsApp-
-         поддержка (WA_SUPPORT), агент и офис из футера каталога
-         (footerAgent/footerAddress, уже переведены на 6 языков). -->
-    <footer class="ft8" id="ft8Sec">
-      <span class="ft8-brand">DALIL SURIYA <b aria-hidden="true">✦</b> دليل سوريا</span>
-      <span class="ft8-tag" data-i18n="wTag"></span>
-      <nav class="ft8-soc" aria-label="Contacts">
-        <a href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener" aria-label="Telegram"><span id="ftIcTg"></span></a>
-        <a href="https://wa.me/963939481984" target="_blank" rel="noopener" aria-label="WhatsApp"><span id="ftIcWa"></span></a>
-      </nav>
-      <p class="ft8-line" data-i18n="footerAgent"></p>
-      <p class="ft8-line ft8-addr" data-i18n="footerAddress"></p>
-      <p class="ft8-copy" dir="ltr">© 2026 DALIL SURIYA · دليل سوريا</p>
-    </footer>
 </section>
 
 <footer class="reveal">
@@ -3629,6 +3652,26 @@ h4{ font-weight:700; }
   </button></div>
   <div class="ver-line" dir="ltr"><span class="ver-badge" id="verBadge"></span></div>
 </footer>
+
+<!-- v5.10.0 · Footer 8 (React Bits Pro → vanilla, блок с v5.5.0) — ПЕРЕНЕСЁН
+     приказом владельца «добавь на страницу вниз вот это» на САМОЕ ДНО главной
+     страницы (жил внутри скрытой вкладки «Тарифы» и был не виден).
+     Разметка/контент 1-в-1: Telegram-канал, WhatsApp-поддержка, агент и офис. -->
+    <!-- v5.5.0 · Footer 8 (React Bits Pro → vanilla): центрированный футер
+         с соцкнопками — наша реальная инфа: Telegram-канал, WhatsApp-
+         поддержка (WA_SUPPORT), агент и офис из футера каталога
+         (footerAgent/footerAddress, уже переведены на 6 языков). -->
+    <footer class="ft8" id="ft8Sec">
+      <span class="ft8-brand">DALIL SURIYA <b aria-hidden="true">✦</b> دليل سوريا</span>
+      <span class="ft8-tag" data-i18n="wTag"></span>
+      <nav class="ft8-soc" aria-label="Contacts">
+        <a href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener" aria-label="Telegram"><span id="ftIcTg"></span></a>
+        <a href="https://wa.me/963939481984" target="_blank" rel="noopener" aria-label="WhatsApp"><span id="ftIcWa"></span></a>
+      </nav>
+      <p class="ft8-line" data-i18n="footerAgent"></p>
+      <p class="ft8-line ft8-addr" data-i18n="footerAddress"></p>
+      <p class="ft8-copy" dir="ltr">© 2026 DALIL SURIYA · دليل سوريا</p>
+    </footer>
 
 <button class="float-panel" id="floatPanel" type="button">
   <span id="panelIc"></span><span data-i18n="admPanelBtn"></span><span class="reqs-badge" id="floatPanelBadge" hidden></span>
@@ -3737,7 +3780,7 @@ h4{ font-weight:700; }
   </div>
   <div class="wv3-shell">
     <!-- v5.8.0 · ПЕРВАЯ СТОРОНА: вход (auth-1 владельца; все ID обработчиков прежние:
-         wv2Form/wv2Email/wv2Pass/wv2Eye/wv2Go/wvGuest/wvEmail/wvGoogle/wvTg/wvGithub) -->
+         wv2Form/wv2Email/wv2Pass/wv2Eye/wv2Go/wvGuest/wvEmail/wvGoogle/wvGithub) -->
     <section class="wv3-auth" aria-label="Sign in">
       <div class="wv3-brand">
         <span class="wv3-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5.4 5.4h13.2v13.2H5.4z" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.4l9.6 9.6-9.6 9.6L2.4 12z" fill="currentColor" opacity=".9"/></svg></span>
@@ -3772,7 +3815,6 @@ h4{ font-weight:700; }
         <div class="wv3-div"><span></span><em data-i18n="auOr"></em><span></span></div>
         <div class="wv3-social">
           <button type="button" class="wv3-oab" id="wvGoogle"><span class="wv-gic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span data-i18n="auGoogle"></span></button>
-          <button type="button" class="wv3-oab" id="wvTg"><span class="wv-gic tg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span><span data-i18n="wT1"></span></button>
           <button type="button" class="wv3-oab" id="wvGithub"><span class="wv-gic gh"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 2.87-.39c.97 0 1.95.13 2.87.39 2.19-1.49 3.15-1.18 3.15-1.18.62 1.58.23 2.75.11 3.04.73.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></span><span data-i18n="ghBtn"></span></button>
         </div>
         <div class="wv3-links">
@@ -3820,7 +3862,6 @@ h4{ font-weight:700; }
         <button type="button" data-aum="email" data-i18n="wE1"></button>
         <button type="button" data-aum="whatsapp" data-i18n="wW1"></button>
         <button type="button" data-aum="google" data-i18n="auGoogle"></button>
-        <button type="button" data-aum="telegram" data-i18n="wT1"></button>
         <!-- v5.7.0: GitHub-вход в модалке — включается только флагом github из /api/auth/config -->
         <button type="button" data-aum="github" data-i18n="ghBtn"></button>
       </div>
@@ -4493,7 +4534,7 @@ h4{ font-weight:700; }
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "5.8.1";
+  const APP_VERSION = "5.10.1";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -7710,15 +7751,10 @@ h4{ font-weight:700; }
     lang: (() => {
       const l = store.get("dalil_lang") || store.get("rakka_lang");
       if (["ru","ar","en","ku","de","tr"].includes(l)) return l;
-      /* v1.3.3: первый запуск — берём ЯЗЫК УСТРОЙСТВА, а не жёсткий арабский.
-         Телефон на русском → приложение на русском; на арабском → на арабском. */
-      const nav = (navigator.languages && navigator.languages.length)
-        ? navigator.languages : [navigator.language || "ar"];
-      for (const tag of nav) {
-        const p = String(tag).slice(0, 2).toLowerCase();
-        if (["ru","ar","en","ku","de","tr"].includes(p)) return p;
-      }
-      return "ar";   /* фолбэк для прочих языков (справочник Сирии) */
+      /* v5.9.0 (приказ владельца): сайт открывается АВТОМАТОМ НА АРАБСКОМ —
+         детект языка устройства убран. Первый запуск = арабский (справочник
+         Сирии); выбранный язык сохраняется (dalil_lang) и приоритетен. */
+      return "ar";
     })(),
     city: (() => {
       const c = store.get("dalil_city");
@@ -8446,6 +8482,11 @@ h4{ font-weight:700; }
     document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
     document.querySelectorAll("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
     document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
+    /* v5.9.0: title/aria дисков быстрых тем — названия тем из словаря */
+    document.querySelectorAll(".qt-sw[data-thm]").forEach(b => {
+      const k = "theme" + b.dataset.thm.charAt(0).toUpperCase() + b.dataset.thm.slice(1);
+      b.title = t(k); b.setAttribute("aria-label", t(k));
+    });
     /* v1.5.0: кнопка аккаунта в шапке и видимость экрана приветствия */
     if (typeof renderAuthUI === "function") renderAuthUI();
     $("heroAlt").textContent = t("heroTag");
@@ -9553,7 +9594,15 @@ h4{ font-weight:700; }
     document.documentElement.setAttribute("data-theme", th);
     document.documentElement.setAttribute("data-mode", THEME_MODE[th]);
     store.set("dalil_theme", th);
-    document.querySelectorAll(".theme-sw").forEach(b => b.classList.toggle("on", b.dataset.thm === th));
+    /* v5.9.0 (приказ владельца): тема сохраняется и В АККАУНТ — переживает
+       перезагрузку/полное закрытие (localStorage устройства), а при входе
+       в аккаунт возвращается тема именно этого пользователя. */
+    try {
+      const _uid = (typeof state !== "undefined" && state.user && !state.user.g && state.user.id)
+        ? String(state.user.id) : null;
+      if (_uid) localStorage.setItem("dalil_theme_u_" + _uid, th);
+    } catch (e) {}
+    document.querySelectorAll(".theme-sw,.qt-sw").forEach(b => b.classList.toggle("on", b.dataset.thm === th));
   }
   /* v5.2.1 · ИРИС-ПЕРЕХОД ТЕМ: клик по свотчу → градиентная чернильная маска
      расходится от его центра до 100% чёрного → тема переключается под
@@ -9620,6 +9669,9 @@ h4{ font-weight:700; }
     }, W_T1 + 40);
   }
   document.querySelectorAll(".theme-sw").forEach(b =>
+    b.addEventListener("click", () => themeWipe(b, b.dataset.thm)));
+  /* v5.9.0: диски быстрых тем в шапке — тот же ирис-переход (origin = диск) */
+  document.querySelectorAll(".qt-sw").forEach(b =>
     b.addEventListener("click", () => themeWipe(b, b.dataset.thm)));
   { const _legacy = store.get("dalil_theme");
     applyTheme(THEMES.includes(_legacy) ? _legacy
@@ -11373,6 +11425,13 @@ h4{ font-weight:700; }
 
   /* --- Сессия и аккаунты --- */
   state.user = (() => { try { return JSON.parse(store.get(USER_KEY) || "null"); } catch { return null; } })();
+  /* v5.9.0: при старте с живой сессией возвращаем тему аккаунта — с какой
+     темой закрыли, с той и откроется (перезагрузка/полное закрытие). */
+  try {
+    const _au = (state.user && !state.user.g && state.user.id)
+      ? localStorage.getItem("dalil_theme_u_" + String(state.user.id)) : null;
+    if (_au && _au !== localStorage.getItem("dalil_theme") && typeof applyTheme === "function") applyTheme(_au);
+  } catch (e) {}
   function isAuthed() { return !!(state.user && !state.user.g); }
   function accLabel() { return (state.user && (state.user.n || state.user.e)) || ""; }
   function setUser(u) {
@@ -11380,6 +11439,11 @@ h4{ font-weight:700; }
     try {
       if (u) localStorage.setItem(USER_KEY, JSON.stringify(u));
       else { localStorage.removeItem(USER_KEY); localStorage.removeItem(TOKEN_KEY); }
+    } catch (e) {}
+    /* v5.9.0: после входа — последняя тема ЭТОГО аккаунта (если отличается) */
+    try {
+      const _ut = (u && !u.g && u.id) ? localStorage.getItem("dalil_theme_u_" + String(u.id)) : null;
+      if (_ut && _ut !== localStorage.getItem("dalil_theme") && typeof applyTheme === "function") applyTheme(_ut);
     } catch (e) {}
     renderAuthUI();
   }
@@ -11520,7 +11584,6 @@ h4{ font-weight:700; }
      страницы (вкладка bnSubs), попапов после входа больше нет */
   $("wvGuest").addEventListener("click", () => { setUser({ g: 1 }); toast(t("tGuest")); });
   $("wvEmail").addEventListener("click", () => openAuth("reg", "email"));
-  $("wvTg").addEventListener("click", () => openAuth("reg", "telegram"));
   /* v5.7.0 · Auth 2: вход прямо на заставке — тот же сервер (/api/auth/login),
      те же ошибки (authApiErr) и finishLogin, что в модалке входа */
   $("wv2Eye").addEventListener("click", () => {
@@ -12560,33 +12623,6 @@ h4{ font-weight:700; }
   window.addEventListener("hashchange", googleBackScan);
   window.__dlGoogleBack = (tok) => googleBackProcess(String(tok || "").replace(/[^A-Za-z0-9_\-.]/g, ""));
   window.__dlOauthErr = () => { try { toast(t("auOauthFail")); } catch (e) {} };
-
-  /* --- v1.4.4 (п.25, приказ владельца): «приложение и сайт сами проверяют
-     код» — ожидание Telegram-входа переживает перезапуск приложения: Android
-     мог убить WebView, пока пользователь был в Telegram. Код ждём в
-     localStorage и при загрузке страницы возобновляем опрос /wait до токена
-     (на сервере код живёт 15 минут — после чистим). --- */
-  (async function tgResume() {
-    try {
-      const c = (localStorage.getItem("dl_tg_code") || "").toUpperCase();
-      const at = Number(localStorage.getItem("dl_tg_at") || 0);
-      if (!c || !/^[A-Z0-9]{6,12}$/.test(c)) return;
-      const stop = () => { try { localStorage.removeItem("dl_tg_code"); localStorage.removeItem("dl_tg_at"); } catch (e) {} };
-      if (state.user && !state.user.g) { stop(); return; }
-      if (at && Date.now() - at > 16 * 60 * 1000) { stop(); return; }
-      for (let i = 0; i < 40; i++) {
-        const r = await withTimeout(fetch(API + "/api/auth/telegram/wait?code=" + encodeURIComponent(c)), 62000);
-        const j = await r.json();
-        if (j && j.ok && j.token) {
-          stop();
-          finishLogin({ p: "telegram", id: j.user.id, n: j.user.name || "", e: "", token: j.token }, false);
-          return;
-        }
-        if (r.status === 404 || r.status === 410) { stop(); return; }
-        if (at && Date.now() - at > 16 * 60 * 1000) { stop(); return; }
-      }
-    } catch { /* тихо — фоновой процесс */ }
-  })();
 
   (async function restoreSession() {
     /* v1.4.4 (п.26): проверка сессии и подтяжка имени — общий syncMe() */
