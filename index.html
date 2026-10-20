@@ -547,6 +547,33 @@ html[data-mode="light"] .rip{
 }
 .brand svg{ width:24px; height:24px; color:var(--accent); }
 .brand-sub{ color:var(--muted); font-weight:500; font-size:.78rem; margin-inline-start:2px; }
+
+/* Brand meta badges — «Бесплатно · 15 городов» */
+.brand-meta{
+  display:inline-flex; align-items:center; gap:6px;
+  margin-inline-start:8px; padding-inline-start:8px;
+  border-inline-start:1px solid var(--line-soft);
+}
+.brand-meta .meta-badge{
+  display:inline-flex; align-items:center; gap:4px;
+  padding:2px 8px; border-radius:999px;
+  font-size:.62rem; font-weight:700; letter-spacing:.04em;
+  white-space:nowrap;
+}
+.brand-meta .meta-badge.free{
+  color:#1A1405; background:var(--vip-grad);
+  box-shadow:0 2px 8px -2px rgba(201,169,106,.5);
+}
+.brand-meta .meta-badge.cities{
+  color:var(--on-accent); background:var(--gold-grad);
+  box-shadow:0 2px 8px -2px rgba(var(--acc-rgb),.4);
+}
+.brand-meta .meta-badge svg{ width:10px; height:10px; flex:none; }
+
+/* Cabinet button in topbar (replaces bnCab) */
+#cabBtn{ position:relative; }
+#cabBtn .bn-badge{ top:-4px; inset-inline-end:-4px; }
+
 .btn-gear{
   width:38px; height:38px; flex:none; border-radius:12px;
   border:1px solid var(--line-soft); background:var(--surface);
@@ -1005,6 +1032,17 @@ html[dir="rtl"] .level-card:hover .lc-arrow{ transform:translateX(-2px); }
   background:linear-gradient(145deg,var(--accent-hi),var(--accent) 52%,var(--accent2));
   box-shadow:var(--raise-xs), var(--glow-accent), var(--sheen);
 }
+
+/* Small chips for subcategories on mobile */
+.chip-sm{
+  padding:5px 10px !important;
+  font-size:.68rem !important;
+  border-radius:8px !important;
+  min-height:32px !important;
+  line-height:1.2 !important;
+}
+.chip-sm svg{ width:12px !important; height:12px !important; }
+
 .chip-fav{ color:var(--muted); }
 .chip-fav.fav-on, .chip-fav.on{ color:var(--on-accent); }
 .mf-chip{
@@ -2388,6 +2426,19 @@ html[data-mode="light"] .promo{
   .modal-actions .btn{ flex:1 1 100%; }
   .row-actions .btn{ flex:1 1 44%; justify-content:center; }
   .row-actions .btn-sq{ flex:0 0 44px; }
+  /* Subcategories horizontal scroll on mobile */
+  .subs{
+    display:flex; gap:8px; overflow-x:auto;
+    scroll-snap-type:x mandatory; padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .subs::-webkit-scrollbar{ display:none; }
+  .subs .chip,
+  .subs .chip-sm{
+    flex:0 0 auto; scroll-snap-align:start;
+    white-space:nowrap;
+  }
 }
 @media (max-width:560px){
   .city-card{ flex-basis:112px; width:112px; min-height:112px; }   /* п.29: 112 на телефоне */
@@ -2408,6 +2459,7 @@ html[data-mode="light"] .promo{
   .btn-gear{ width:36px; height:36px; }
   .brand svg{ width:21px; height:21px; }
   .brand-sub{ display:none; }
+  .brand-meta{ display:none; }
   .cities{ padding-top:20px; }
   .row{ grid-template-columns:44px minmax(0,1fr); }
   .row-actions{ grid-column:1 / -1; }
@@ -3362,12 +3414,19 @@ h4{ font-weight:700; }
     </svg>
     DALIL SURIYA<span class="brand-sub" data-i18n="brandSub"></span>
   </a>
+  <div class="brand-meta" aria-hidden="true">
+    <span class="meta-badge free" data-i18n="metaFree"></span>
+    <span class="meta-badge cities" data-i18n="metaCities"></span>
+  </div>
   <!-- п.38: порядок шапки ЕЩЁ РАЗ новый — бренд · вход · VIP · настройки · колокол
        (v1.4.9 был: бренд · колокол · настройки · вход · VIP); поиск — второй строкой внутри карточки -->
   <button class="btn-login gold" id="loginBtn" type="button" aria-label="Sign in"></button>
   <button class="btn-vip" id="vipBtn" type="button" aria-label="VIP">
     <svg viewBox="0 0 48 34" fill="none" aria-hidden="true"><path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="currentColor" opacity=".92"/></svg>
     <span class="t">VIP</span>
+  </button>
+  <button class="btn-gear" id="cabBtn" type="button" aria-label="Cabinet" title="Кабинет">
+    <span id="cabBtnIc"></span>
   </button>
   <button class="btn-gear" id="settingsBtn" type="button" aria-label="Settings">
     <span id="gearIc"></span>
@@ -3677,18 +3736,15 @@ h4{ font-weight:700; }
   <span id="panelIc"></span><span data-i18n="admPanelBtn"></span><span class="reqs-badge" id="floatPanelBadge" hidden></span>
 </button>
 
-<!-- п.38: док переставлен ЕЩЁ РАЗ — Избранное · Главная · [+ Заявка FAB] · Кабинет · Тарифы · Карта
-     (v5.6.2: вкладка переименована в «Тарифы»; v5.6.0: + Подписки; v1.4.9: Карта · Кабинет · FAB · Главная · Избранное; v1.4.8: Главная · Карта · FAB · Избранное · Кабинет);
-     панель во всю ширину, уведомления в шапке, кабинет на панели (п.28) -->
+<!-- п.38: док переставлен — Главная · Категории · [+ Заявка FAB] · Кабинет · Карта
+      (Избранное убрано — есть сердечко на карточках; Тарифы — в Кабинете)
+      панель во всю ширину, уведомления в шапке, кабинет на панели (п.28) -->
 <nav class="bottom-nav" id="bottomNav" aria-label="Main">
-  <button type="button" class="bn-item" id="bnFav"><span class="bn-ic" id="bnFavIc"></span><span class="bn-t" data-i18n="favChip"></span></button>
   <button type="button" class="bn-item" id="bnHome"><span class="bn-ic" id="bnHomeIc"></span><span class="bn-t" data-i18n="navHome"></span></button>
+  <button type="button" class="bn-item" id="bnCats"><span class="bn-ic" id="bnCatsIc"></span><span class="bn-t" data-i18n="navCats"></span></button>
   <button type="button" class="bn-fab" id="subFab"><span class="fab-disc" id="subFabIcon"></span><span class="bn-t" data-i18n="applyBtn"></span></button>
   <!-- п.28: кабинет владельца анкеты — вкладка на нижней панели (приказ владельца) -->
   <button type="button" class="bn-item" id="bnCab"><span class="bn-ic" id="bnCabIc"></span><span class="bn-t" data-i18n="navCab"></span></button>
-  <!-- v5.6.2: вкладка «Тарифы» — открывает раздел тарифов #subsSec
-       (секция СКРЫТА с главного экрана, показывается как у карты) -->
-  <button type="button" class="bn-item" id="bnSubs"><span class="bn-ic" id="bnSubsIc"></span><span class="bn-t" data-i18n="navSubs"></span></button>
   <button type="button" class="bn-item" id="bnMap"><span class="bn-ic" id="bnMapIc"></span><span class="bn-t" data-i18n="mapTab"></span></button>
 </nav>
 
@@ -4911,6 +4967,8 @@ h4{ font-weight:700; }
       vipBlockLbl: "VIP-статус и продвижение",
       vipHint: "VIP — карточка всегда первая в списке. «Проверено» — золотая галочка доверия.",
       brandSub: "Справочник Сирии",
+      metaFree: "Бесплатно",
+      metaCities: "15 городов",
       tgBtn: "Telegram",
       citiesTitle: "Выберите город",
       citiesSub: "Сначала город — затем категории",
@@ -5380,6 +5438,8 @@ h4{ font-weight:700; }
       vipBlockLbl: "حالة VIP والترقية",
       vipHint: "VIP — البطاقة تبقى دائماً في الأعلى. «موثّق» — علامة ذهبية للثقة.",
       brandSub: "دليل سوريا",
+      metaFree: "مجاني",
+      metaCities: "15 مدينة",
       tgBtn: "تيليجرام",
       citiesTitle: "اختر المدينة",
       citiesSub: "اختر المدينة أولاً — ثم تظهر الأقسام",
@@ -5849,6 +5909,8 @@ h4{ font-weight:700; }
       vipBlockLbl: "Statûya VIP û pêşxistin",
       vipHint: "VIP — kart her tim li jor e. «Verîfkirî» — tîka zêrîn a baweriyê.",
       brandSub: "Rêznama Sûriyê",
+      metaFree: "Belaş",
+      metaCities: "15 bajar",
       tgBtn: "تێلێگرام",
       citiesTitle: "Bajarê xwe hilbijêre",
       citiesSub: "Berê bajarê hilbijêre — paşê beş xuya dibin",
@@ -6319,6 +6381,8 @@ h4{ font-weight:700; }
       vipBlockLbl: "VIP status & promotion",
       vipHint: "VIP — the card is always first in the list. «Verified» — golden trust badge.",
       brandSub: "Directory of Syria",
+      metaFree: "Free",
+      metaCities: "15 cities",
       tgBtn: "Telegram",
       citiesTitle: "Choose a city",
       citiesSub: "Pick a city first — then categories appear",
@@ -6789,6 +6853,8 @@ h4{ font-weight:700; }
       vipBlockLbl: "VIP-Status & Werbung",
       vipHint: "VIP — die Karte ist immer ganz oben. «Verifiziert» — goldenes Vertrauenssymbol.",
       brandSub: "Verzeichnis Syriens",
+      metaFree: "Kostenlos",
+      metaCities: "15 Städte",
       tgBtn: "Telegram",
       citiesTitle: "Stadt wählen",
       citiesSub: "Erst die Stadt — dann die Kategorien",
@@ -7259,6 +7325,8 @@ h4{ font-weight:700; }
       vipBlockLbl: "VIP durumu ve tanıtım",
       vipHint: "VIP — kart her zaman listenin başında. «Doğrulandı» — altın güven işareti.",
       brandSub: "Suriye Rehberi",
+      metaFree: "Ücretsiz",
+      metaCities: "15 şehir",
       tgBtn: "Telegram",
       citiesTitle: "Şehir seçin",
       citiesSub: "Önce şehir — sonra kategoriler",
@@ -9372,6 +9440,21 @@ h4{ font-weight:700; }
     document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnHome"));
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
+  $("bnCats").addEventListener("click", () => {
+    document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnCats"));
+    /* переключаем видимость секции категорий */
+    const cats = $("cats");
+    const subs = $("subs");
+    const listWrap = $("listWrap");
+    const citiesSection = $("citiesSection");
+    if (cats.hidden) {
+      cats.hidden = false; subs.hidden = true; listWrap.hidden = true;
+      if (citiesSection) citiesSection.hidden = true;
+    } else {
+      cats.hidden = true; subs.hidden = false; listWrap.hidden = false;
+      if (citiesSection) citiesSection.hidden = false;
+    }
+  });
   $("bnMap").addEventListener("click", () => {
     document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnMap"));
     openMapSection();
@@ -9379,15 +9462,6 @@ h4{ font-weight:700; }
   $("notifBtn").addEventListener("click", openNotifs);
   /* п.28: вкладка «Кабинет» — статистика анкет в один тап; гостю предложит вход */
   $("bnCab").addEventListener("click", openCabinet);
-  $("bnFav").addEventListener("click", () => {
-    document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnFav"));
-    if (!state.favOnly) { state.favOnly = true; renderListTools(); renderList(); }
-    setTimeout(() => { try { $("listWrap").scrollIntoView({ behavior: "smooth", block: "start" }); } catch {} }, 70);
-  });
-  /* v5.6.2: вкладка «Тарифы» — открывает раздел тарифов #subsSec:
-     секция СКРЫТА с главного экрана (приказ владельца), вкладка
-     снимает hidden и скроллит к ней — по образцу секции карты */
-  $("bnSubs").addEventListener("click", openSubsSec);
   /* ================= конец блока v1.3.0 ================= */
 
   /* Админ: скрутить просмотры на N (ввёл 15 — уберётся 15, ниже нуля не упадёт) */
@@ -12654,10 +12728,9 @@ h4{ font-weight:700; }
       $("mapIc").innerHTML = icon("map", 20);
       $("nearMeIc").innerHTML = icon("locate", 14);
       $("bnHomeIc").innerHTML = icon("home", 21);
-      $("bnMapIc").innerHTML = icon("map", 21);
+      $("bnCatsIc").innerHTML = icon("book", 21);
       $("bnCabIc").innerHTML = icon("chart", 21);   /* п.28: кабинет на нижней панели */
-      $("bnFavIc").innerHTML = icon("heart", 21);
-      $("bnSubsIc").innerHTML = icon("crown", 21);   /* v5.6.0: вкладка «Подписки» */
+      $("bnMapIc").innerHTML = icon("map", 21);
       $("fMapBtnIc").innerHTML = icon("pin", 15);
       $("aMapBtnIc").innerHTML = icon("pin", 15);
       $("panelIc").innerHTML = icon("gear", 16);
