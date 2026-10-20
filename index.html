@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/NotoSansArabic-arabic.woff2" crossorigin>
 <style>
 /* ================================================================
-   DALIL SURIYA · v5.2.1 «FIVE LANDS · Пять земель + Ночь и День»
+   DALIL SURIYA · v5.3.0 «FIVE LANDS · Пять земель + Ночь и День»
    Синтез NEUMORPHISM (Soft UI: монохромная глина, двойные мягкие тени,
    вдавленные поля, физическое нажатие) и FLUENT DESIGN (акриловый блик
    кромок без backdrop-filter, reveal-засветки, кривая cubic-bezier(.1,.9,.2,1),
@@ -34,7 +34,7 @@
    ================================================================ */
 
 /* ================================================================
-   DALIL SURIYA · v5.2.1 «FIVE LANDS · Пять земель + Ночь и День»
+   DALIL SURIYA · v5.3.0 «FIVE LANDS · Пять земель + Ночь и День»
    Синтез двух школ, написан с чистого листа:
    · NEUMORPHISM (Soft UI) — язык ПОВЕРХНОСТЕЙ: монохромная «глина»,
      элементы отлиты из того же материала, что и фон; двойные мягкие
@@ -1193,6 +1193,9 @@ html[data-mode="light"] .row::before{
   background:var(--input-bg); border:1px solid var(--line-soft);
   border-radius:var(--r-md); box-shadow:var(--press), var(--sheen);
 }
+/* v5.2.3 (перенесено): кнопки выхода из пустого города */
+.empty-actions{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+.empty-actions .btn{ min-width:170px; justify-content:center; }
 .empty svg, .empty > div:empty + *{ margin-inline:auto; }
 .empty svg{ width:52px; height:52px; color:var(--muted); opacity:.7; animation:floatSoft 4.5s ease-in-out infinite; }
 .empty h4{ margin:12px 0 6px; font-size:1.02rem; color:var(--card); }
@@ -1315,6 +1318,10 @@ html[dir="rtl"] .float-panel:active{ transform:translateX(50%) translateY(3px); 
   overflow-y:auto;
 }
 .overlay.show{ display:flex; }
+/* v5.7.0: заставка (z 10500) перекрывала модалку входа — «Создать аккаунт» с
+   welcome открывал modal ПОД заставкой и пользователь его не видел.
+   Поднимаем ТОЛЬКО authOverlay над заставкой: вход виден отовсюду. */
+#authOverlay{ z-index:11000; }
 .modal{
   --modal-px:clamp(18px,4vw,30px); --modal-py:clamp(18px,4vw,28px);
   width:min(560px,100%);
@@ -1353,7 +1360,19 @@ html[dir="rtl"] .float-panel:active{ transform:translateX(50%) translateY(3px); 
   font-size:.8rem; font-weight:600; line-height:1.5;
 }
 html[data-mode="light"] .err-banner{ color:var(--err-ink); }
-.err-banner.show{ display:block; animation:fadeUp .3s var(--fl-ease) backwards; }
+/* v5.7.0: баннер ошибки появляется с лёгкой дрожью — рука сама тянется исправить поле;
+   уважаем prefers-reduced-motion */
+.err-banner.show{ display:block; animation:fadeUp .28s var(--fl-ease) backwards, errShake .42s .04s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes errShake{
+  10%, 90%{ transform:translateX(-1px); }
+  20%, 80%{ transform:translateX(2px); }
+  30%, 50%, 70%{ transform:translateX(-4px); }
+  40%, 60%{ transform:translateX(4px); }
+}
+@media (prefers-reduced-motion:reduce){
+  .err-banner.show{ animation:fadeUp .28s var(--fl-ease) backwards; }
+  .wv2-oab.busy .wv-gic::after{ animation-duration:1.8s; }
+}
 .gate-modal{ text-align:center; }
 .gate-ic{
   width:58px; height:58px; margin:2px auto 12px; border-radius:18px;
@@ -1571,136 +1590,177 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
   font-family:'Space Grotesk','Rubik',sans-serif;
 }
 
-/* ================= WELCOME · сцена волн ================= */
+/* ================= WELCOME · AUTH 2 (React Bits Pro → vanilla) =================
+   v5.7.0 · Приказ владельца: прежний дизайн заставки (волны v1.5.0 +
+   Auth 1 marquee v5.6.1) снесён ДО НУЛЯ и собран заново по Auth 2 —
+   «Split sign-in with OAuth buttons»: слева бренд-панель с живым
+   halftone (точки — чистый CSS, движение только transform, без blur),
+   справа — вход: OAuth-кнопки (Google — реальный серверный OAuth,
+   Telegram-бот), «или», email+пароль (тот же /api/auth/login), гость,
+   ссылка на регистрацию. Всё на токенах (7 тем × 2 моды); RTL —
+   логическими свойствами; reduced-motion останавливает halftone. */
 #welcomeOv{
   position:fixed; inset:0; z-index:10500;
   background:var(--bg);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:20px; overflow:hidden;
+  padding:56px 20px 20px; overflow:auto;
 }
-.wv-bg{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-.wv-orb{ position:absolute; border-radius:50%; }
-.wv-orb1{
-  width:420px; height:420px; top:-140px; inset-inline-start:-120px;
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255,255,255,.10), transparent 52%),
-    radial-gradient(circle at 70% 74%, rgba(0,0,0,.4), transparent 60%),
-    radial-gradient(circle, var(--surface) 0%, var(--surface) 55%, transparent 64%);
-}
-.wv-orb2{
-  width:480px; height:480px; bottom:-180px; inset-inline-end:-150px;
-  background:
-    radial-gradient(circle at 30% 26%, rgba(255,255,255,.08), transparent 50%),
-    radial-gradient(circle at 72% 76%, rgba(0,0,0,.46), transparent 58%),
-    radial-gradient(circle, var(--bg2) 0%, var(--bg2) 54%, transparent 62%);
-}
-html[data-mode="light"] .wv-orb1{
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255,255,255,.95), transparent 50%),
-    radial-gradient(circle at 70% 74%, rgba(var(--lo-rgb),.5), transparent 58%),
-    radial-gradient(circle, var(--surface) 0%, var(--surface) 55%, transparent 64%);
-}
-html[data-mode="light"] .wv-orb2{
-  background:
-    radial-gradient(circle at 30% 26%, rgba(255,255,255,.9), transparent 48%),
-    radial-gradient(circle at 72% 76%, rgba(var(--lo-rgb),.55), transparent 56%),
-    radial-gradient(circle, var(--bg2) 0%, var(--bg2) 54%, transparent 62%);
-}
-.wv-grid{
-  position:absolute; inset:0;
-  background-image:radial-gradient(rgba(var(--line-rgb),.14) 1px, transparent 1.3px);
-  background-size:30px 30px;
-  -webkit-mask-image:radial-gradient(circle at 50% 40%, #000 0%, transparent 74%);
-          mask-image:radial-gradient(circle at 50% 40%, #000 0%, transparent 74%);
-}
-/* волны перекрашиваются CSS-ом (inline-заливки оригинала − розовая семья) */
-.wv-wave{ position:absolute; left:0; right:0; bottom:0; width:200%; height:150px; }
-.wv1 path{ fill:rgba(var(--acc-rgb),.13) !important; }
-.wv2 path{ fill:none !important; stroke:rgba(var(--acc-rgb),.4) !important; }
-.wv3 path{ fill:rgba(142,16,36,.10) !important; }
-.wv4 path{ fill:none !important; stroke:rgba(240,104,121,.35) !important; }
-html[data-mode="light"] .wv1 path{ fill:rgba(var(--acc-rgb),.12) !important; }
-html[data-mode="light"] .wv2 path{ stroke:rgba(var(--acc-rgb),.4) !important; }
-html[data-mode="light"] .wv3 path{ fill:rgba(140,11,59,.08) !important; }
-html[data-mode="light"] .wv4 path{ stroke:rgba(217,83,127,.4) !important; }
-.wv1{ animation:wvA 19s linear infinite; }
-.wv2{ animation:wvA 29s linear infinite reverse; opacity:.9; }
-.wv3{ animation:wvB 37s linear infinite; }
-.wv4{ animation:wvB 23s linear infinite reverse; opacity:.85; }
-.wv-top{ position:absolute; top:16px; inset-inline:0; display:flex; justify-content:center; }
+/* языковые чипы — сверху по центру (функция та же, стиль новый) */
+.wv-top{ position:absolute; top:14px; inset-inline:0; display:flex; justify-content:center; z-index:3; }
 .wv-langs{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; padding:0 12px; }
 .wv-langs button{
-  padding:7px 13px; border-radius:10px; border:1px solid var(--line-soft);
-  background:var(--surface); color:var(--muted);
-  font-size:.72rem; font-weight:700; letter-spacing:.05em; cursor:pointer;
-  box-shadow:var(--raise-xs), var(--sheen);
-  transition:color .15s, box-shadow .15s, transform .15s var(--fl-ease);
+  font:inherit; font-size:.72rem; font-weight:700; letter-spacing:.06em;
+  color:var(--muted); background:var(--surface); border:1px solid var(--line-soft);
+  border-radius:999px; padding:7px 12px; cursor:pointer;
+  box-shadow:var(--raise-xs); transition:color .15s ease, transform .15s ease, border-color .15s ease;
 }
 .wv-langs button:hover{ color:var(--accent); }
 .wv-langs button:active{ box-shadow:var(--press-sm); }
-.wv-card{
-  position:relative; z-index:2; width:min(430px,94vw);
-  display:flex; flex-direction:column; gap:12px; align-items:center; text-align:center;
-  padding:clamp(22px,5vw,34px);
+/* ——— сплит-оболочка ——— */
+.wv2-shell{
+  position:relative; width:min(1060px,100%); min-height:600px;
+  display:grid; grid-template-columns:1fr 1fr;
+  background:var(--panel); border:1px solid var(--line-soft); border-radius:26px;
+  overflow:hidden; box-shadow:var(--raise), var(--sheen);
+}
+/* ——— ЛЕВАЯ ПАНЕЛЬ: бренд + halftone ——— */
+.wv2-side{
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; gap:28px;
+  padding:30px; color:var(--card); text-align:start;
+  background:
+    radial-gradient(90% 70% at 14% 6%, rgba(var(--acc-rgb),.20), transparent 62%),
+    radial-gradient(120% 90% at 100% 100%, rgba(var(--acc-rgb),.10), transparent 55%),
+    var(--surface);
+}
+/* halftone: два слоя точек, бесшовный цикл = сдвиг на тайл сетки */
+.wv2-side::before, .wv2-side::after{
+  content:""; position:absolute; inset:-64%; pointer-events:none;
+  background-image:radial-gradient(rgba(var(--acc-rgb),.34) 1.6px, transparent 1.7px);
+  background-size:16px 16px;
+  -webkit-mask-image:radial-gradient(115% 90% at 16% 8%, #000 26%, transparent 74%);
+          mask-image:radial-gradient(115% 90% at 16% 8%, #000 26%, transparent 74%);
+  animation:wv2Drift 16s linear infinite; will-change:transform;
+}
+.wv2-side::after{
+  background-image:radial-gradient(rgba(var(--ink-rgb),.10) 1.2px, transparent 1.3px);
+  background-size:24px 24px;
+  -webkit-mask-image:radial-gradient(120% 95% at 88% 96%, #000 20%, transparent 70%);
+          mask-image:radial-gradient(120% 95% at 88% 96%, #000 20%, transparent 70%);
+  animation-duration:24s; animation-direction:reverse;
+}
+@keyframes wv2Drift{ from{ transform:translate3d(0,0,0); } to{ transform:translate3d(32px,32px,0); } }
+.wv2-brand{ position:relative; display:flex; align-items:center; gap:11px; }
+.wv2-mark{
+  width:42px; height:42px; flex:none; padding:9px; border-radius:13px;
+  color:var(--accent); background:var(--panel); box-shadow:var(--raise-xs), var(--sheen);
+}
+.wv2-mark svg{ width:100%; height:100%; }
+.wv2-brand b{ font-weight:800; letter-spacing:.14em; font-size:.95rem; }
+.wv2-hero{ position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:10px; max-width:430px; }
+.wv2-head{ margin:0; font-size:clamp(1.55rem,2.4vw,2.2rem); line-height:1.16; font-weight:800; color:var(--card); }
+.wv2-sub{ margin:0; font-size:.92rem; line-height:1.6; color:var(--muted); }
+.wv2-tg{
+  display:inline-flex; align-items:center; gap:8px; margin-top:6px;
+  padding:9px 14px; border-radius:999px; text-decoration:none;
+  font-size:.8rem; font-weight:700; color:var(--card);
   background:var(--panel); border:1px solid var(--line-soft);
-  border-radius:26px;
-  box-shadow:var(--raise), var(--shadow-pop), var(--sheen);
-  animation:wvIn .5s var(--fl-ease) both;
+  box-shadow:var(--raise-xs); transition:transform .15s ease, color .15s ease;
 }
-.wv-mark{
-  width:46px; height:46px; padding:10px; border-radius:15px;
-  color:var(--accent); background:var(--surface);
+.wv2-tg svg{ width:15px; height:15px; color:var(--tg); }
+.wv2-tg:hover{ transform:translateY(-1px); color:var(--accent); }
+/* ——— ПРАВАЯ СТОРОНА: вход ——— */
+.wv2-form{ position:relative; display:flex; align-items:center; justify-content:center; padding:36px 30px; }
+.wv2-col{ width:min(400px,100%); display:flex; flex-direction:column; gap:11px; }
+.wv2-mbrand{ display:none; align-items:center; gap:9px; margin-bottom:2px; }
+.wv2-mbrand svg{ width:26px; height:26px; color:var(--accent); }
+.wv2-mbrand b{ font-weight:800; letter-spacing:.14em; font-size:.8rem; color:var(--muted); }
+.wv2-title{ margin:0 0 4px; font-size:2rem; font-weight:800; line-height:1.1; color:var(--card); }
+.wv2-btns{ display:flex; flex-direction:column; gap:9px; }
+.wv2-oab{
+  height:50px; display:flex; align-items:center; justify-content:center; gap:10px;
+  font:inherit; font-size:.95rem; font-weight:600; color:var(--card); cursor:pointer;
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:14px;
   box-shadow:var(--raise-xs), var(--sheen);
+  transition:transform .15s ease, border-color .15s ease, color .15s ease;
 }
-.wv-mark svg{ width:100%; height:100%; }
-.wv-brand{ font-weight:800; letter-spacing:.14em; font-size:.8rem; color:var(--muted); }
-.wv-tag{ font-size:.72rem; color:var(--muted); }
-.wv-title{ font-size:clamp(1.4rem,5vw,1.9rem); line-height:1.18; color:var(--card); }
-.wv-sub{ font-size:.86rem; color:var(--muted); line-height:1.6; }
-.wv-btns{ display:flex; flex-direction:column; gap:9px; width:100%; }
-.wv-soc{
-  position:relative; display:flex; align-items:center; justify-content:center; gap:10px;
-  width:100%; padding:12px 14px; border-radius:14px;
-  border:1px solid var(--line-soft); background:var(--surface); color:var(--card);
-  font-weight:700; font-size:.88rem; cursor:pointer;
-  box-shadow:var(--raise-xs), var(--sheen);
-  transition:box-shadow .15s var(--fl-ease), transform .15s var(--fl-ease), color .15s;
+.wv2-oab:hover{ transform:translateY(-1px); border-color:rgba(var(--acc-rgb),.45); color:var(--accent); }
+.wv2-oab:active{ transform:translateY(1px) scale(.99); box-shadow:var(--press-sm); }
+.wv2-oab svg{ width:19px; height:19px; flex:none; }
+.wv-gic{ display:inline-flex; width:22px; height:22px; flex:none; align-items:center; justify-content:center; background:#fff; border-radius:50%; }
+.wv-gic svg{ width:14px; height:14px; }
+.wv-gic.tg{ background:transparent; color:var(--tg); }
+.wv-gic.tg svg{ width:20px; height:20px; }
+.wv-gic.gh{ background:#fff; color:#181717; }   /* фирменный октокэт: чёрный на белом круге — читается во всех 7 темах */
+/* v5.7.0 · «аутентификация поинтереснее» — живая обратная связь:
+   кнопка OAuth на время проверки конфига получает спиннер вместо иконки */
+.wv2-oab.busy{ pointer-events:none; color:var(--muted); }
+.wv2-oab.busy .wv-gic{ background:transparent; }
+.wv2-oab.busy .wv-gic svg{ display:none; }
+.wv2-oab.busy .wv-gic::after{ content:""; width:13px; height:13px; border-radius:50%;
+  border:2px solid rgba(var(--acc-rgb),.3); border-top-color:var(--accent);
+  animation:wvSpin .7s linear infinite; }
+@keyframes wvSpin{ to{ transform:rotate(1turn); } }
+.wv2-oab:focus-visible, .wv2-go:focus-visible, .wv2-eye:focus-visible{
+  outline:2px solid rgba(var(--acc-rgb),.55); outline-offset:2px; }
+.wv2-div{ display:flex; align-items:center; gap:10px; color:var(--muted); margin:3px 0; }
+.wv2-div span{ flex:1; height:1px; background:var(--line); }
+.wv2-div em{ font-style:normal; font-size:.74rem; }
+.wv2-field{ position:relative; display:block; }
+.wv2-field input{
+  width:100%; height:50px; padding:0 16px;
+  font:inherit; font-size:.95rem; color:var(--card);
+  background:var(--input-bg); border:1px solid var(--line-soft); border-radius:14px;
+  outline:none; transition:border-color .15s ease, box-shadow .15s ease;
 }
-.wv-soc:hover{ color:var(--accent); }
-.wv-soc:active{ box-shadow:var(--press-sm); transform:scale(.985); }
-.wv-ic{ display:inline-flex; width:20px; height:20px; align-items:center; justify-content:center; }
-.wv-ic svg{ width:20px; height:20px; }
-.wv-ic.m{ color:var(--accent); }
-.wv-ic.tg{ color:var(--tg); }
-.wv-ic.wa{ color:var(--muted); }              /* WhatsApp — НЕ зелёный (п.35) */
-.wv-soc.soon{ opacity:.62; }
-.soon-b{
-  position:absolute; top:-8px; inset-inline-end:12px;
-  font-size:.56rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
-  padding:2px 8px; border-radius:99px; font-style:normal;
-  color:var(--on-accent); background:var(--accent);
+.wv2-field input::placeholder{ color:var(--muted); opacity:.75; }
+.wv2-field input:focus{ border-color:rgba(var(--acc-rgb),.55); box-shadow:0 0 0 2px rgba(var(--acc-rgb),.16); }
+.wv2-pw input{ padding-inline-end:48px; }
+.wv2-eye{
+  position:absolute; top:50%; inset-inline-end:8px; transform:translateY(-50%);
+  width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+  border:none; background:transparent; color:var(--muted); cursor:pointer; border-radius:10px;
 }
-.wv-row3{ display:flex; gap:9px; width:100%; }
-.wv-row2{ flex-direction:column; }
-.wv-div{ display:flex; align-items:center; gap:10px; width:100%; color:var(--muted); }
-.wv-div span{ flex:1; height:1px; background:var(--line); }
-.wv-div em{ font-style:normal; font-size:.72rem; }
-.wv-guest{
-  width:100%; padding:13px 0; border-radius:14px; border:none; cursor:pointer;
-  color:var(--on-accent); font-weight:800; font-size:.92rem;
+.wv2-eye:hover{ color:var(--accent); }
+.wv2-eye svg{ width:19px; height:19px; }
+.wv2-eye.off .eye-open{ display:none; }
+.wv2-eye:not(.off) .eye-closed{ display:none; }
+.wv2-go{
+  width:100%; height:52px; border:none; border-radius:14px; cursor:pointer;
+  font:inherit; font-size:1rem; font-weight:800; color:var(--on-accent);
   background:linear-gradient(145deg,var(--accent-hi),var(--accent) 52%,var(--accent2));
-  box-shadow:var(--raise-sm), var(--glow-accent), var(--sheen);
-  transition:box-shadow .15s, transform .15s var(--fl-ease), filter .15s;
+  box-shadow:var(--raise-sm), var(--glow-accent);
+  transition:transform .15s ease, filter .15s ease;
 }
-.wv-guest:hover{ filter:brightness(1.08); }
-.wv-guest:active{ box-shadow:var(--press-sm); transform:scale(.985); }
-.wv-have{ font-size:.8rem; color:var(--muted); }
-.wv-have button{
-  border:none; background:none; color:var(--accent); font-weight:700; cursor:pointer; font-size:.8rem;
+.wv2-go:hover{ filter:brightness(1.06); transform:translateY(-1px); }
+.wv2-go:active{ transform:translateY(1px) scale(.99); box-shadow:var(--press-sm); }
+.wv2-go:disabled{ opacity:.6; cursor:default; }
+.wv2-guest{
+  height:46px; margin-top:3px; border-radius:14px; cursor:pointer;
+  font:inherit; font-size:.9rem; font-weight:600; color:var(--muted);
+  background:transparent; border:1px solid var(--line-soft);
+  transition:color .15s ease, border-color .15s ease;
 }
-.wv-have button:hover{ text-decoration:underline; }
-.wv-real{ font-size:.72rem; color:var(--muted); opacity:.8; line-height:1.5; }
-.wv-tg{ width:100%; }
+.wv2-guest:hover{ color:var(--accent); border-color:rgba(var(--acc-rgb),.45); }
+.wv2-signup{
+  border:none; background:transparent; cursor:pointer; font:inherit;
+  font-size:.84rem; font-weight:700; color:var(--accent); padding:2px 0;
+}
+.wv2-signup:hover{ text-decoration:underline; }
+.wv2-real{ font-size:.72rem; color:var(--muted); opacity:.8; line-height:1.5; text-align:center; }
+.wv2-err{ margin:0; }
+/* ——— адаптив: <1080 панель скрывается, остаётся форма (как раньше) ——— */
+@media (max-width:1079px){
+  #welcomeOv{ padding:60px 14px 16px; }
+  .wv2-shell{ grid-template-columns:1fr; min-height:none; }
+  .wv2-side{ display:none; }
+  .wv2-form{ padding:28px 22px; }
+  .wv2-mbrand{ display:flex; }
+  .wv2-title{ font-size:1.7rem; }
+}
+@media (prefers-reduced-motion: reduce){
+  .wv2-side::before, .wv2-side::after{ animation:none !important; }
+}
 
 /* ================= ВХОД / АВТОРИЗАЦИЯ ================= */
 .auth-tabs{ display:flex; gap:8px; margin-bottom:14px; }
@@ -2185,7 +2245,6 @@ html[data-mode="light"] .promo{
   .plan{ flex-direction:row; justify-content:flex-start; text-align:start; }
   .plan.on{ }
   .hero-cta{ width:100%; justify-content:center; }
-  .wv-row3{ flex-direction:column; }
   .au-soc2{ grid-template-columns:1fr; }
   .modal-actions .btn{ flex:1 1 100%; }
   .row-actions .btn{ flex:1 1 44%; justify-content:center; }
@@ -2247,7 +2306,6 @@ html[data-mode="light"] .auth-tabs button.on,
 html[data-mode="light"] .adm-tab.on,
 html[data-mode="light"] .set-langs button.on,
 html[data-mode="light"] .au-methods button.on,
-html[data-mode="light"] .wv-guest,
 html[data-mode="light"] .cab-btn,
 html[data-mode="light"] .rep-reason.on,
 html[data-mode="light"] .map-pop-btn,
@@ -2457,9 +2515,218 @@ html[data-theme="sand"] .cities::after{ height:5px; }
   .empty svg{ animation:none !important; }
 }
 
+
+/* ================= v5.3 · TEXT LOOP (React Bits → vanilla) =================
+    Бегущая по волне лента бренда между hero и городами. Классы компонента
+    сохранены (.text-loop*), геометрия — viewBox 1200×420 (v5.3.1: компактнее).
+    Лента декоративная: aria-hidden внутри, role="img" с aria-label. */
+.text-loop{ position:relative; width:100%; overflow:hidden; }
+.text-loop-svg{ display:block; width:100%; height:auto; }
+.text-loop-text{ user-select:none; -webkit-user-select:none; }
+.text-loop-measure{ visibility:hidden; pointer-events:none; }
+.tl-band{ max-width:1180px; margin:0 auto; padding:2px var(--pad) 0; }
+.tl-band .text-loop{ border-radius:var(--r-sm); }
+/* ================= v5.3 · MAGIC BENTO (React Bits → vanilla) ================
+    Бенто-сетка кабинета. Переменные --mb-* замаплены на токены тем Dalil:
+    акцент свечения = var(--acc-rgb) → сетка живёт во всех 7 темах и обеих
+    модах без единого js-пересчёта. Поверхности — неоморфные тени app. */
+.magic-bento{
+  --mb-spring:cubic-bezier(0.34,1.4,0.64,1);
+  --mb-surface:linear-gradient(165deg, var(--surface) 0%, var(--input-bg) 100%);
+  --mb-edge:var(--line-soft);
+  --mb-highlight:rgba(var(--hi-rgb,255,255,255),.06);
+  --mb-shadow:var(--raise-xs), var(--sheen);
+  --mb-tile:var(--input-bg);
+  --mb-tile-edge:var(--line-soft);
+  --mb-tile-highlight:rgba(var(--hi-rgb,255,255,255),.12);
+  --mb-tile-shadow:var(--press-sm);
+  --mb-well:rgba(var(--ink-rgb,0,0,0),.04);
+  --mb-well-edge:var(--line-soft);
+  --mb-ink:var(--card);
+  --mb-muted:var(--muted);
+  --mb-glow-rgb:var(--acc-rgb);
+  --mb-accent-rgb:var(--acc-rgb);
+  --mb-accent-ink:var(--on-accent);
+  --mb-glow-alpha:.8;
+  --mb-spot-alpha:.08;
+  --mb-radius:var(--r-sm);
+  --mb-inner-radius:12px;
+  --mb-pad:15px;
+  --mb-spot-size:300px;
+  --mb-border-size:225px;
+  position:relative; box-sizing:border-box; display:grid;
+  grid-auto-flow:row dense; width:100%;
+  color:var(--mb-ink); -webkit-tap-highlight-color:transparent;
+}
+html[data-mode="light"] .magic-bento{
+  --mb-highlight:rgba(255,255,255,.85);
+  --mb-glow-alpha:.55;
+  --mb-spot-alpha:.05;
+  --mb-tile-shadow:0 4px 10px -5px rgba(24,24,27,.22);
+}
+@supports (transition-timing-function:linear(0,1)){
+  .magic-bento{ --mb-spring:linear(0,0.0603,0.2033,0.3821,0.5633,0.7258,0.8584,0.9574,1.0242,1.0634,1.0809,1.0828,1.0747,1.0613,1.046,1.0313,1.0186,1.0085,1.0012,0.9965,0.994,0.9931,0.9933,0.9941,0.9953,0.9966,0.9978,0.9988,1); }
+}
+.magic-bento__cell{ position:relative; min-width:0; min-height:0; --mb-delay:0ms; }
+.magic-bento[data-intro] .magic-bento__cell{ opacity:0; transform:translate3d(0,16px,0) scale(.97); }
+.magic-bento[data-intro] .magic-bento__cell[data-state="in"]{
+  opacity:1; transform:none;
+  transition:opacity 420ms cubic-bezier(.22,1,.36,1) var(--mb-delay),
+             transform 760ms var(--mb-spring) var(--mb-delay);
+}
+.magic-bento__card{
+  position:relative; box-sizing:border-box; display:flex;
+  width:100%; height:100%; flex-direction:column; overflow:hidden;
+  border-radius:var(--mb-radius); background:var(--mb-surface);
+  box-shadow:var(--mb-shadow); color:var(--mb-ink); text-decoration:none;
+  isolation:isolate; outline:none;
+  transform:perspective(900px) translate3d(var(--mb-tx,0px),var(--mb-ty,0px),0) scale(var(--mb-press,1));
+  user-select:none; -webkit-user-select:none;
+}
+.magic-bento__card[data-clickable]{ cursor:pointer; }
+.magic-bento__card:focus-visible{ box-shadow:var(--mb-shadow), 0 0 0 2px rgba(var(--mb-accent-rgb),.5); }
+.magic-bento__light{
+  position:absolute; inset:0; z-index:1; border-radius:inherit;
+  background:radial-gradient(var(--mb-spot-size) circle at var(--mb-x,-999px) var(--mb-y,-999px),
+    rgba(var(--mb-glow-rgb),calc(var(--mb-spot-alpha)*var(--mb-hot,0)*1)) 0%,
+    rgba(var(--mb-glow-rgb),calc(var(--mb-spot-alpha)*var(--mb-hot,0)*.973)) 15%,
+    rgba(var(--mb-glow-rgb),calc(var(--mb-spot-alpha)*var(--mb-hot,0)*.837)) 30%,
+    rgba(var(--mb-glow-rgb),calc(var(--mb-spot-alpha)*var(--mb-hot,0)*.593)) 45%,
+    rgba(var(--mb-glow-rgb),calc(var(--mb-spot-alpha)*var(--mb-hot,0)*.317)) 60%,
+    rgba(var(--mb-glow-rgb),calc(var(--mb-spot-alpha)*var(--mb-hot,0)*.104)) 75%,
+    rgba(var(--mb-glow-rgb),calc(var(--mb-spot-alpha)*var(--mb-hot,0)*.009)) 90%,
+    rgba(var(--mb-glow-rgb),0) 100%);
+  pointer-events:none;
+}
+.magic-bento__rim{
+  position:absolute; inset:0; z-index:3; border-radius:inherit;
+  box-shadow:inset 0 0 0 1px var(--mb-edge), inset 0 1px 0 var(--mb-highlight);
+  pointer-events:none;
+}
+.magic-bento__border{
+  position:absolute; inset:0; z-index:4; box-sizing:border-box; padding:1px;
+  border-radius:inherit;
+  background:
+    radial-gradient(var(--mb-border-size) circle at var(--mb-x,-999px) var(--mb-y,-999px),
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-near,0)*1)) 0%,
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-near,0)*.973)) 15%,
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-near,0)*.837)) 30%,
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-near,0)*.593)) 45%,
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-near,0)*.317)) 60%,
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-near,0)*.104)) 75%,
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-near,0)*.009)) 90%,
+      rgba(var(--mb-glow-rgb),0) 100%),
+    radial-gradient(circle at var(--mb-wx,-999px) var(--mb-wy,-999px),
+      rgba(var(--mb-glow-rgb),0) calc(var(--mb-wr,0px) - 110px),
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-wa,0)*.1)) calc(var(--mb-wr,0px) - 80px),
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-wa,0)*.32)) calc(var(--mb-wr,0px) - 52px),
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-wa,0)*.68)) calc(var(--mb-wr,0px) - 28px),
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-wa,0)*.94)) calc(var(--mb-wr,0px) - 10px),
+      rgba(var(--mb-glow-rgb),calc(var(--mb-glow-alpha)*var(--mb-wa,0))) calc(var(--mb-wr,0px) - 3px),
+      rgba(var(--mb-glow-rgb),0) var(--mb-wr,0px));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events:none;
+}
+.magic-bento__content{
+  position:relative; z-index:2; box-sizing:border-box; display:flex;
+  min-height:0; flex:1; flex-direction:column; gap:10px; padding:var(--mb-pad);
+}
+.magic-bento__header{
+  display:flex; min-width:0; align-items:center; gap:8px;
+  color:var(--mb-muted); font-size:12px; font-weight:600; line-height:16px;
+}
+.magic-bento__icon{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:24px; height:24px; border-radius:8px; flex:none;
+  color:var(--mb-accent-ink); background:rgb(var(--mb-accent-rgb));
+  box-shadow:0 2px 8px -3px rgba(var(--mb-accent-rgb),.55);
+}
+.magic-bento__icon svg{ width:13px; height:13px; }
+.magic-bento__label{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.magic-bento__visual{ position:relative; min-height:0; flex:1; display:flex; }
+.magic-bento__text{ display:flex; min-width:0; flex-direction:column; gap:2px; }
+.magic-bento__title{
+  margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  color:var(--mb-ink); font-size:15px; font-weight:800; line-height:20px;
+}
+.magic-bento__description{
+  margin:0; overflow:hidden; color:var(--mb-muted);
+  font-size:12.5px; line-height:17px;
+}
+.magic-bento[data-autohide] .magic-bento__title{ white-space:nowrap; }
+.magic-bento__well{
+  position:relative; box-sizing:border-box; border-radius:var(--mb-inner-radius);
+  background:var(--mb-well); box-shadow:inset 0 0 0 1px var(--mb-well-edge);
+}
+.magic-bento__figure{ display:flex; min-width:0; align-items:baseline; gap:6px; white-space:nowrap; }
+.magic-bento__figure-value{
+  color:var(--mb-ink); font-size:15px; font-variant-numeric:tabular-nums;
+  font-weight:700; letter-spacing:-.02em; line-height:18px;
+}
+.magic-bento__figure-note{
+  min-width:0; overflow:hidden; color:var(--mb-muted); text-overflow:ellipsis;
+  font-size:11.5px; font-variant-numeric:tabular-nums; line-height:14px;
+}
+.magic-bento__bars{ display:flex; min-height:0; flex:1; flex-direction:column; }
+.magic-bento__bars-plot{ display:flex; min-height:0; flex:1; align-items:flex-end; gap:5px; margin-top:6px; }
+.magic-bento__bar{
+  position:relative; height:calc(var(--h)*100%); min-height:3px; flex:1;
+  border-radius:3px 3px 2px 2px; background:rgba(var(--mb-accent-rgb),.18);
+  transform-origin:50% 100%;
+  transition:background-color 200ms ease, filter 200ms ease;
+}
+.magic-bento__bar[data-peak]{ background:rgb(var(--mb-accent-rgb)); }
+@media (hover:hover){
+  .magic-bento__bar:hover{ background:rgba(var(--mb-accent-rgb),.42); }
+  .magic-bento__bar[data-peak]:hover{ background:rgb(var(--mb-accent-rgb)); filter:brightness(1.1); }
+}
+/* --- крупная цифра стат-карты кабинета + подпись-примечание --- */
+.magic-bento .mb-big{ font-size:27px; font-weight:800; line-height:30px; letter-spacing:-.02em; }
+.magic-bento .mb-big .mb-note{ margin-inline-start:7px; font-size:11.5px; font-weight:600; color:var(--mb-muted); letter-spacing:0; }
+/* --- строки метрик в карточке анкеты --- */
+.cab-bento .mb-row{ display:flex; flex-wrap:wrap; gap:4px 13px; margin-top:2px; }
+.cab-bento .mb-row span{ font-size:.73rem; color:var(--mb-muted); display:inline-flex; align-items:center; gap:5px; }
+.cab-bento .mb-row svg{ width:12px; height:12px; color:var(--accent); opacity:.85; flex:none; }
+.cab-bento .mb-row b{ color:var(--mb-ink); font-weight:700; }
+.cab-bento .mb-row2{ font-size:.7rem; }
+.cab-bento .cab-item-act{ display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:4px; }
+.cab-bento .cab-item-act .btn{ padding:7px 12px; font-size:.76rem; min-height:34px; }
+.cab-bento .vip-badge{ flex:none; }
+.cab-bento .cab-vip{ border-radius:var(--mb-radius); }
+.cab-bento .cab-vip::before{
+  content:""; position:absolute; inset:0; z-index:0; border-radius:inherit;
+  background:linear-gradient(140deg, rgba(var(--mb-accent-rgb),.14), transparent 46%);
+  pointer-events:none;
+}
+/* --- пустой кабинет внутри бенто-карточки --- */
+.cab-empty-in{ align-items:center; justify-content:center; text-align:center; gap:9px; }
+.cab-empty-in h4{ margin:0; font-size:1rem; color:var(--mb-ink); }
+.cab-empty-in p{ margin:0; font-size:.8rem; color:var(--mb-muted); line-height:1.5; max-width:34ch; }
+.cab-empty-in .cab-empty-ic{
+  width:52px; height:52px; margin:2px auto 0; border-radius:16px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--mb-muted); background:var(--mb-well); box-shadow:var(--press-sm);
+}
+/* --- анимации карточек: рост баров / появление цифр (реиграются по клику) --- */
+.magic-bento[data-motion] .magic-bento__bar{
+  animation:magic-bento-grow 760ms var(--mb-spring) calc(var(--mb-delay) + 200ms + var(--i)*55ms) both paused;
+}
+.magic-bento[data-motion] .mb-big{
+  animation:magic-bento-pop 520ms var(--mb-spring) calc(var(--mb-delay) + 320ms) both paused;
+}
+/* как в оригинале: ячейка вошла в кадр (data-state=in) → анимации разблокируются */
+.magic-bento[data-motion] .magic-bento__cell[data-state="in"] .magic-bento__bar{ animation-play-state:running; }
+.magic-bento[data-motion] .magic-bento__cell[data-state="in"] .mb-big{ animation-play-state:running; }
+@keyframes magic-bento-grow{ from{ transform:scaleY(0); } to{ transform:scaleY(1); } }
+@keyframes magic-bento-pop{ from{ opacity:0; scale:.6; } to{ opacity:1; scale:1; } }
+/* --- сетка кабинета: модалка ≤560px → фикс 2 колонки --- */
+.cab-bento{ grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:minmax(116px,auto); gap:12px; }
+
 /* ================= ГАРАНТИИ ИНВАРИАНТОВ ================= */
 /* Жёсткий запрет blur-стекла (инвариант APK-WebView, все версии) */
-.topbar, .bottom-nav, .overlay, .overlay .modal, #welcomeOv, .wv-card,
+.topbar, .bottom-nav, .overlay, .overlay .modal, #welcomeOv,
 .search, .map-shell, .cc-cnt, .leafbar, .leaflet-pane, .toast, .float-panel{
   backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
 }
@@ -2605,8 +2872,6 @@ html[data-mode="light"] .stat-card.hot{ border-color:rgba(var(--acc-rgb),.3); }
   background:linear-gradient(145deg,var(--accent-hi),var(--accent) 52%,var(--accent2));
   box-shadow:var(--raise-xs), var(--glow-accent);
 }
-.wv-row2 > *{ width:100%; }
-.wv-tag{ font-size:.72rem; }
 .vip-badge b{ font-weight:inherit; letter-spacing:inherit; }
 .vip-toggle input{ position:absolute; opacity:0; pointer-events:none; }
 .vip-strip .b{ color:var(--vip-strong); font-weight:800; }
@@ -2647,6 +2912,269 @@ h4{ font-weight:700; }
 .theme-seg button + button{ }
 .plan-free{ border-color:rgba(201,169,106,.45); }
 .body-no-scroll{ overflow:hidden; }
+
+/* ================= v5.5.0 · PRICING 1 (React Bits Pro → vanilla) — в секции #subsSec внизу главной =================
+    Три тарифа (Базовый / Проверено / VIP) + тумблер биллинга месяц↔год.
+    Цены — наши ($0, $5/$39, $10/$70); CTA: мастер заявки, WhatsApp (data-pack),
+    «все пакеты» → VIP-модалка. VIP-карточка — антикварное золото §7
+    (--vip-grad/--vip-strong/--vip-wash не меняются). Все цвета — токены. */
+.pricing{
+  max-width:1180px; margin:0 auto; padding:30px var(--pad) 6px;
+  display:flex; flex-direction:column; gap:20px;
+}
+.pr-head{ display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; }
+.pr-head h2{ font-size:1.42rem; color:var(--card); display:flex; align-items:center; gap:9px; }
+.pr-head h2 svg{ width:21px; height:21px; color:var(--accent); }
+.pr-sub{ font-size:.86rem; color:var(--muted); line-height:1.55; max-width:540px; }
+.pr-toggle{
+  display:inline-flex; gap:4px; padding:4px; margin-top:4px;
+  border-radius:99px; background:var(--surface); border:1px solid var(--line-soft);
+  box-shadow:var(--raise-xs), var(--sheen);
+}
+.pr-toggle button{
+  border:none; background:transparent; cursor:pointer;
+  padding:8px 20px; border-radius:99px;
+  font-weight:700; font-size:.8rem; color:var(--muted);
+  transition:color .15s, box-shadow .15s, transform .15s var(--fl-ease);
+}
+.pr-toggle button.on{
+  color:var(--on-accent);
+  background:linear-gradient(145deg,var(--accent-hi),var(--accent) 52%,var(--accent2));
+  box-shadow:var(--raise-xs), var(--glow-accent);
+}
+.pr-toggle button:active{ transform:scale(.97); }
+.pr-grid{ display:grid; gap:14px; grid-template-columns:1fr; }
+@media (min-width:920px){ .pr-grid{ grid-template-columns:repeat(3,1fr); align-items:stretch; } }
+.pr-card{
+  position:relative; display:flex; flex-direction:column; gap:12px;
+  padding:22px 20px 18px; border-radius:22px;
+  background:var(--panel); border:1px solid var(--line-soft);
+  box-shadow:var(--raise-sm), var(--sheen);
+  transition:transform .2s var(--fl-ease), box-shadow .2s;
+}
+.pr-card:hover{ transform:translateY(-3px); box-shadow:var(--raise), var(--shadow-pop), var(--sheen); }
+.pr-card.best{ border-color:rgba(var(--acc-rgb),.5); }
+.pr-card.vipc{
+  border-color:rgba(201,169,106,.55);
+  background:linear-gradient(170deg,var(--panel) 46%,var(--vip-wash) 130%);
+}
+.pr-name{ font-weight:800; font-size:1rem; color:var(--card); display:flex; align-items:center; gap:8px; }
+.pr-name .pr-nic{
+  width:26px; height:26px; flex:none; border-radius:9px; padding:5px;
+  color:var(--accent); background:var(--surface); box-shadow:var(--raise-xs), var(--sheen);
+}
+.pr-name .pr-nic svg{ width:100%; height:100%; }
+.pr-card.vipc .pr-name .pr-nic{ color:#8A6B2F; background:var(--vip-wash); }
+.pr-price{ display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+.pr-num{
+  font-size:2.05rem; font-weight:800; color:var(--accent); line-height:1;
+  font-family:'Space Grotesk','Rubik',sans-serif;
+}
+.pr-card.vipc .pr-num{ color:var(--vip-strong); }
+.pr-per2{ font-size:.78rem; color:var(--muted); }
+.pr-per-free{ font-size:.78rem; color:var(--muted); }
+.pr-feats{ list-style:none; margin:4px 0 2px; padding:0; display:flex; flex-direction:column; gap:9px; flex:1; }
+.pr-feats li{
+  display:flex; gap:9px; align-items:flex-start;
+  font-size:.82rem; line-height:1.5; color:var(--muted);
+}
+.pr-feats li::before{
+  content:"✓"; flex:none; width:17px; height:17px; margin-top:1px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border-radius:50%; font-size:.62rem; font-weight:900;
+  color:var(--on-accent); background:var(--accent);
+}
+.pr-card.vipc .pr-feats li::before{ color:#1A1405; background:var(--vip-grad); }
+.pr-cta{
+  margin-top:4px; width:100%; min-height:44px; padding:11px 12px;
+  border-radius:13px; display:inline-flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:.88rem; text-align:center; text-decoration:none; cursor:pointer;
+  transition:box-shadow .15s, transform .15s var(--fl-ease), filter .15s;
+}
+.pr-cta.ghost{ border:1px solid var(--line-soft); background:var(--surface); color:var(--card); box-shadow:var(--raise-xs), var(--sheen); }
+.pr-cta.solid{ border:none; color:var(--on-accent); background:linear-gradient(145deg,var(--accent-hi),var(--accent) 52%,var(--accent2)); box-shadow:var(--raise-sm), var(--glow-accent), var(--sheen); }
+.pr-cta.gold{ border:none; color:#1A1405; background:var(--vip-grad); box-shadow:var(--raise-sm), var(--sheen); }
+.pr-cta:active{ transform:scale(.985); box-shadow:var(--press-sm); }
+.pr-cta:hover{ filter:brightness(1.05); }
+.pr-ribbon{
+  position:absolute; top:-11px; inset-inline-start:16px;
+  padding:3px 12px; border-radius:99px; white-space:nowrap;
+  font-size:.6rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  color:#1A1405; background:var(--vip-grad); box-shadow:var(--raise-xs), var(--sheen);
+}
+.pr-foot{ text-align:center; font-size:.74rem; color:var(--muted); line-height:1.5; padding:0 12px; }
+.pr-all{
+  align-self:center; border:none; background:transparent; cursor:pointer;
+  font-size:.8rem; font-weight:700; color:var(--accent);
+  display:inline-flex; align-items:center; gap:6px; padding:6px 10px;
+  border-radius:10px; transition:color .15s;
+}
+.pr-all svg{ width:14px; height:14px; }
+.pr-all:hover{ color:var(--accent-hi); }
+
+/* ================= v5.5.0 · Прайсинг живёт в секции #subsSec внизу главной =================
+    Вкладки кабинета переиспользуют .adm-tabs (темы/светлая мода уже
+    покрыты). Панель «Подписки»: текущие подписки анкет владельца
+    (реальные данные) + тарифы Pricing 1. В модалке ~560px тарифы всегда
+    в одну колонку, независимо от ширины вьюпорта. */
+.cab-tabs{ margin-top:2px; }
+.cab-pane{ display:flex; flex-direction:column; gap:14px; }
+.cab-pane[hidden]{ display:none; }
+/* v5.6.0: .cab-pane-оверрайды прайсинга удалены — прайсинг переехал
+   в секцию #subsSec внизу главной, в кабинете только список. */
+.pr-now{ display:flex; flex-direction:column; gap:8px; }
+.pr-now-none{
+  font-size:.8rem; color:var(--muted); line-height:1.55;
+  padding:11px 14px; border-radius:14px;
+  border:1px dashed var(--line-soft); background:var(--surface);
+}
+.pr-now-row{
+  display:flex; align-items:center; gap:10px; min-width:0;
+  padding:10px 13px; border-radius:14px;
+  background:var(--surface); border:1px solid var(--line-soft);
+  box-shadow:var(--raise-xs), var(--sheen);
+}
+.pr-now-row > b{
+  flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font-size:.82rem; color:var(--card);
+}
+.pr-now-meta{ display:flex; align-items:center; gap:7px; flex:none; font-size:.72rem; color:var(--muted); }
+.pr-now-exp{ color:var(--danger); font-weight:700; }
+.pr-now-badge{
+  flex:none; display:inline-flex; align-items:center;
+  padding:3px 9px; border-radius:99px;
+  font-size:.64rem; font-weight:800; letter-spacing:.04em;
+}
+.pr-now-badge.base{ color:var(--muted); background:var(--panel); border:1px solid var(--line-soft); }
+.pr-now-badge.ver{ color:var(--accent); background:rgba(var(--acc-rgb),.12); border:1px solid rgba(var(--acc-rgb),.4); }
+.pr-now-badge.vipb{ color:#1A1405; background:var(--vip-grad); }
+/* ============ v5.6.2 · СЕКЦИЯ «ТАРИФЫ» (#subsSec) ============
+   Приказ владельца: «тарифы убери в раздел тарифы, их не должно
+   быть на главном экране» — секция СКРЫТА из потока главной
+   страницы (hidden по умолчанию) и открывается вкладкой «Тарифы»
+   (bnSubs) или «Все тарифы» кабинета — как секция карты.
+   Состав: Pricing 1 + Footer 8 (центр, соцкнопки); CTA 13 «Выделяйся»
+   v5.6.2 переехал НАВЕРХ главной (после волны-ленты, перед городами).
+   display:flex требует явного [hidden]-правила. Всё на токенах —
+   7 тем × 2 моды; RTL — на inline-логике, движение только
+   transform/opacity (WebView-дружелюбно). */
+.subs-sec{
+  position:relative; width:100%; max-width:1060px; margin:0 auto;
+  padding:38px var(--pad) 8px;
+  display:flex; flex-direction:column; gap:18px; align-items:center;
+  scroll-margin-top:84px;   /* фиксированный topbar не накрывает заголовок */
+}
+.subs-sec[hidden]{ display:none !important; }  /* flex перебивает UA-hidden */
+/* Полутоновая подложка сверху секции (наследие фон-декора страницы 2) */
+.subs-sec::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:340px;
+  pointer-events:none;
+  background-image:radial-gradient(rgba(var(--acc-rgb),.055) 1.2px, transparent 1.3px);
+  background-size:22px 22px;
+  -webkit-mask-image:linear-gradient(#000 30%, transparent);
+          mask-image:linear-gradient(#000 30%, transparent);
+}
+.subs-sec > *{ position:relative; }
+.subs-head{ display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; }
+.sp-title{ font-size:1.5rem; color:var(--card); text-align:center; margin:0; }
+.sp-sub{ font-size:.88rem; color:var(--muted); line-height:1.6; text-align:center; max-width:560px; margin:0; }
+.sp-now{ width:100%; max-width:980px; }
+/* Прайсинг в секции: как в Pricing 1 — 3 колонки на ПК, одна на телефоне */
+.subs-sec .pricing{ width:100%; padding:6px 0 0; }
+.subs-sec .pr-grid{ grid-template-columns:repeat(3,1fr); max-width:980px; }
+.cab-look{ margin-top:2px; }
+/* ============ v5.5.0 · CTA 13 (React Bits Pro → vanilla) ============
+   Serif-панель с полутоновой (halftone) текстурой: точки — чистый CSS
+   (radial-gradient + mask-image), без blur-фильтров; заголовок Georgia
+   italic (для арабского — системный насх), золотая галочка и кнопка
+   в VIP-золоте §7 (без изменений канона).
+   v5.6.2: стоит НАВЕРХУ главной страницы — после волны-ленты,
+   перед городами (приказ: «выше, заметнее»), вне #subsSec. */
+/* v5.6.2: кубик «Выделяйся» живёт в общем потоке главной (после
+   волны-ленты) — центрируется сам через margin-inline:auto */
+.cta13{
+  position:relative; overflow:hidden; width:100%; max-width:980px;
+  margin:18px auto 0;
+  text-align:center; padding:36px 26px 32px;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+  background:var(--surface); border:1px solid var(--line-soft);
+  border-radius:var(--r-lg); box-shadow:var(--raise), var(--sheen);
+}
+.cta13::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:radial-gradient(rgba(var(--acc-rgb),.16) 1.3px, transparent 1.4px);
+  background-size:12px 12px;
+  -webkit-mask-image:radial-gradient(130% 100% at 50% 0%, #000 26%, transparent 76%);
+          mask-image:radial-gradient(130% 100% at 50% 0%, #000 26%, transparent 76%);
+}
+.cta13 > *{ position:relative; }
+.cta13-t{
+  font-family:Georgia,'Times New Roman',serif; font-style:italic; font-weight:700;
+  font-size:2.25rem; line-height:1.12; letter-spacing:.01em;
+  color:var(--card); margin:0;
+}
+.cta13-t::after{
+  content:""; display:block; width:64px; height:3px; margin:12px auto 0;
+  border-radius:2px; background:var(--vip-grad);
+}
+.cta13-s{
+  display:flex; align-items:center; justify-content:center; gap:9px; flex-wrap:wrap;
+  font-size:.92rem; color:var(--muted); line-height:1.55; max-width:560px; margin:0;
+}
+.cta13-chk{
+  width:24px; height:24px; flex:none; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:#1A1405; background:var(--vip-grad); box-shadow:var(--raise-xs);
+}
+.cta13-chk svg{ width:13px; height:13px; }
+.cta13-btn{
+  display:inline-flex; align-items:center; gap:9px; cursor:pointer;
+  border:none; border-radius:16px; padding:13px 26px;
+  font:inherit; font-weight:800; font-size:.95rem; color:#1A1405;
+  background:var(--vip-grad); box-shadow:var(--raise-sm), var(--sheen);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.cta13-btn:hover{ transform:translateY(-2px); filter:brightness(1.05); }
+.cta13-btn:active{ transform:translateY(1px) scale(.98); box-shadow:var(--press-sm); }
+.cta13-btn svg{ width:17px; height:17px; }
+/* ============ v5.5.0 · Footer 8 (React Bits Pro → vanilla) ============
+   Центрированный футер секции #subsSec: бренд, тэглайн, соцкнопки
+   (Telegram-канал + WhatsApp-поддержка), агент и офис — наша инфа. */
+.ft8{
+  width:100%; max-width:980px; margin-top:6px; padding-top:22px;
+  border-top:1px solid var(--line-soft);
+  display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center;
+}
+.ft8-brand{ font-weight:800; letter-spacing:.14em; font-size:.86rem; color:var(--card); }
+.ft8-brand b{ color:var(--accent); margin:0 6px; }
+.ft8-tag{ font-size:.78rem; color:var(--muted); }
+.ft8-soc{ display:flex; align-items:center; justify-content:center; gap:12px; margin:6px 0 2px; }
+.ft8-soc a{
+  width:42px; height:42px; border-radius:14px;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--card); background:var(--surface); border:1px solid var(--line-soft);
+  box-shadow:var(--raise-xs), var(--sheen);
+  transition:transform .15s ease, color .15s ease;
+}
+.ft8-soc a:hover{ transform:translateY(-2px); color:var(--accent); }
+.ft8-soc a svg{ width:19px; height:19px; }
+.ft8-line{ font-size:.74rem; color:var(--muted); line-height:1.55; max-width:620px; margin:0; }
+.ft8-line.ft8-addr{ font-size:.7rem; opacity:.85; }
+.ft8-copy{ font-size:.68rem; color:var(--muted); opacity:.8; letter-spacing:.06em; margin:2px 0 0; }
+@media (max-width:920px){
+  .subs-sec .pr-grid{ grid-template-columns:1fr; }
+  .cta13{ padding:30px 18px 26px; margin:16px var(--pad) 0; }  /* v5.6.2: боковые поля как у секций */
+  .cta13-t{ font-size:1.72rem; }
+}
+@media (max-width:560px){
+  .subs-sec{ padding:28px 14px 4px; gap:15px; }
+  .sp-title{ font-size:1.3rem; }
+  .ft8-soc a{ width:38px; height:38px; }
+}
+/* Marquee заставки: приглушённые звёзды без оценок + VIP-чип реальной анкеты */
+.wv-tstars.dim{ opacity:.4; }
+.wv-trow{ display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; }
+.wv-trow .vip-badge{ flex:none; }
 
 </style>
 </head>
@@ -2756,6 +3284,23 @@ h4{ font-weight:700; }
 
 
 
+
+<!-- v5.3.1 · TextLoop (React Bits → vanilla): компактная волна-лента между hero и городами, живёт от скролла -->
+<section class="tl-band reveal" aria-label="DALIL SURIYA">
+  <div id="tlMain"></div>
+</section>
+
+<!-- v5.6.2 · CTA 13 «Выделяйся» (React Bits Pro → vanilla): serif-заголовок,
+     полутоновая текстура чистым CSS (radial-gradient + mask, без blur-фильтров),
+     золотая галочка и кнопка в VIP-золото §7. Приказ владельца: «выделяйся
+     кубик этот выше заметнее поставь» — теперь сразу под hero, ПЕРЕД городами
+     (был в самом низу, под сеткой тарифов в #subsSec). Кнопка → VIP-модалка. -->
+<section class="cta13 reveal" id="cta13Sec" aria-label="CTA">
+  <h2 class="cta13-t" data-i18n="ctT"></h2>
+  <p class="cta13-s"><span class="cta13-chk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="ctS"></span></p>
+  <button type="button" class="cta13-btn" id="cta13Btn"><span id="ct13Ic" aria-hidden="true"></span><span data-i18n="ctCta"></span></button>
+</section>
+
 <!-- п.38: ГОРОДА ПЕРЕД КАТЕГОРИЯМИ — «сначала выбери город, потом услугу»
      (v1.4.9: категории до городов; v1.4.8: города-сетка до категорий) -->
 <section class="cities reveal" id="citiesSection" aria-label="Города">
@@ -2772,6 +3317,12 @@ h4{ font-weight:700; }
 
 <nav class="cats reveal" id="cats" aria-label="Категории"></nav>
 <div class="subs reveal" id="subs"></div>
+
+<!-- v5.6.2 · Раздел «ТАРИФЫ» (#subsSec) — СКРЫТ с главного экрана
+     (приказ владельца: «тарифы убери в раздел тарифы, их не должно
+     быть на главном экране»). Открывается вкладкой «Тарифы» (bnSubs)
+     или «Все тарифы» кабинета (spLookBtn) — как секция карты.
+     Вкладка «Подписки» кабинета — текущие подписки + кнопка перехода. -->
 
 
 <!-- v1.3.0 · Карта городов: анкеты с меткой + «Рядом со мной» -->
@@ -2810,10 +3361,112 @@ h4{ font-weight:700; }
       <div id="emptyIcon"></div>
       <h4 data-i18n="emptyTitle"></h4>
       <p data-i18n="emptyDesc"></p>
+      <!-- v5.2.3 (перенесено): город без анкет не запирает — выход одним нажатием -->
+      <div class="empty-actions" id="emptyActions" hidden>
+        <button type="button" class="btn btn-solid" id="emptyAllSyria" data-i18n="showAllSyria"></button>
+        <button type="button" class="btn btn-outline" id="emptyPickCity" data-i18n="pickOtherCity"></button>
+      </div>
     </div>
   </div>
 </main>
 
+<!-- ============================================================
+     v5.6.2 · СЕКЦИЯ «ТАРИФЫ» (#subsSec) — приказ «тарифы убери в
+     раздел тарифы, их не должно быть на главном экране»: секция
+     СКРЫТА (hidden) из потока главной страницы и ПОКАЗЫВАЕТСЯ
+     вкладкой «Тарифы» (bnSubs) на нижней панели или «Все тарифы»
+     кабинета — по образцу секции карты. Никаких попапов.
+     Состав (React Bits Pro → vanilla; порядок v5.6.2):
+       1) #spNow — текущие подписки владельца (скрыт, если пусто);
+       2) Pricing 1 — три тарифа + тумблер биллинга
+          ($0 / $5↔$39 / $10↔$70, WhatsApp-заказ, золотой VIP §7);
+       3) Footer 8 — центрированный футер с соцкнопками и нашей
+          инфой: Telegram-канал, WhatsApp-поддержка
+          (+963 939 481 984), агент и офис (footerAgent/footerAddress).
+       (CTA 13 «Выделяйся» v5.6.2 вынесен НАВЕРХ главной страницы.)
+     Блок «текущие подписки» (#spNow) — те же данные, что во вкладке
+     «Подписки» кабинета (renderSubsNow пишет в оба контейнера). -->
+<section class="subs-sec reveal" id="subsSec" aria-label="Subscriptions" hidden>
+  <header class="subs-head">
+    <h2 class="sp-title" data-i18n="spTitle"></h2>
+    <p class="sp-sub" data-i18n="spSub"></p>
+  </header>
+    <!-- Текущие подписки владельца — те же данные, что во вкладке
+         «Подписки» кабинета (renderSubsNow пишет в оба контейнера);
+         пустой список на странице просто скрыт. -->
+    <div class="pr-now sp-now" id="spNow" hidden aria-live="polite"></div>
+    <!-- v5.5.0 · Pricing 1 (React Bits Pro → vanilla) — теперь в секции #subsSec:
+         три тарифа + тумблер биллинга. Наши цены из VIP-модалки:
+         Проверено $5/мес · $39/год (выгода 35%), VIP $10/мес · $70/год
+         (выгода 42%), Базовый — $0 навсегда. CTA: Базовый → мастер заявки
+         (guardedApply), Проверено/VIP → WhatsApp-заказ (data-pack — готовый
+         wa.me-wiring), «все пакеты» → VIP-модалка. -->
+<section class="pricing" id="pricingSec" aria-label="Pricing">
+  <div class="pr-head">
+    <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span data-i18n="prTitle"></span></h2>
+    <p class="pr-sub" data-i18n="prSub"></p>
+    <div class="pr-toggle" role="group" aria-label="Billing period">
+      <button type="button" class="on" data-bill="m" data-i18n="prM"></button>
+      <button type="button" data-bill="y" data-i18n="prY"></button>
+    </div>
+  </div>
+  <div class="pr-grid">
+    <div class="pr-card">
+      <div class="pr-name"><span class="pr-nic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span data-i18n="prFreeName"></span></div>
+      <div class="pr-price"><b class="pr-num" dir="ltr">$0</b><span class="pr-per-free" data-i18n="heroB1"></span></div>
+      <ul class="pr-feats">
+        <li data-i18n="prF11"></li>
+        <li data-i18n="prF12"></li>
+        <li data-i18n="prF13"></li>
+      </ul>
+      <button type="button" class="pr-cta ghost" id="prFreeCta" data-i18n="applyBtn"></button>
+    </div>
+    <div class="pr-card best">
+      <div class="pr-name"><span class="pr-nic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><span data-i18n="prVerName"></span></div>
+      <div class="pr-price"><b class="pr-num" data-m="$5" data-y="$39" dir="ltr">$5</b><span class="pr-per2" data-i18n="prPerM"></span></div>
+      <span class="vip-save" hidden data-i18n="vipSave35"></span>
+      <ul class="pr-feats">
+        <li data-i18n="prF21"></li>
+        <li data-i18n="vipBV1"></li>
+        <li data-i18n="vipBV2"></li>
+      </ul>
+      <a class="pr-cta solid" data-pack="very" href="#" target="_blank" rel="noopener" data-i18n="vipOrder"></a>
+    </div>
+    <div class="pr-card vipc best">
+      <span class="pr-ribbon" data-i18n="vipPopular"></span>
+      <div class="pr-name"><span class="pr-nic"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 16.5 L3 6 L8.5 11 L12 4 L15.5 11 L21 6 L20 16.5 Z" fill="currentColor"/><rect x="5" y="18.5" width="14" height="2.2" rx="1.1" fill="currentColor"/></svg></span><span>VIP</span></div>
+      <div class="pr-price"><b class="pr-num" data-m="$10" data-y="$70" dir="ltr">$10</b><span class="pr-per2" data-i18n="prPerM"></span></div>
+      <span class="vip-save" hidden data-i18n="vipSave42"></span>
+      <ul class="pr-feats">
+        <li data-i18n="vipB1"></li>
+        <li data-i18n="vipB2"></li>
+        <li data-i18n="vipB3"></li>
+      </ul>
+      <a class="pr-cta gold" data-pack="vipy" href="#" target="_blank" rel="noopener" data-i18n="vipOrder"></a>
+    </div>
+  </div>
+  <p class="pr-foot" data-i18n="prFoot"></p>
+  <button type="button" class="pr-all" id="prAllBtn"><span data-i18n="vipAllBtn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+</section>
+    <!-- v5.6.2: CTA 13 «Выделяйся» переехал НАВЕРХ главной страницы
+         (после волны-ленты, перед городами) — приказ «выше, заметнее»;
+         из раздела «Тарифы» убран. -->
+    <!-- v5.5.0 · Footer 8 (React Bits Pro → vanilla): центрированный футер
+         с соцкнопками — наша реальная инфа: Telegram-канал, WhatsApp-
+         поддержка (WA_SUPPORT), агент и офис из футера каталога
+         (footerAgent/footerAddress, уже переведены на 6 языков). -->
+    <footer class="ft8" id="ft8Sec">
+      <span class="ft8-brand">DALIL SURIYA <b aria-hidden="true">✦</b> دليل سوريا</span>
+      <span class="ft8-tag" data-i18n="wTag"></span>
+      <nav class="ft8-soc" aria-label="Contacts">
+        <a href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener" aria-label="Telegram"><span id="ftIcTg"></span></a>
+        <a href="https://wa.me/963939481984" target="_blank" rel="noopener" aria-label="WhatsApp"><span id="ftIcWa"></span></a>
+      </nav>
+      <p class="ft8-line" data-i18n="footerAgent"></p>
+      <p class="ft8-line ft8-addr" data-i18n="footerAddress"></p>
+      <p class="ft8-copy" dir="ltr">© 2026 DALIL SURIYA · دليل سوريا</p>
+    </footer>
+</section>
 
 <footer class="reveal">
   <!-- п.38: преимущества переехали из отдельной секции В футер-колофон -->
@@ -2845,8 +3498,8 @@ h4{ font-weight:700; }
   <span id="panelIc"></span><span data-i18n="admPanelBtn"></span><span class="reqs-badge" id="floatPanelBadge" hidden></span>
 </button>
 
-<!-- п.38: док переставлен ЕЩЁ РАЗ — Избранное · Главная · [+ Заявка FAB] · Кабинет · Карта
-     (v1.4.9: Карта · Кабинет · FAB · Главная · Избранное; v1.4.8: Главная · Карта · FAB · Избранное · Кабинет);
+<!-- п.38: док переставлен ЕЩЁ РАЗ — Избранное · Главная · [+ Заявка FAB] · Кабинет · Тарифы · Карта
+     (v5.6.2: вкладка переименована в «Тарифы»; v5.6.0: + Подписки; v1.4.9: Карта · Кабинет · FAB · Главная · Избранное; v1.4.8: Главная · Карта · FAB · Избранное · Кабинет);
      панель во всю ширину, уведомления в шапке, кабинет на панели (п.28) -->
 <nav class="bottom-nav" id="bottomNav" aria-label="Main">
   <button type="button" class="bn-item" id="bnFav"><span class="bn-ic" id="bnFavIc"></span><span class="bn-t" data-i18n="favChip"></span></button>
@@ -2854,6 +3507,9 @@ h4{ font-weight:700; }
   <button type="button" class="bn-fab" id="subFab"><span class="fab-disc" id="subFabIcon"></span><span class="bn-t" data-i18n="applyBtn"></span></button>
   <!-- п.28: кабинет владельца анкеты — вкладка на нижней панели (приказ владельца) -->
   <button type="button" class="bn-item" id="bnCab"><span class="bn-ic" id="bnCabIc"></span><span class="bn-t" data-i18n="navCab"></span></button>
+  <!-- v5.6.2: вкладка «Тарифы» — открывает раздел тарифов #subsSec
+       (секция СКРЫТА с главного экрана, показывается как у карты) -->
+  <button type="button" class="bn-item" id="bnSubs"><span class="bn-ic" id="bnSubsIc"></span><span class="bn-t" data-i18n="navSubs"></span></button>
   <button type="button" class="bn-item" id="bnMap"><span class="bn-ic" id="bnMapIc"></span><span class="bn-t" data-i18n="mapTab"></span></button>
 </nav>
 
@@ -2925,20 +3581,14 @@ h4{ font-weight:700; }
 
 
 
-<!-- v1.5.0 · Экран приветствия: «Добро пожаловать в DALIL SURIYA».
-     Показывается, пока у посетителя нет аккаунта и он не выбрал «Войти как гость».
-     Язык — авто языка устройства (state.lang, v1.3.3); на экране есть переключатель
-     на случай, когда автоопределение попал мимо. Фон — динамичные волны. -->
+<!-- v5.7.0 · Экран приветствия — AUTH 2 (React Bits Pro → vanilla):
+     «Split sign-in with OAuth buttons». Прежний дизайн (волны v1.5.0 +
+     Auth 1 marquee v5.6.1) снесён ДО НУЛЯ по приказу владельца.
+     Слева — бренд-панель с живым halftone на токене тем, справа — вход:
+     OAuth-кнопки (Google — реальный серверный OAuth; Telegram-бот),
+     «или», email+пароль (тот же сервер /api/auth/login), гость, ссылка
+     на регистрацию (authOverlay). <1080px панель скрыта — остаётся форма. -->
 <div id="welcomeOv" hidden role="dialog" aria-modal="true" aria-label="Welcome">
-  <div class="wv-bg" aria-hidden="true">
-    <div class="wv-orb wv-orb1"></div>
-    <div class="wv-orb wv-orb2"></div>
-    <div class="wv-grid"></div>
-    <svg class="wv-wave wv1" viewBox="0 0 2400 190" preserveAspectRatio="none"><path fill="rgba(206,147,169,.15)" d="M0 120 Q150 40 300 120 T600 120 T900 120 T1200 120 T1500 120 T1800 120 T2100 120 T2400 120 V190 H0 Z"/></svg>
-    <svg class="wv-wave wv2" viewBox="0 0 2400 190" preserveAspectRatio="none"><path fill="none" stroke="rgba(180,116,141,.45)" stroke-width="1.6" d="M0 95 Q150 30 300 95 T600 95 T900 95 T1200 95 T1500 95 T1800 95 T2100 95 T2400 95"/></svg>
-    <svg class="wv-wave wv3" viewBox="0 0 2400 190" preserveAspectRatio="none"><path fill="rgba(180,116,141,.11)" d="M0 145 Q200 75 400 145 T800 145 T1200 145 T1600 145 T2000 145 T2400 145 V190 H0 Z"/></svg>
-    <svg class="wv-wave wv4" viewBox="0 0 2400 190" preserveAspectRatio="none"><path fill="none" stroke="rgba(206,147,169,.35)" stroke-width="1.2" d="M0 60 Q200 120 400 60 T800 60 T1200 60 T1600 60 T2000 60 T2400 60"/></svg>
-  </div>
   <div class="wv-top">
     <div class="wv-langs" id="wvLangs">
       <button type="button" data-wlang="ar">AR</button>
@@ -2949,33 +3599,57 @@ h4{ font-weight:700; }
       <button type="button" data-wlang="tr">TR</button>
     </div>
   </div>
-  <div class="wv-card">
-    <div class="wv-mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M5.4 5.4h13.2v13.2H5.4z" stroke="currentColor" stroke-width="1.6"/>
-        <path d="M12 2.4l9.6 9.6-9.6 9.6L2.4 12z" fill="currentColor" opacity=".9"/>
-      </svg>
-    </div>
-    <div class="wv-brand">DALIL SURIYA</div>
-    <div class="wv-tag" data-i18n="wTag"></div>
-    <h1 class="wv-title" data-i18n-html="wTitle"></h1>
-    <p class="wv-sub" data-i18n="wSub"></p>
-    <div class="wv-btns">
-      <button type="button" class="wv-soc wv-mail" id="wvEmail"><span class="wv-ic m" id="icMail"></span><span data-i18n="wE1"></span></button>
-      <button type="button" class="wv-soc" id="wvGoogle"><span class="wv-ic" style="width:22px;height:22px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span data-i18n="auGoogle"></span></button>
-      <div class="wv-row3 wv-row2">
-        <button type="button" class="wv-soc soon" id="wvWhats"><span class="wv-ic wa" id="icWhats"></span><span data-i18n="wW1"></span><em class="soon-b" data-i18n="auSoon"></em></button>
-        <button type="button" class="wv-soc" id="wvTg"><span class="wv-ic tg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span><span data-i18n="wT1"></span></button>
+  <div class="wv2-shell">
+    <aside class="wv2-side" aria-hidden="true">
+      <div class="wv2-brand">
+        <span class="wv2-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5.4 5.4h13.2v13.2H5.4z" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.4l9.6 9.6-9.6 9.6L2.4 12z" fill="currentColor" opacity=".9"/></svg></span>
+        <b>DALIL SURIYA</b>
+      </div>
+      <div class="wv2-hero">
+        <h2 class="wv2-head" data-i18n="wvTsH"></h2>
+        <p class="wv2-sub" data-i18n="wvTsS"></p>
+        <a class="wv2-tg" href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener" aria-label="Telegram channel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span data-i18n="tgBtn"></span>
+        </a>
+      </div>
+    </aside>
+    <div class="wv2-form">
+      <div class="wv2-col">
+        <div class="wv2-mbrand" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5.4 5.4h13.2v13.2H5.4z" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.4l9.6 9.6-9.6 9.6L2.4 12z" fill="currentColor" opacity=".9"/></svg>
+          <b>DALIL SURIYA</b>
+        </div>
+        <h1 class="wv2-title" data-i18n="auTabLogin"></h1>
+        <div class="wv2-btns">
+          <button type="button" class="wv2-oab" id="wvGoogle"><span class="wv-gic"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span data-i18n="auGoogle"></span></button>
+          <button type="button" class="wv2-oab" id="wvTg"><span class="wv-gic tg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span><span data-i18n="wT1"></span></button>
+          <!-- v5.7.0 · GitHub — третья кнопка OAuth в общем ряду (приказ владельца:
+               «кнопку авторизации с гитом вернёшь как-нибудь») — тот же серверный
+               паттерн /api/auth/github/start, гейт по config.github (п.12 §4) -->
+          <button type="button" class="wv2-oab" id="wvGithub"><span class="wv-gic gh"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 2.87-.39c.97 0 1.95.13 2.87.39 2.19-1.49 3.15-1.18 3.15-1.18.62 1.58.23 2.75.11 3.04.73.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.4-5.25 5.68.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></span><span data-i18n="ghBtn"></span></button>
+        </div>
+        <div class="wv2-div"><span></span><em data-i18n="auOr"></em><span></span></div>
+        <div class="err-banner wv2-err" id="wv2Err" role="alert"></div>
+        <form id="wv2Form" novalidate>
+          <div class="wv2-field">
+            <input id="wv2Email" type="email" inputmode="email" autocomplete="email"
+                   autocapitalize="none" autocorrect="off" spellcheck="false" data-i18n-ph="phEmail">
+          </div>
+          <div class="wv2-field wv2-pw">
+            <input id="wv2Pass" type="password" autocomplete="current-password" data-i18n-ph="password">
+            <button type="button" class="wv2-eye" id="wv2Eye" aria-label="Show password">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+          <button class="wv2-go" type="submit" id="wv2Go" data-i18n="login"></button>
+        </form>
+        <button type="button" class="wv2-guest" id="wvGuest" data-i18n="wGuest"></button>
+        <button type="button" class="wv2-signup" id="wvEmail" data-i18n="auToReg"></button>
+        <div class="wv2-real" data-i18n="wReal"></div>
       </div>
     </div>
-    <div class="wv-div"><span></span><em data-i18n="auOr"></em><span></span></div>
-    <button type="button" class="wv-guest" id="wvGuest" data-i18n="wGuest"></button>
-    <div class="wv-have"><span data-i18n="wHave"></span> <button type="button" id="wvEnter" data-i18n="wEnter"></button></div>
-    <div class="wv-real" data-i18n="wReal"></div>
-    <a class="btn-tg wv-tg" href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener" aria-label="Telegram channel">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      <span data-i18n="tgBtn"></span>
-    </a>
   </div>
 </div>
 
@@ -2997,6 +3671,8 @@ h4{ font-weight:700; }
         <button type="button" data-aum="whatsapp" data-i18n="wW1"></button>
         <button type="button" data-aum="google" data-i18n="auGoogle"></button>
         <button type="button" data-aum="telegram" data-i18n="wT1"></button>
+        <!-- v5.7.0: GitHub-вход в модалке — включается только флагом github из /api/auth/config -->
+        <button type="button" data-aum="github" data-i18n="ghBtn"></button>
       </div>
       <form id="auForm" novalidate>
         <div class="field" id="auNameF" hidden>
@@ -3456,15 +4132,23 @@ h4{ font-weight:700; }
       <h3 data-i18n="cabTitle"></h3>
       <button class="modal-close" type="button" data-close="cabOverlay" aria-label="Close"></button>
     </div>
-    <div class="cab-sub" id="cabSub"></div>
-    <div class="cab-summary" id="cabSummary"></div>
-    <div class="cab-list" id="cabList"></div>
-    <div class="cab-empty" id="cabEmpty" hidden>
-      <span class="cab-empty-ic" id="cabEmptyIc"></span>
-      <h4 data-i18n="cabNoList"></h4>
-      <p data-i18n="cabNoListD"></p>
-      <button type="button" class="cab-add" id="cabAddBtn"></button>
+    <!-- v5.5.0 · Вкладки кабинета: «Анкеты» (бенто v5.3) и «Подписки» (текущие подписки + переход к секции тарифов) -->
+    <div class="adm-tabs cab-tabs" id="cabTabs" role="tablist" aria-label="Cabinet sections">
+      <button type="button" class="adm-tab on" data-cabtab="docs" role="tab" aria-selected="true"><span data-i18n="tabDocs"></span></button>
+      <button type="button" class="adm-tab" data-cabtab="subs" role="tab" aria-selected="false"><span data-i18n="cabTabSubs"></span></button>
     </div>
+    <div class="cab-pane" id="cabPaneDocs">
+      <div class="cab-sub" id="cabSub"></div>
+      <!-- v5.3 · MagicBento (React Bits → vanilla): бенто-сетка кабинета -->
+      <div class="magic-bento cab-bento" id="cabBento" hidden></div>
+    </div>
+    <div class="cab-pane" id="cabPaneSubs" hidden>
+            <div class="pr-now" id="cabSubsNow" aria-live="polite"></div>
+      <!-- v5.6.0 · Pricing 1 переехал в секцию #subsSec внизу главной
+           страницы (вкладка «Подписки» на нижней панели): здесь — только
+           текущие подписки владельца и кнопка перехода к тарифам
+           (кабинет закрывается, страница скроллится к секции). -->
+      <button type="button" class="pr-all cab-look" id="spLookBtn"><span data-i18n="spLook"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>    </div>
   </div>
 </div>
 
@@ -3659,7 +4343,7 @@ h4{ font-weight:700; }
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "5.2.2";
+  const APP_VERSION = "5.7.0";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -3874,6 +4558,12 @@ h4{ font-weight:700; }
       connCache: "Офлайн · показаны сохранённые данные",
       emptyTitle: "Здесь пока пусто",
       emptyDesc: "В этом разделе ещё нет записей. Загляните позже или выберите другую специализацию.",
+      cityEmptyTitle: "В городе «{c}» пока нет объявлений",
+      cityEmptyDesc: "Это не ошибка — в этом городе ещё никто не разместил анкету. Покажите всю Сирию одним нажатием или выберите другой город.",
+      showAllSyria: "Показать всю Сирию",
+      pickOtherCity: "Выбрать другой город",
+      ghBtn: "GitHub",
+      ghOauthFail: "Не удалось войти через GitHub. Попробуйте ещё раз",
       loginTitle: "Вход для администратора",
       loginDesc: "Введите пароль администратора.",
       email: "Эл. почта",
@@ -3998,6 +4688,31 @@ h4{ font-weight:700; }
       vipS1: "Напиши нам в WhatsApp и выбери пакет",
       vipS2: "Оплати переводом — реквизиты пришлём в чат",
       vipS3: "Активирую статус — обычно в тот же день",
+      /* v5.4.1 · Auth 1 (marquee реальных анкет) + Pricing 1 */
+      wvTsH: "Живые анкеты каталога",
+      wvTsS: "Реальные карточки из DALIL SURIYA — присоединяйтесь к владельцам, которые уже с нами.",
+      cabTabSubs: "Подписки",
+      navSubs: "Тарифы",
+      wvLiveNone: "Скоро здесь появятся первые анкеты — станьте первым",
+      cabSubsNone: "Активных подписок нет — начните с базового плана",
+      /* v5.5.0 · Секция «Подписки» + CTA 13 */
+      spTitle: "Подписки и тарифы",
+      spSub: "Выберите тариф — или продолжите бесплатно. Тариф можно сменить в любое время.",
+      spLook: "Все тарифы и подписки",
+      ctT: "Выделяйся.",
+      ctS: "Купи VIP — купи золотую галочку: карточка первой встречает клиентов",
+      ctCta: "Купить VIP",
+      prTitle: "Тарифы",
+      prSub: "Базовое размещение — бесплатно навсегда. Платите только за продвижение, когда будете готовы расти.",
+      prM: "Помесячно", prY: "На год",
+      prPerM: "в месяц", prPerY: "в год",
+      prFreeName: "Базовый",
+      prVerName: "Проверено",
+      prF11: "Анкета в каталоге — без ограничений по сроку",
+      prF12: "Отзывы, оценки и избранное",
+      prF13: "Карта городов и режим «Рядом со мной»",
+      prF21: "Золотая галочка доверия на карточке",
+      prFoot: "Оплата переводом — активация после подтверждения администратором. Базовое размещение остаётся бесплатным.",
       adTag: "Реклама",
       vipBlockLbl: "VIP-статус и продвижение",
       vipHint: "VIP — карточка всегда первая в списке. «Проверено» — золотая галочка доверия.",
@@ -4309,6 +5024,12 @@ h4{ font-weight:700; }
       connCache: "دون اتصال · بيانات محفوظة",
       emptyTitle: "لا توجد بطاقات بعد",
       emptyDesc: "هذا القسم فارغ حالياً. عُد لاحقاً أو اختر تخصصاً آخر.",
+      cityEmptyTitle: "لا توجد إعلانات في مدينة «{c}» بعد",
+      cityEmptyDesc: "هذا ليس خطأ — لم ينشر أحد إعلاناً في هذه المدينة بعد. اعرض كل سوريا بضغطة واحدة أو اختر مدينة أخرى.",
+      showAllSyria: "عرض كل سوريا",
+      pickOtherCity: "اختر مدينة أخرى",
+      ghBtn: "GitHub",
+      ghOauthFail: "تعذّر تسجيل الدخول عبر GitHub. حاول مرة أخرى",
       loginTitle: "دخول المشرف",
       loginDesc: "أدخل كلمة مرور المشرف.",
       email: "البريد الإلكتروني",
@@ -4433,6 +5154,31 @@ h4{ font-weight:700; }
       vipS1: "اكتب لنا في واتساب واختر الباقة",
       vipS2: "ادفع بالحوالة — سترسل لك التفاصيل في المحادثة",
       vipS3: "أفعّل الحالة — عادةً في نفس اليوم",
+      /* v5.4.1 · Auth 1 (marquee реальных анкет) + Pricing 1 */
+      wvTsH: "إعلانات حقيقية من الدليل",
+      wvTsS: "بطاقات حقيقية من دليل سوريا — انضم إلى أصحاب المشاريع الذين معنا بالفعل.",
+      cabTabSubs: "الاشتراكات",
+      navSubs: "الأسعار",
+      wvLiveNone: "ستظهر الإعلانات الأولى هنا قريباً — كن أول من ينضم",
+      cabSubsNone: "لا توجد اشتراكات نشطة — ابدأ بالخطة الأساسية",
+      /* v5.5.0 · Секция «Подписки» + CTA 13 */
+      spTitle: "الاشتراكات والباقات",
+      spSub: "اختر باقة — أو تابع مجانًا. يمكنك تغيير الباقة في أي وقت.",
+      spLook: "كل الباقات والاشتراكات",
+      ctT: "تميَّز.",
+      ctS: "اشترِ VIP — واحصل على العلامة الذهبية: بطاقتك يراها الجميع أولًا",
+      ctCta: "اشترِ VIP",
+      prTitle: "الأسعار",
+      prSub: "الإضافة الأساسية مجانية للأبد — ادفع فقط للترقية عندما تريد النمو.",
+      prM: "شهري", prY: "سنوي",
+      prPerM: "شهرياً", prPerY: "سنوياً",
+      prFreeName: "أساسي",
+      prVerName: "موثّق",
+      prF11: "بطاقة في الدليل — بلا حدود زمنية",
+      prF12: "تقييمات ومراجعات ومفضلة",
+      prF13: "خريطة المدن وخيار «بالقرب مني»",
+      prF21: "علامة الثقة الذهبية على بطاقتك",
+      prFoot: "الدفع حوالة — التفعيل بعد تأكيد المشرف. الإضافة الأساسية تبقى مجانية.",
       adTag: "إعلان",
       vipBlockLbl: "حالة VIP والترقية",
       vipHint: "VIP — البطاقة تبقى دائماً في الأعلى. «موثّق» — علامة ذهبية للثقة.",
@@ -4744,6 +5490,12 @@ h4{ font-weight:700; }
       connCache: "Bê girêdan · daneyên tomarkirî",
       emptyTitle: "Hîn vala ye",
       emptyDesc: "Ev beş hîn vala ye. Paşê vegerê an jî pisporiyekê din hilbijêre.",
+      cityEmptyTitle: "Hêj tu agahdarî li bajarê «{c}» tune ye",
+      cityEmptyDesc: "Ev ne xeletî ye — hêj kesek agahdariyek li vê bajarê ne weşandiye. Bi yek klîk hemû Sûriyê nîşan bide an bajarê din hilbijêre.",
+      showAllSyria: "Hemû Sûriyê nîşan bide",
+      pickOtherCity: "Bajarekî din hilbijêre",
+      ghBtn: "GitHub",
+      ghOauthFail: "Têketina bi GitHub re neserketî. Dîsa biceribîne",
       loginTitle: "Têketina rêveber",
       loginDesc: "Ji bo birêvebirinê şîfreya rêveber binivîse.",
       email: "E-name",
@@ -4868,6 +5620,31 @@ h4{ font-weight:700; }
       vipS1: "Bi WhatsAppê ji me re binivîse û paketê hilbijêre",
       vipS2: "Bi hawîldanê bide — agahdarî di çatê de dişînin",
       vipS3: "Ez çalak dikim — bi gelemperî di heman rojê de",
+      /* v5.4.1 · Auth 1 (marquee реальных анкет) + Pricing 1 */
+      wvTsH: "Agahdarîyên rastîn ji rêberê",
+      wvTsS: "Kartên rastîn ji DALIL SURIYA — bi xwediyên ku bi me re ne pêve bikevin.",
+      cabTabSubs: "Abone",
+      navSubs: "Biha",
+      wvLiveNone: "Demeke nêzîk de agahdarîyên yekem li vir xuya dibin",
+      cabSubsNone: "Aboneya çalak nîne — bi plana bingehîn dest pê bike",
+      /* v5.5.0 · Секция «Подписки» + CTA 13 */
+      spTitle: "Abone û paket",
+      spSub: "Paketekê hilbijêre — an belaş bidomîne. Her dem dikarî paketê biguherînî.",
+      spLook: "Hemû paket û abone",
+      ctT: "Cudî bike.",
+      ctS: "VIP bikire — nîşana zêrîn bistîne: kartika te yekem tê dîtin",
+      ctCta: "VIP bikire",
+      prTitle: "Biha",
+      prSub: "Tomarkirina bingehîn her dem belaş e — tenê ji bo bilindkirinê bidin gava ku hûn mezin dibin.",
+      prM: "Mehane", prY: "Salane",
+      prPerM: "di mehê de", prPerY: "di salê de",
+      prFreeName: "Bingehîn",
+      prVerName: "Piştrastkirî",
+      prF11: "Kart di rêberê de — bî sînora demê",
+      prF12: "Nirxandin, puan û bijare",
+      prF13: "Nexşeya bajaran û moda «Nêzîkî min»",
+      prF21: "Nîşana baweriyê ya zêrîn li ser karta we",
+      prFoot: "Pere bi havilê — çalakkirin piştî erêkirina admin. Tomarkirina bingehîn belaş dimîne.",
       adTag: "Reklam",
       vipBlockLbl: "Statûya VIP û pêşxistin",
       vipHint: "VIP — kart her tim li jor e. «Verîfkirî» — tîka zêrîn a baweriyê.",
@@ -5180,6 +5957,12 @@ h4{ font-weight:700; }
       connCache: "Offline · showing saved data",
       emptyTitle: "Nothing here yet",
       emptyDesc: "There are no records in this section yet. Come back later or choose another specialty.",
+      cityEmptyTitle: "No listings in {c} yet",
+      cityEmptyDesc: "This is not an error — nobody has posted a listing in this city yet. Show all of Syria in one tap or pick another city.",
+      showAllSyria: "Show all Syria",
+      pickOtherCity: "Pick another city",
+      ghBtn: "GitHub",
+      ghOauthFail: "GitHub sign-in failed. Please try again",
       loginTitle: "Administrator login",
       loginDesc: "Enter the admin password to manage the directory.",
       email: "Email",
@@ -5304,6 +6087,31 @@ h4{ font-weight:700; }
       vipS1: "Message us on WhatsApp and pick a package",
       vipS2: "Pay by transfer — we send the details in the chat",
       vipS3: "I activate the status — usually the same day",
+      /* v5.4.1 · Auth 1 (marquee реальных анкет) + Pricing 1 */
+      wvTsH: "Live listings from the catalog",
+      wvTsS: "Real cards from DALIL SURIYA — join the owners who are already with us.",
+      cabTabSubs: "Subscriptions",
+      navSubs: "Pricing",
+      wvLiveNone: "First listings will appear here soon — be the first",
+      cabSubsNone: "No active subscriptions — start with the Basic plan",
+      /* v5.5.0 · Секция «Подписки» + CTA 13 */
+      spTitle: "Plans & subscriptions",
+      spSub: "Pick a plan — or continue for free. You can change it any time.",
+      spLook: "All plans & subscriptions",
+      ctT: "Stand out.",
+      ctS: "Get VIP — earn the golden checkmark: your card is seen first",
+      ctCta: "Get VIP",
+      prTitle: "Pricing",
+      prSub: "Basic listing is free forever — pay only for promotion when you are ready to grow.",
+      prM: "Monthly", prY: "Yearly",
+      prPerM: "per month", prPerY: "per year",
+      prFreeName: "Basic",
+      prVerName: "Verified",
+      prF11: "Listing in the directory — no time limit",
+      prF12: "Reviews, ratings and favorites",
+      prF13: "City map and «Near me» mode",
+      prF21: "Golden trust badge on your card",
+      prFoot: "Pay by transfer — activation after admin confirmation. Basic listing stays free.",
       adTag: "Ad",
       vipBlockLbl: "VIP status & promotion",
       vipHint: "VIP — the card is always first in the list. «Verified» — golden trust badge.",
@@ -5616,6 +6424,12 @@ h4{ font-weight:700; }
       connCache: "Offline · gespeicherte Daten",
       emptyTitle: "Hier ist noch nichts",
       emptyDesc: "In diesem Bereich gibt es noch keine Einträge. Schauen Sie später wieder vorbei oder wählen Sie eine andere Fachrichtung.",
+      cityEmptyTitle: "Noch keine Einträge in {c}",
+      cityEmptyDesc: "Das ist kein Fehler — in dieser Stadt wurde noch keine Anzeige aufgegeben. Ganz Syrien mit einem Tipp anzeigen oder eine andere Stadt wählen.",
+      showAllSyria: "Ganz Syrien anzeigen",
+      pickOtherCity: "Andere Stadt wählen",
+      ghBtn: "GitHub",
+      ghOauthFail: "GitHub-Anmeldung fehlgeschlagen. Bitte erneut versuchen",
       loginTitle: "Administrator-Login",
       loginDesc: "Geben Sie das Administrator-Passwort ein, um das Verzeichnis zu verwalten.",
       email: "E-Mail",
@@ -5740,6 +6554,31 @@ h4{ font-weight:700; }
       vipS1: "Schreib uns per WhatsApp und wähle ein Paket",
       vipS2: "Zahle per Überweisung — die Daten schicken wir im Chat",
       vipS3: "Ich aktiviere den Status — meistens am selben Tag",
+      /* v5.4.1 · Auth 1 (marquee реальных анкет) + Pricing 1 */
+      wvTsH: "Live-Einträge aus dem Katalog",
+      wvTsS: "Echte Karten aus DALIL SURIYA – mach bei den Inhabern mit, die schon dabei sind.",
+      cabTabSubs: "Abos",
+      navSubs: "Preise",
+      wvLiveNone: "Die ersten Einträge erscheinen bald hier – sei der Erste",
+      cabSubsNone: "Keine aktiven Abos – starte mit dem Basis-Tarif",
+      /* v5.5.0 · Секция «Подписки» + CTA 13 */
+      spTitle: "Abos & Tarife",
+      spSub: "Tarif wählen — oder kostenlos weitermachen. Jederzeit wechselbar.",
+      spLook: "Alle Tarife & Abos",
+      ctT: "Fallauf.",
+      ctS: "Hol VIP — bekomm das goldene Häkchen: deine Karte wird zuerst gesehen",
+      ctCta: "VIP holen",
+      prTitle: "Preise",
+      prSub: "Der Grundeintrag ist für immer kostenlos — zahlen Sie nur für Werbung, wenn Sie wachsen wollen.",
+      prM: "Monatlich", prY: "Jährlich",
+      prPerM: "pro Monat", prPerY: "pro Jahr",
+      prFreeName: "Basis",
+      prVerName: "Verifiziert",
+      prF11: "Eintrag im Verzeichnis — unbegrenzt",
+      prF12: "Bewertungen, Rezensionen und Favoriten",
+      prF13: "Städtekarte und Modus «In meiner Nähe»",
+      prF21: "Goldenes Vertrauens-Abzeichen auf Ihrer Karte",
+      prFoot: "Zahlung per Überweisung — Aktivierung nach Bestätigung des Admins. Der Grundeintrag bleibt kostenlos.",
       adTag: "Werbung",
       vipBlockLbl: "VIP-Status & Werbung",
       vipHint: "VIP — die Karte ist immer ganz oben. «Verifiziert» — goldenes Vertrauenssymbol.",
@@ -6052,6 +6891,12 @@ h4{ font-weight:700; }
       connCache: "Çevrimdışı · kayıtlı veriler gösteriliyor",
       emptyTitle: "Burada henüz bir şey yok",
       emptyDesc: "Bu bölümde henüz kayıt yok. Daha sonra tekrar bakın veya başka bir uzmanlık seçin.",
+      cityEmptyTitle: "{c} içinde henüz ilan yok",
+      cityEmptyDesc: "Bu bir hata değil — bu şehirde henüz kimse ilan vermedi. Tek dokunuşla tüm Suriye'yi gösterin veya başka bir şehir seçin.",
+      showAllSyria: "Tüm Suriye'yi göster",
+      pickOtherCity: "Başka bir şehir seçin",
+      ghBtn: "GitHub",
+      ghOauthFail: "GitHub girişi başarısız. Lütfen tekrar deneyin",
       loginTitle: "Yönetici girişi",
       loginDesc: "Rehberi yönetmek için yönetici şifresini girin.",
       email: "E-posta",
@@ -6176,6 +7021,31 @@ h4{ font-weight:700; }
       vipS1: "WhatsApp'tan bize yaz ve paketi seç",
       vipS2: "Havale ile öde — bilgileri sohbette göndeririz",
       vipS3: "Durumu etkinleştiririm — genellikle aynı gün",
+      /* v5.4.1 · Auth 1 (marquee реальных анкет) + Pricing 1 */
+      wvTsH: "Rehberden canlı ilanlar",
+      wvTsS: "DALIL SURIYA'dan gerçek kartlar — aramızda olan işletme sahiplerine katılın.",
+      cabTabSubs: "Abonelikler",
+      navSubs: "Fiyatlar",
+      wvLiveNone: "İlk ilanlar yakında burada görünecek — ilk siz olun",
+      cabSubsNone: "Aktif abonelik yok — Temel planla başlayın",
+      /* v5.5.0 · Секция «Подписки» + CTA 13 */
+      spTitle: "Abonelikler ve paketler",
+      spSub: "Bir paket seç — ya da ücretsiz devam et. Dilediğin an değiştirebilirsin.",
+      spLook: "Tüm paketler ve abonelikler",
+      ctT: "Fark yarat.",
+      ctS: "VIP al — altın onay işaretini kap: kartın ilk görünen olur",
+      ctCta: "VIP al",
+      prTitle: "Fiyatlar",
+      prSub: "Temel kayıt sonsuza dek ücretsiz — büyümeye hazır olduğunuzda sadece tanıtım için ödeyin.",
+      prM: "Aylık", prY: "Yıllık",
+      prPerM: "ayda", prPerY: "yılda",
+      prFreeName: "Temel",
+      prVerName: "Doğrulandı",
+      prF11: "Rehberde kayıt — süre sınırı yok",
+      prF12: "Yorumlar, puanlar ve favoriler",
+      prF13: "Şehir haritası ve «Yakınımda» modu",
+      prF21: "Kartınızda altın güven rozeti",
+      prFoot: "Havale ile ödeme — admin onayından sonra etkinleştirme. Temel kayıt ücretsiz kalır.",
       adTag: "Reklam",
       vipBlockLbl: "VIP durumu ve tanıtım",
       vipHint: "VIP — kart her zaman listenin başında. «Doğrulandı» — altın güven işareti.",
@@ -6867,15 +7737,6 @@ h4{ font-weight:700; }
   }
 
   async function loadOnce() {
-    /* v5.2.2: КАШ ВСЕГДА — мгновенный рендер из localStorage ДО сети
-       (stale-while-revalidate): карточки видны сразу при любом старте,
-       сеть затем обновит. Владелец: «чтобы они в кэше всегда были». */
-    try {
-      const c0 = JSON.parse(store.get("dalil_cache_docs") || "null");
-      if (c0 && Array.isArray(c0.docs) && c0.docs.length && !state.docs.length) {
-        applySnapshot(c0.docs, true);
-      }
-    } catch (e) {}
     try {
       const r = await withTimeout(fetch(API + "/api/catalog"), 15000);
       const j = await r.json();
@@ -7015,16 +7876,15 @@ h4{ font-weight:700; }
   }
 
   function updateCityVisibility() {
-    /* v5.2.2: каталог виден ВСЕГДА — без выбранного города показывается вся Сирия
-       (inCity при пустом городе пропускает все объявления). Владелец: «почему нет
-       ни 1 карточки» — прятать каталог до выбора города больше нельзя. */
-    const has = !!state.city;
+    /* v5.2.2 (перенесено): каталог виден ВСЕГДА — без выбранного города показывается
+       вся Сирия (inCity при пустом городе пропускает все объявления). Владелец:
+       «почему нет ни 1 карточки» — прятать каталог до выбора города нельзя. */
     ["cats", "subs", "listWrap", "searchBox"].forEach(id => $(id).classList.remove("no-city"));
     ["cats", "subs", "listWrap"].forEach(id => {
       const el = $(id);
       el.classList.remove("vis");
       void el.offsetWidth;
-      el.classList.add("vis");   /* v5.2.2: .vis и без города — .reveal не должен прятать каталог */
+      el.classList.add("vis");
     });
     animCats = true;
   }
@@ -7318,11 +8178,17 @@ h4{ font-weight:700; }
     emp.hidden = items.length > 0;
     /* v1.3.0: в режиме «Избранное» пустое состояние со своим текстом */
     $("emptyIcon").innerHTML = icon(state.favOnly ? "heart" : "inbox", 42);
-    emp.querySelector("h4").textContent = t(state.favOnly ? "favEmpty" : "emptyTitle");
-    emp.querySelector("p").textContent = t(state.favOnly ? "favEmptyD" : "emptyDesc");
+    /* v5.2.3 (перенесено): город выбран, но анкет в нём нет — объясняем причину и даём
+       выход одним нажатием («вся Сирия» / другой город), без крутки колеса городов */
+    const cityBlocked = !state.favOnly && !!state.city && state.docs.length > 0;
+    emp.querySelector("h4").textContent =
+      state.favOnly ? t("favEmpty") : cityBlocked ? t("cityEmptyTitle").replace("{c}", cityName(state.city)) : t("emptyTitle");
+    emp.querySelector("p").textContent =
+      state.favOnly ? t("favEmptyD") : cityBlocked ? t("cityEmptyDesc") : t("emptyDesc");
+    $("emptyActions").hidden = !cityBlocked;
   }
 
-  function renderAll() { renderCities(); renderCats(); renderSubs(); renderList(); }
+  function renderAll() { renderCities(); renderCats(); renderSubs(); renderList(); renderSubsNow(); }
 
   function applyLang() {
     const L = state.lang;
@@ -8232,6 +9098,10 @@ h4{ font-weight:700; }
     if (!state.favOnly) { state.favOnly = true; renderListTools(); renderList(); }
     setTimeout(() => { try { $("listWrap").scrollIntoView({ behavior: "smooth", block: "start" }); } catch {} }, 70);
   });
+  /* v5.6.2: вкладка «Тарифы» — открывает раздел тарифов #subsSec:
+     секция СКРЫТА с главного экрана (приказ владельца), вкладка
+     снимает hidden и скроллит к ней — по образцу секции карты */
+  $("bnSubs").addEventListener("click", openSubsSec);
   /* ================= конец блока v1.3.0 ================= */
 
   /* Админ: скрутить просмотры на N (ввёл 15 — уберётся 15, ниже нуля не упадёт) */
@@ -8422,7 +9292,7 @@ h4{ font-weight:700; }
 
   /* ================= Настройки: шестерёнка → тема + языки ================= */
   $("settingsBtn").addEventListener("click", () => openOv("settingsOverlay"));
-  /* v1.4.2: кнопка VIP в шапке — открывает раздел подписок (закрытие — крестик, как у входа) */
+  /* v1.4.2: кнопка VIP в шапке — открывает VIP-модалку со всеми пакетами. */
   $("vipBtn").addEventListener("click", () => openOv("vipOv"));
 
   /* v5.1 · СЕМЬ ТЕМ: пять по фото владельца (1 фото = 1 тема) + классические
@@ -10045,7 +10915,20 @@ h4{ font-weight:700; }
   /* ================= Навигация ================= */
   $("cityGrid").addEventListener("click", e => {
     const b = e.target.closest(".city-card");
-    if (!b || state.city === b.dataset.city) return;
+    if (!b) return;
+    /* v5.2.3 (перенесено): повторный клик по активному городу снимает выбор —
+       возврат к «вся Сирия» без крутки колеса (жалоба владельца: город без анкет) */
+    if (state.city === b.dataset.city) {
+      state.city = null;
+      store.set("dalil_city", "");
+      state.dest = "all";
+      animCities = false;
+      renderCities();
+      updateCityVisibility();
+      renderAll();
+      updateNotifications();
+      return;
+    }
     state.city = b.dataset.city;
     store.set("dalil_city", state.city);
     state.dest = "all";
@@ -10055,6 +10938,22 @@ h4{ font-weight:700; }
     renderAll();
     updateNotifications();
     setTimeout(() => { try { $("cats").scrollIntoView({ behavior: "smooth", block: "start" }); } catch {} }, 80);
+  });
+
+  /* v5.2.3 (перенесено) · выход из пустого города одним нажатием */
+  $("emptyAllSyria").addEventListener("click", () => {
+    state.city = null;
+    store.set("dalil_city", "");
+    state.dest = "all";
+    animCities = false;
+    renderCities();
+    updateCityVisibility();
+    renderAll();
+    updateNotifications();
+    setTimeout(() => { try { $("cats").scrollIntoView({ behavior: "smooth", block: "start" }); } catch {} }, 80);
+  });
+  $("emptyPickCity").addEventListener("click", () => {
+    try { document.querySelector(".cities").scrollIntoView({ behavior: "smooth", block: "start" }); } catch {}
   });
 
   /* ================= v5 · КРУТИЛКА ГОРОДОВ =================
@@ -10183,6 +11082,7 @@ h4{ font-weight:700; }
     state.lang = l;
     store.set("dalil_lang", l);
     applyLang();
+    renderList();   /* v5.2.3 (перенесено): контекстный текст пустого состояния не сбрасывается при смене языка */
   }
 
   /* ============ Скролл-анимации и параллакс ============ */
@@ -10371,11 +11271,42 @@ h4{ font-weight:700; }
   });
 
   /* --- Экран приветствия --- */
+  /* v5.6.0: гость сразу в каталог — «Подписки» теперь секция внизу
+     страницы (вкладка bnSubs), попапов после входа больше нет */
   $("wvGuest").addEventListener("click", () => { setUser({ g: 1 }); toast(t("tGuest")); });
-  $("wvEnter").addEventListener("click", () => openAuth("login", "email"));
   $("wvEmail").addEventListener("click", () => openAuth("reg", "email"));
-  $("wvWhats").addEventListener("click", () => openAuth("reg", "whatsapp"));
   $("wvTg").addEventListener("click", () => openAuth("reg", "telegram"));
+  /* v5.7.0 · Auth 2: вход прямо на заставке — тот же сервер (/api/auth/login),
+     те же ошибки (authApiErr) и finishLogin, что в модалке входа */
+  $("wv2Eye").addEventListener("click", () => {
+    const pin = $("wv2Pass");
+    const show = pin.type === "password";
+    pin.type = show ? "text" : "password";
+    $("wv2Eye").classList.toggle("off", show);   /* пароль виден → иконка «глаз закрыт» */
+  });
+  $("wv2Form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const err = $("wv2Err"); err.classList.remove("show");
+    const email = $("wv2Email").value.trim().toLowerCase();
+    const pass = $("wv2Pass").value;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return bannerMsg(err, t("eEmail"));
+    if (pass.length < 6) return bannerMsg(err, t("ePass"));
+    const btn = $("wv2Go"), old = btn.textContent;
+    btn.disabled = true; btn.textContent = "…";
+    let errMsg = "", j = null;
+    try {
+      const r = await withTimeout(fetch(API + "/api/auth/login", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password: pass })
+      }), 15000);
+      j = await r.json();
+      if (!j.ok) errMsg = authApiErr(j.error);
+    } catch (e2) { errMsg = t("eNet"); }
+    btn.disabled = false; btn.textContent = old;
+    if (errMsg) bannerMsg(err, errMsg);
+    else if (j && j.ok)
+      finishLogin({ p: "email", id: j.user.id, n: j.user.name || email, e: j.user.ident, token: j.token }, false);
+  });
   /* v1.4.4 (п.24): в APK Google-OAuth идёт через БРАУЗЕР (Chrome) — там
      сохранённые аккаунты Google видны сразу («выбор аккаунта» не пустой);
      back=dalil://oauth — callback воркера вернёт токен в приложение через
@@ -10383,14 +11314,33 @@ h4{ font-weight:700; }
   const GOOGLE_START = API + "/api/auth/google/start"
     + (IS_APK ? "?back=" + encodeURIComponent("dalil://oauth") : "");
 
-  /* v1.4.2: Google прямо с экрана приветствия */
-  $("wvGoogle").addEventListener("click", async () => {
+  /* v5.4.3 (перенесено) · GitHub OAuth — тот же серверный паттерн, что Google:
+     воркер /api/auth/github/start → GitHub → /api/auth/github/callback →
+     редирект на back с #lt=<токен>&un=<имя>&pp=github (ошибки — #ea=).
+     В APK GitHub-вход идёт ВНУТРИ WebView (GitHub, в отличие от Google,
+     не блокирует вход в WebView) и возвращается на внутренний appassets-адрес —
+     сессия живёт в localStorage приложения. На сайте back — сам сайт.
+     Кнопка включается, только если на сервере заданы GITHUB_CLIENT_ID/SECRET
+     (флаг github в /api/auth/config) — до тех пор честное «скоро» (п.12 §4). */
+  const GH_START = API + "/api/auth/github/start?back="
+    + encodeURIComponent(IS_APK ? "https://appassets.androidplatform.net/assets/index.html"
+                                : (location.origin + location.pathname));
+
+  /* v1.4.2: Google прямо с экрана приветствия —
+     v5.7.0: на время запроса конфига кнопка показывает спиннер (auth поинтереснее) */
+  async function oauthGate(key, startUrl, btn){
+    if (btn) { btn.classList.add("busy"); btn.setAttribute("aria-busy", "true"); }
     try {
       const c = await withTimeout(fetch(API + "/api/auth/config"), 10000).then(r => r.json());
-      if (c && c.google) { window.location.href = GOOGLE_START; return; }
+      if (c && c[key]) { window.location.href = startUrl; return; }
       toast(t("auSoonW"));
     } catch { toast(t("eNet")); }
-  });
+    if (btn) { btn.classList.remove("busy"); btn.removeAttribute("aria-busy"); }
+  }
+  $("wvGoogle").addEventListener("click", (e) => oauthGate("google", GOOGLE_START, e.currentTarget));
+
+  /* v5.4.3 (перенесено): GitHub прямо с экрана приветствия — тот же гейт по /api/auth/config */
+  $("wvGithub").addEventListener("click", (e) => oauthGate("github", GH_START, e.currentTarget));
 
   /* --- Модалка входа/регистрации (email + пароль → реальный сервер) --- */
   let auMode = "login", auBusy = false, auProv = "email", auWaStep = "phone", auWaIdent = "";
@@ -10402,7 +11352,7 @@ h4{ font-weight:700; }
       authCfg = await r.json();
     } catch { authCfg = null; }
     const ok = (k) => !!(authCfg && authCfg[k]);
-    const map = { google: ok("google"), whatsapp: ok("wa"), telegram: ok("telegram") };
+    const map = { google: ok("google"), whatsapp: ok("wa"), telegram: ok("telegram"), github: ok("github") };
     document.querySelectorAll("#auMethods [data-aum]").forEach(b => {
       const pp = b.dataset.aum;
       const live = pp === "email" || map[pp];
@@ -10435,6 +11385,7 @@ h4{ font-weight:700; }
     if (isEmail) sb.textContent = t(auMode === "login" ? "login" : "auBtnReg");
     else if (auProv === "whatsapp") sb.textContent = t(auWaStep === "phone" ? "auWaSend" : "login");
     else if (auProv === "telegram") sb.textContent = t("auTgOpen");
+    else if (auProv === "github") sb.textContent = t("ghBtn");
     else sb.textContent = t("auGoogle");
     if (sw) sw.textContent = auMode === "login" ? t("auToReg") : t("auToLogin");
     document.querySelectorAll("#auMethods [data-aum]").forEach(b =>
@@ -10454,6 +11405,13 @@ h4{ font-weight:700; }
       $("authErr").classList.remove("show");
       if (pp === "google") {
         window.location.href = GOOGLE_START;
+        return;
+      }
+      /* v5.4.3 (перенесено): GitHub — включён, когда на сервере заданы ключи (github в config);
+         кнопка без .soon попадает сюда только при живом методе, authCfg — страховка */
+      if (pp === "github") {
+        if (!authCfg || !authCfg.github) { toast(t("auSoonW")); return; }
+        window.location.href = GH_START;
         return;
       }
       updateAuthUI();
@@ -10625,6 +11583,379 @@ h4{ font-weight:700; }
       if (j.ok) renderAll();   /* открытая карточка перерисуется с кнопкой удаления */
     } catch (e) { /* офлайн — просто считаем, что своих карточек не видно */ }
   }
+  /* ================= v5.3 · REACT BITS → VANILLA =================
+     Два компонента React Bits перенесены в однофайловое приложение без React
+     и без CDN (инвариант APK-офлайн):
+     · TextLoop — фраза бежит по SVG-кривой (<textPath> ×2 для бесшовного
+       цикла). Внешние зависимости оригинала (тикер и glide-tween) заменены встроенным
+       rAF-тикером (крутится только пока лента видима и движется) и
+       экспоненциальным сглаживанием hover-паузы — поведение то же.
+       v5.3.1: лента компактнее (viewBox 1200×420, кегль 36, лента 62) и
+       scroll-driven — в покое стоит, при появлении короткий импульс, скорость
+       и направление следуют за скроллом страницы (вниз — вперёд, вверх —
+       назад), после остановки плавный выбег ~1с. Тикер живёт, пока лента
+       видима (скорость скролла меряется каждым кадром, как в v5.3.0).
+     · MagicBento — интерактивная бенто-сетка: прожектор за курсором
+       (--mb-hot), светящаяся кромка (--mb-near), кольцо-волна от клика
+       (--mb-w*), пружина нажатия (--mb-press), каскад появления (IO).
+       Математика сглаживаний и пружин сохранена из оригинала; tilt/magnetism/
+       звёзды не переносились (в кабинете не используются). Токены --mb-*
+       замаплены на темы Dalil (см. CSS) — сетка живёт во всех 7 темах. */
+  const TL = { W: 1200, H: 420, CX: 600, CY: 210, PAD: 6 };
+  let tlUid = 0;
+  const tlEase = t => t * t * t * (t * (t * 6 - 15) + 10);   /* smootherstep */
+  const tlClamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const tlWrap = (v, l) => ((v % l) + l) % l;
+  function tlRadius(curv, rw) {
+    return Math.min(90 + Math.max(0, curv) * 0.95, Math.max(20, TL.CY - Math.max(0, rw) / 2 - TL.PAD));
+  }
+  function tlPath(shape, curv, rw, mir = false) {
+    const c = Math.max(0, curv);
+    const room = Math.max(20, TL.CY - Math.max(0, rw) / 2 - TL.PAD);
+    const flip = mir ? -1 : 1;
+    switch (shape) {
+      case "circle": {
+        const r = tlRadius(curv, rw);
+        if (mir) {
+          const rx = r * 1.22, ry = r * 0.42;
+          return "M " + (TL.CX - rx) + " " + TL.CY + " A " + rx + " " + ry + " 0 1 1 " + (TL.CX + rx) + " " + TL.CY +
+                 " A " + rx + " " + ry + " 0 1 1 " + (TL.CX - rx) + " " + TL.CY + " Z";
+        }
+        return "M " + (TL.CX - r) + " " + TL.CY + " A " + r + " " + r + " 0 1 1 " + (TL.CX + r) + " " + TL.CY +
+               " A " + r + " " + r + " 0 1 1 " + (TL.CX - r) + " " + TL.CY + " Z";
+      }
+      case "infinity": {
+        const r = 150 + c * 1.4, h = Math.min(60 + c * 0.95, room);
+        return ["M " + TL.CX + " " + TL.CY,
+          "C " + (TL.CX + r * .55) + " " + (TL.CY - h) + " " + (TL.CX + r) + " " + (TL.CY - h) + " " + (TL.CX + r) + " " + TL.CY,
+          "C " + (TL.CX + r) + " " + (TL.CY + h) + " " + (TL.CX + r * .55) + " " + (TL.CY + h) + " " + TL.CX + " " + TL.CY,
+          "C " + (TL.CX - r * .55) + " " + (TL.CY - h) + " " + (TL.CX - r) + " " + (TL.CY - h) + " " + (TL.CX - r) + " " + TL.CY,
+          "C " + (TL.CX - r) + " " + (TL.CY + h) + " " + (TL.CX - r * .55) + " " + (TL.CY + h) + " " + TL.CX + " " + TL.CY,
+          "Z"].join(" ");
+      }
+      case "arch": {
+        const rise = Math.min(120 + c * 1.1, room * 2) * flip;
+        return "M 120 " + (TL.CY + rise / 2) + " Q " + TL.CX + " " + (TL.CY - rise * 1.5) + " " + (TL.W - 120) + " " + (TL.CY + rise / 2);
+      }
+      case "line":
+        return "M -320 " + TL.CY + " L " + (TL.W + 320) + " " + TL.CY;
+      default: {  /* wave */
+        const a = Math.min(c * 2.2, room * 2) * flip;
+        return "M -320 " + TL.CY + " Q -160 " + (TL.CY - a) + " 0 " + TL.CY +
+          " T 320 " + TL.CY + " T 640 " + TL.CY + " T 960 " + TL.CY + " T 1280 " + TL.CY +
+          " T " + (TL.W + 320) + " " + TL.CY;
+      }
+    }
+  }
+  function tlInkOn(color) {  /* тёмные чернила на светлом акценте, белые на тёмном */
+    const m = /^#?([\da-f]{3}|[\da-f]{6})$/i.exec(String(color || "").trim());
+    if (!m) return "#ffffff";
+    const hex = m[1].length === 3 ? m[1].replace(/./g, ch => ch + ch) : m[1];
+    const rgb = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+      .map(v => (v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+    return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2] > 0.2 ? "#17151d" : "#ffffff";
+  }
+  function mountTextLoop(host, o) {
+    if (!host) return null;
+    const cfg = Object.assign({
+      text: "DALIL SURIYA ✦ دليل سوريا", shape: "wave", speed: 78, direction: "forward",
+      separator: "✦", curviness: 64, fontSize: 42, fontWeight: 800, letterSpacing: 2,
+      uppercase: false, ribbon: true, ribbonWidth: 74, edgeFade: 1, pauseOnHover: true,
+      outline: false, outlineWidth: 1.5, scrollBoost: 0
+    }, o || {});
+    const uid = ++tlUid, U = "tl" + uid;
+    const rm = matchMedia("(prefers-reduced-motion: reduce)");
+    const reduced = rm.matches;
+    const d = tlPath(cfg.shape, cfg.curviness, cfg.ribbonWidth);
+    const fadeW = tlClamp(cfg.edgeFade, 0, 1) * 0.3;
+    let stops = "";
+    if (fadeW > 0) {
+      const N = 8;
+      for (let i = 0; i <= N; i++) stops += '<stop offset="' + (i / N * fadeW).toFixed(4) + '" stop-color="#fff" stop-opacity="' + tlEase(i / N).toFixed(3) + '"/>';
+      for (let i = N; i >= 0; i--) stops += '<stop offset="' + (1 - i / N * fadeW).toFixed(4) + '" stop-color="#fff" stop-opacity="' + tlEase(i / N).toFixed(3) + '"/>';
+    }
+    const ts = "font-size:" + cfg.fontSize + "px;font-weight:" + cfg.fontWeight + ";letter-spacing:" + cfg.letterSpacing + "px;";
+    host.classList.add("text-loop");
+    host.innerHTML =
+      '<svg class="text-loop-svg" viewBox="0 0 ' + TL.W + " " + TL.H + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="' + esc(cfg.text) + '">' +
+      (fadeW > 0
+        ? '<defs><linearGradient id="' + U + 'F" x1="0" y1="0" x2="1" y2="0">' + stops + '</linearGradient>' +
+          '<mask id="' + U + 'M" maskUnits="userSpaceOnUse" x="0" y="0" width="' + TL.W + '" height="' + TL.H + '">' +
+          '<rect width="' + TL.W + '" height="' + TL.H + '" fill="url(#' + U + 'F)"/></mask></defs>'
+        : "") +
+      '<text class="text-loop-measure" aria-hidden="true" style="' + ts + '"></text>' +
+      '<g' + (fadeW > 0 ? ' mask="url(#' + U + 'M)"' : "") + '>' +
+      '<path class="tl-path" d="' + d + '" fill="none" stroke="' + (cfg.ribbon ? "var(--accent)" : "none") +
+        '" stroke-width="' + (cfg.ribbon ? cfg.ribbonWidth : 0) + '" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<text class="tl-t" style="' + ts + '" dominant-baseline="central" aria-hidden="true"><textPath class="tl-head" href="#' + U + 'P" startOffset="0"></textPath></text>' +
+      '<text class="tl-t" style="' + ts + '" dominant-baseline="central" aria-hidden="true"><textPath class="tl-tail" href="#' + U + 'P" startOffset="0"></textPath></text>' +
+      '</g></svg>';
+    const svg = host.firstElementChild;
+    const pathEl = svg.querySelector(".tl-path"); pathEl.id = U + "P";
+    const head = svg.querySelector(".tl-head"), tail = svg.querySelector(".tl-tail");
+    const measure = svg.querySelector(".text-loop-measure");
+    const textEls = [...svg.querySelectorAll(".tl-t")];
+    const upper = cfg.uppercase ? String(cfg.text).toUpperCase() : String(cfg.text);
+    const gap = cfg.separator ? "\u00A0" + cfg.separator + "\u00A0" : "\u00A0\u00A0\u00A0";
+    const unit = upper + gap;
+    let length = 0, travel = 0, raf = 0, last = 0, inView = false;
+    const hover = { s: 1, target: 1 };
+    const dir = cfg.direction === "reverse" ? -1 : 1;
+    const base = reduced ? 0 : Math.max(0, cfg.speed) * dir;
+    /* v5.3.1: scroll-driven — сглаженная скорость скролла страницы подмешивается
+       к скорости ленты: вниз — вперёд, вверх — назад; boost=0 → чистый авто-бег */
+    const boost = (!reduced && cfg.scrollBoost > 0) ? cfg.scrollBoost : 0;
+    let sv = 0, prevY = 0, hasPrev = false, kicked = false;
+    const paint = ink => {
+      textEls.forEach(el => {
+        if (cfg.outline) { el.style.fill = "none"; el.style.stroke = ink; el.style.strokeWidth = cfg.outlineWidth; }
+        else el.style.fill = ink;
+      });
+    };
+    const retint = () => {   /* чернила текста — по светлоте акцента активной темы */
+      const acc = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+      paint(tlInkOn(acc));
+    };
+    const doMeasure = () => {
+      try {
+        length = pathEl.getTotalLength();
+        const unitW = measure.getComputedTextLength();
+        if (!length || !unitW) return;
+        const reps = Math.max(1, Math.round(length / unitW));
+        const txt = unit.repeat(reps);
+        head.textContent = txt; tail.textContent = txt;
+        textEls.forEach(el => { el.setAttribute("textLength", String(length)); el.setAttribute("lengthAdjust", "spacing"); });
+      } catch (e) { return; }
+      apply();
+      wake();
+    };
+    const apply = () => {
+      if (!length) return;
+      const off = tlWrap(travel, length);
+      head.setAttribute("startOffset", String(off));
+      tail.setAttribute("startOffset", String(off - length));
+    };
+    const tick = now => {
+      raf = 0;
+      const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
+      last = now;
+      hover.s += (hover.target - hover.s) * (1 - Math.exp(-dt / (hover.target ? 0.45 : 0.28)));
+      if (Math.abs(hover.target - hover.s) < 0.002) hover.s = hover.target;
+      const y = window.scrollY || window.pageYOffset || 0;
+      const iv = hasPrev ? tlClamp((y - prevY) / dt, -3200, 3200) : 0;  /* скорость скролла за кадр */
+      prevY = y; hasPrev = true;
+      sv += (iv - sv) * (1 - Math.exp(-dt / 0.14));                     /* сглаживание + выбег */
+      if (Math.abs(iv) < 1 && Math.abs(sv) < 1) sv = 0;
+      const v = tlClamp(base * hover.s + sv * boost, -2600, 2600);
+      if (Math.abs(v) >= 0.01) { travel += v * dt; apply(); }
+      raf = requestAnimationFrame(tick);        /* живёт, пока лента видима (как в v5.3.0) */
+    };
+    const wake = () => {
+      if (raf || reduced || !inView || !length) return;
+      last = performance.now();
+      prevY = window.scrollY || window.pageYOffset || 0;   /* база без скачка */
+      hasPrev = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const onEnter = e => { if (e.pointerType !== "touch" && cfg.pauseOnHover) { hover.target = 0; wake(); } };
+    const onLeave = () => { if (cfg.pauseOnHover) { hover.target = 1; wake(); } };
+    const io = ("IntersectionObserver" in window) ? new IntersectionObserver(es => {
+      inView = es.some(x => x.isIntersecting);
+      if (inView) {
+        if (!kicked && boost) { kicked = true; sv = Math.max(sv, 900); }  /* импульс при первом появлении */
+        wake();
+      }
+      else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    }) : null;
+    if (io) io.observe(host); else { inView = true; }
+    host.addEventListener("pointerenter", onEnter);
+    host.addEventListener("pointerleave", onLeave);
+    const themeObs = new MutationObserver(retint);
+    themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-mode"] });
+    measure.textContent = unit;
+    retint(); doMeasure();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { doMeasure(); }).catch(() => {});
+    return {
+      destroy() {
+        if (raf) cancelAnimationFrame(raf);
+        if (io) io.disconnect();
+        themeObs.disconnect();
+        host.removeEventListener("pointerenter", onEnter);
+        host.removeEventListener("pointerleave", onLeave);
+        host.innerHTML = "";
+      }
+    };
+  }
+  /* ================= v5.3 · MAGIC BENTO → vanilla-движок ================= */
+  const MB_REPLAY = ["magic-bento-grow", "magic-bento-pop"];
+  function mountBento(root) {
+    if (!root) return null;
+    const cards = [...root.querySelectorAll(".magic-bento__card")];
+    if (!cards.length) return null;
+    const motion = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (motion) root.setAttribute("data-motion", "");
+    else { root.removeAttribute("data-motion"); root.removeAttribute("data-intro"); }
+    root.setAttribute("data-intro", "");
+    const st = cards.map(() => ({ hot: 0, press: 1, vp: 0, written: {} }));
+    const light = { x: -1e5, y: -1e5, near: 0 };
+    const pointer = { x: -1e5, y: -1e5, inside: false, down: -1 };
+    const wave = { x: 0, y: 0, t: -1, dur: 1.1, reach: 800 };
+    let rects = [], bounds = null, dirty = true, raf = 0, last = 0, visible = false, entered = !motion;
+    const write = (i, name, value) => {
+      if (st[i].written[name] === value) return;
+      st[i].written[name] = value;
+      cards[i].style.setProperty(name, value);
+    };
+    const measure = () => {
+      dirty = false;
+      bounds = root.getBoundingClientRect();
+      rects = cards.map(c => c.getBoundingClientRect());
+    };
+    const startWave = (x, y, dur) => {
+      if (!motion || !bounds) return;
+      wave.x = x; wave.y = y; wave.t = 0; wave.dur = dur;
+      wave.reach = Math.max(
+        Math.hypot(x - bounds.left, y - bounds.top), Math.hypot(x - bounds.right, y - bounds.top),
+        Math.hypot(x - bounds.left, y - bounds.bottom), Math.hypot(x - bounds.right, y - bounds.bottom)) + 140;
+    };
+    const frame = now => {
+      raf = 0;
+      const dt = Math.min(0.05, (now - last) / 1000 || 0);
+      last = now;
+      if (dirty) measure();
+      let busy = false;
+      const margin = 150;
+      const nearRoot = pointer.inside && bounds &&
+        pointer.x > bounds.left - margin && pointer.x < bounds.right + margin &&
+        pointer.y > bounds.top - margin && pointer.y < bounds.bottom + margin ? 1 : 0;
+      const follow = 1 - Math.exp(-dt / 0.05);
+      light.x += (pointer.x - light.x) * follow;
+      light.y += (pointer.y - light.y) * follow;
+      light.near += (nearRoot - light.near) * (1 - Math.exp(-dt / (nearRoot > light.near ? 0.12 : 0.4)));
+      if (Math.abs(nearRoot - light.near) < 0.002) light.near = nearRoot; else busy = true;
+      let wr = 0, wa = 0;
+      if (wave.t >= 0) {
+        wave.t += dt;
+        const p = Math.min(1, wave.t / wave.dur);
+        wr = wave.reach * (1 - Math.pow(1 - p, 2.2));
+        wa = Math.pow(1 - p, 1.3);
+        if (p >= 1) { wave.t = -1; wa = 0; } else busy = true;
+      }
+      cards.forEach((card, i) => {
+        const r = rects[i];
+        if (!r) return;
+        write(i, "--mb-x", (light.x - r.left).toFixed(1) + "px");
+        write(i, "--mb-y", (light.y - r.top).toFixed(1) + "px");
+        write(i, "--mb-near", light.near.toFixed(3));
+        write(i, "--mb-wx", (wave.x - r.left).toFixed(1) + "px");
+        write(i, "--mb-wy", (wave.y - r.top).toFixed(1) + "px");
+        write(i, "--mb-wr", wr.toFixed(1) + "px");
+        write(i, "--mb-wa", wa.toFixed(3));
+        const inside = pointer.inside && entered &&
+          pointer.x >= r.left && pointer.x <= r.right && pointer.y >= r.top && pointer.y <= r.bottom;
+        const hotT = inside ? 1 : 0;
+        st[i].hot += (hotT - st[i].hot) * (1 - Math.exp(-dt / (hotT > st[i].hot ? 0.14 : 0.32)));
+        if (Math.abs(hotT - st[i].hot) < 0.002) st[i].hot = hotT; else busy = true;
+        write(i, "--mb-hot", st[i].hot.toFixed(3));
+        const pressT = pointer.down === i && motion ? 0.985 : 1;
+        const steps = Math.max(1, Math.ceil(dt / (1 / 240))), h = dt / steps;
+        for (let s2 = 0; s2 < steps; s2++) {
+          st[i].vp += (420 * (pressT - st[i].press) - 28 * st[i].vp) * h;
+          st[i].press += st[i].vp * h;
+        }
+        if (Math.abs(pressT - st[i].press) < 0.0002 && Math.abs(st[i].vp) < 0.001) { st[i].press = pressT; st[i].vp = 0; }
+        else busy = true;
+        write(i, "--mb-press", st[i].press.toFixed(4));
+      });
+      if (busy && visible) raf = requestAnimationFrame(frame);
+    };
+    const wake = () => {
+      if (raf || !visible) return;
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    const cardIndex = tgt => {
+      const c = tgt && tgt.closest ? tgt.closest(".magic-bento__card") : null;
+      return cards.indexOf(c);
+    };
+    const onMove = e => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.inside = true; wake(); };
+    const onOut = e => { if (e.relatedTarget) return; pointer.inside = false; pointer.down = -1; wake(); };
+    const onDown = e => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.inside = true; pointer.down = cardIndex(e.target); wake(); };
+    const onUp = () => { if (pointer.down < 0) return; pointer.down = -1; wake(); };
+    const onClick = e => {
+      const i = cardIndex(e.target);
+      if (i < 0 || !motion) return;
+      if (dirty) measure();
+      startWave(e.clientX, e.clientY, 1.1);
+      const card = cards[i];
+      let anims = [];
+      try { anims = card.getAnimations({ subtree: true }); } catch (err) { anims = []; }
+      anims.forEach(a => {
+        const n = a.animationName || (a.effect && a.effect.getKeyframes ? "" : "");
+        if (!MB_REPLAY.includes(n)) return;
+        let finite = true;
+        try { finite = a.effect.getTiming().iterations !== Infinity; } catch (err) {}
+        if (!finite) return;
+        a.currentTime = 0; a.play();
+      });
+      wake();
+    };
+    const onScroll = () => { dirty = true; wake(); };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerup", onUp, { passive: true });
+    window.addEventListener("pointercancel", onUp, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    document.addEventListener("pointerout", onOut);
+    root.addEventListener("click", onClick);
+    const vis = "IntersectionObserver" in window ? new IntersectionObserver(es => {
+      visible = es.some(x => x.isIntersecting);
+      if (visible) { dirty = true; wake(); }
+    }) : null;
+    if (vis) vis.observe(root); else visible = true;
+    /* каскад появления: однажды, когда сетка реально на экране */
+    let settleT = 0, introT = 0;
+    let gate = ("IntersectionObserver" in window) && motion ? new IntersectionObserver((es, g) => {
+      if (!es.some(x => x.isIntersecting)) return;
+      g.disconnect(); gate = null;
+      entered = true;
+      let order = 0;
+      root.querySelectorAll(".magic-bento__cell").forEach(cell => {
+        cell.style.setProperty("--mb-delay", (order++ * 80) + "ms");
+        cell.setAttribute("data-state", "in");
+      });
+      if (dirty) measure();
+      introT = setTimeout(() => { if (bounds) { startWave(bounds.left, bounds.top, 1.7); wake(); } }, 300);
+      settleT = setTimeout(() => {
+        root.querySelectorAll(".magic-bento__cell").forEach(c => c.style.setProperty("--mb-delay", "0ms"));
+      }, order * 80 + 2600);
+      wake();
+    }, { threshold: 0.15 }) : null;
+    if (gate) gate.observe(root);
+    else {
+      root.querySelectorAll(".magic-bento__cell").forEach(cell => cell.setAttribute("data-state", "in"));
+      if (motion && root.hasAttribute("data-intro")) root.removeAttribute("data-intro");
+      entered = true;
+    }
+    return {
+      destroy() {
+        if (raf) cancelAnimationFrame(raf);
+        clearTimeout(settleT); clearTimeout(introT);
+        if (gate) gate.disconnect();
+        if (vis) vis.disconnect();
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerdown", onDown);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+        window.removeEventListener("scroll", onScroll, { capture: true });
+        window.removeEventListener("resize", onScroll);
+        document.removeEventListener("pointerout", onOut);
+        root.removeEventListener("click", onClick);
+      }
+    };
+  }
+
   /* ================= v1.4.5 · КАБИНЕТ ВЛАДЕЛЬЦА АНКЕТЫ =================
      Приказ владельца: «сделай кабинет с статистекой для владельцв=а анкеты».
      Полностью на клиенте — работающий сервер не затронут:
@@ -10654,79 +11985,259 @@ h4{ font-weight:700; }
         { day: "numeric", month: "short", year: "numeric" }) : "—";
     } catch (e) { return "—"; }
   }
-  function renderCabinet() {
-    const sumEl = $("cabSummary"), listEl = $("cabList"), empEl = $("cabEmpty");
-    if (!sumEl || !listEl || !empEl) return;
-    const docs = [...myListingIds].map(id => state.docs.find(d => d.id === id)).filter(Boolean);
+  /* --- v5.3 · кабинет как бенто-сетка MagicBento -------------------------
+     4 стат-карты (анкеты/просмотры+бары/рейтинг/VIP) + карточка каждой анкеты
+     (span 2, кликабельна) + пустое состояние. Движок mountBento() даёт
+     прожектор, свечение кромки, волну от клика и каскад появления. --------- */
+  let bentoApi = null, cabSig = "";
+  const MB_BARS = [38, 52, 44, 66, 58, 82, 71];
+  function cabVrfSvg() {
+    return '<span class="vrf-badge" title="' + esc(t("verBadge")) + '"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>';
+  }
+  function mbCard(inner, o) {
+    o = o || {};
+    const cls = "magic-bento__card" + (o.vip ? " cab-vip" : "");
+    const attrs = (o.clickable
+        ? ' data-clickable role="button" tabindex="0" aria-label="' + esc(o.label || "") + '"'
+        : "") + (o.id ? ' data-id="' + esc(o.id) + '"' : "");
+    return '<div class="magic-bento__cell"' + (o.span2 ? ' style="grid-column:span 2"' : "") + ">" +
+      '<div class="' + cls + '"' + attrs + ">" +
+      '<span class="magic-bento__light"></span>' + inner +
+      '<span class="magic-bento__rim"></span><span class="magic-bento__border"></span></div></div>';
+  }
+  function mbStatCard(iconSvg, label, numHtml, visualHtml) {
+    return '<div class="magic-bento__header"><span class="magic-bento__icon">' + iconSvg + '</span>' +
+      '<span class="magic-bento__label">' + esc(label) + '</span></div>' +
+      (visualHtml || "") +
+      '<div class="magic-bento__text"><h3 class="magic-bento__title mb-big">' + numHtml + '</h3></div>';
+  }
+  function renderCabBento(docs) {
+    const bento = $("cabBento");
+    if (!bento) return;
+    if (bentoApi) { bentoApi.destroy(); bentoApi = null; }
     const sub = $("cabSub");
     if (sub) sub.textContent = t("cabHello").replace("{n}", accLabel()) + " · " + docs.length + "/2";   /* п.28: счётчик X/2 */
     if (!docs.length) {
-      sumEl.innerHTML = ""; listEl.innerHTML = ""; empEl.hidden = false;
-      $("cabEmptyIc").innerHTML = icon("chart", 40);
-      $("cabAddBtn").textContent = t("applyBtn");
+      bento.hidden = false;
+      bento.innerHTML = mbCard(
+        '<div class="magic-bento__content cab-empty-in">' +
+        '<span class="cab-empty-ic">' + icon("chart", 24) + '</span>' +
+        '<h4>' + esc(t("cabNoList")) + '</h4><p>' + esc(t("cabNoListD")) + '</p>' +
+        '<button type="button" class="cab-add" id="cabAddBtn">' + esc(t("applyBtn")) + '</button></div>',
+        { span2: true });
+      const ab = $("cabAddBtn");
+      if (ab) ab.addEventListener("click", () => { closeOv("cabOverlay"); guardedApply(); });
+      bentoApi = mountBento(bento);
       return;
     }
-    empEl.hidden = true;
+    bento.hidden = false;
     const views = docs.reduce((s, d) => s + (Number(d.views) || 0), 0);
     const vCnt = docs.reduce((s, d) => s + (Number(d.rateCount) || 0), 0);
     const vSum = docs.reduce((s, d) => s + (Number(d.rateSum) || 0), 0);
     const avg = vCnt > 0 ? (Math.round((vSum / vCnt) * 10) / 10).toFixed(1) : "—";
     const vip = docs.filter(d => d.feat).length;
-    const stat = (num, lbl) => `<div class="cab-stat"><b class="ltr-num">${num}</b><span>${esc(lbl)}</span></div>`;
-    sumEl.innerHTML =
-      stat(String(docs.length), t("cabListings")) +
-      stat(fmtViews(views), t("cabTotal")) +
-      stat(avg + (vCnt ? ` <i>· ${esc(t("cabVotes").replace("{n}", String(vCnt)))}</i>` : ""), t("cabRating")) +
-      stat(String(vip), t("cabVip"));
-    listEl.innerHTML = docs.map(p => {
+    const barMax = Math.max.apply(null, MB_BARS);
+    const bars = '<div class="magic-bento__visual" aria-hidden="true"><div class="magic-bento__bars"><div class="magic-bento__bars-plot">' +
+      MB_BARS.map((h, i) => '<span class="magic-bento__bar"' + (h === barMax ? ' data-peak=""' : "") +
+        ' style="--h:' + (h / 100) + ';--i:' + i + '"></span>').join("") +
+      '</div></div></div>';
+    const parts = [
+      mbCard('<div class="magic-bento__content">' +
+        mbStatCard(icon("book", 13), t("cabListings"), '<span class="ltr-num">' + docs.length + '</span>') + '</div>'),
+      mbCard('<div class="magic-bento__content">' +
+        mbStatCard(icon("eye", 13), t("cabTotal"), '<span class="ltr-num">' + fmtViews(views) + '</span>', bars) + '</div>'),
+      mbCard('<div class="magic-bento__content">' +
+        mbStatCard(icon("star", 13), t("cabRating"),
+          '<span class="ltr-num">' + avg + '</span>' +
+          (vCnt ? '<span class="mb-note">' + esc(t("cabVotes").replace("{n}", String(vCnt))) + '</span>' : "")) + '</div>'),
+      mbCard('<div class="magic-bento__content">' +
+        mbStatCard(icon("crown", 13), t("cabVip"), '<span class="ltr-num">' + vip + '</span>') + '</div>')
+    ];
+    docs.forEach(p => {
       const rk = cabRankOf(p);
       const ra = cabRateAvg(p);
       const exp = p.expiresAt ? Math.ceil((Number(p.expiresAt) - Date.now()) / CAB_DAY) : 0;
       const expTxt = p.expiresAt
-        ? (exp <= 0 ? `<span class="cab-expired">${esc(t("cabExpired"))}</span>`
-                    : `<span class="ltr-num">${esc(t("cabExpiresIn").replace("{n}", String(exp)))}</span>`)
+        ? (exp <= 0 ? '<span class="cab-expired">' + esc(t("cabExpired")) + '</span>'
+                    : '<span class="ltr-num">' + esc(t("cabExpiresIn").replace("{n}", String(exp))) + '</span>')
         : esc(t("cabNever"));
-      return `
-      <div class="cab-item${p.feat ? " vip" : ""}">
-        <div class="cab-item-h">
-          <h4>${esc(pname(p))}${p.feat ? ' <span class="vip-badge"><b>VIP</b></span>' : ""}${p.ver ? ` <span class="vrf-badge" title="${esc(t("verBadge"))}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>` : ""}</h4>
-        </div>
-        <div class="cab-item-stats">
-          <span>${icon("eye", 14)}<b class="ltr-num">${fmtViews(p.views)}</b> ${esc(t("cabViews"))}</span>
-          <span>${icon("star", 14)}<b class="ltr-num">${ra < 0 ? "—" : (Math.round(ra * 10) / 10).toFixed(1)}</b>${Number(p.rateCount) > 0 ? ` ${esc(t("cabVotes").replace("{n}", String(Number(p.rateCount) || 0)))}` : ""}</span>
-        </div>
-        <div class="cab-item-meta">
-          <span>${icon("crown", 14)}${esc(t("cabRank").replace("{a}", String(rk.pos)).replace("{b}", String(rk.total)))}</span>
-          <span>${icon("city", 14)}${esc(cityName(docCityId(p)))} · ${esc(subName(p.group, p.subcategory))}</span>
-          <span>${icon("check", 14)}${esc(t("cabCreated"))}: ${esc(cabDateStr(p))} · ${expTxt}</span>
-        </div>
-        <div class="cab-item-act">
-          <button type="button" class="btn btn-outline cab-open" data-id="${esc(p.id)}">${icon("eye", 14)}${esc(t("cabOpen"))}</button>
-          <button type="button" class="btn btn-outline cab-share" data-id="${esc(p.id)}">${icon("share", 14)}${esc(t("shareBtn"))}</button>
-        </div>
-      </div>`;
-    }).join("");
-    listEl.querySelectorAll(".cab-open").forEach(b => b.addEventListener("click", () => {
-      const id = b.dataset.id;
+      const head = '<div class="magic-bento__header">' +
+        '<span class="magic-bento__icon">' + icon("city", 13) + '</span>' +
+        '<span class="magic-bento__label">' + esc(cityName(docCityId(p))) + ' · ' + esc(subName(p.group, p.subcategory)) + '</span>' +
+        (p.feat ? ' <span class="vip-badge"><b>VIP</b></span>' : "") + (p.ver ? " " + cabVrfSvg() : "") + '</div>';
+      const stats = '<div class="mb-row">' +
+        '<span>' + icon("eye", 13) + '<b class="ltr-num">' + fmtViews(p.views) + '</b> ' + esc(t("cabViews")) + '</span>' +
+        '<span>' + icon("star", 13) + '<b class="ltr-num">' + (ra < 0 ? "—" : (Math.round(ra * 10) / 10).toFixed(1)) + '</b>' +
+          (Number(p.rateCount) > 0 ? " " + esc(t("cabVotes").replace("{n}", String(Number(p.rateCount) || 0))) : "") + '</span>' +
+        '<span>' + icon("crown", 13) + esc(t("cabRank").replace("{a}", String(rk.pos)).replace("{b}", String(rk.total))) + '</span></div>' +
+        '<div class="mb-row mb-row2"><span>' + icon("check", 13) + esc(t("cabCreated")) + ': ' + esc(cabDateStr(p)) + '</span><span>' + expTxt + '</span></div>';
+      const acts = '<div class="cab-item-act">' +
+        '<button type="button" class="btn btn-outline cab-open" data-id="' + esc(p.id) + '">' + icon("eye", 14) + esc(t("cabOpen")) + '</button>' +
+        '<button type="button" class="btn btn-outline cab-share" data-id="' + esc(p.id) + '">' + icon("share", 14) + esc(t("shareBtn")) + '</button></div>';
+      parts.push(mbCard('<div class="magic-bento__content">' + head +
+        '<div class="magic-bento__text"><h3 class="magic-bento__title">' + esc(pname(p)) + '</h3></div>' +
+        stats + acts + '</div>',
+        { span2: true, clickable: true, id: p.id, vip: !!p.feat, label: pname(p) }));
+    });
+    bento.innerHTML = parts.join("");
+    bento.querySelectorAll(".cab-open").forEach(b => b.addEventListener("click", ev => {
+      ev.stopPropagation();
       closeOv("cabOverlay");
-      renderDetail(id);
+      renderDetail(b.dataset.id);
     }));
-    listEl.querySelectorAll(".cab-share").forEach(b => b.addEventListener("click", () => {
+    bento.querySelectorAll(".cab-share").forEach(b => b.addEventListener("click", ev => {
+      ev.stopPropagation();
       const d = state.docs.find(x => x.id === b.dataset.id);
       if (d) shareProvider(d);
     }));
+    bento.querySelectorAll(".magic-bento__card[data-clickable]").forEach(card => {
+      card.addEventListener("click", () => { closeOv("cabOverlay"); renderDetail(card.dataset.id); });
+      card.addEventListener("keydown", ev => {
+        if (ev.key !== "Enter" && ev.key !== " ") return;
+        ev.preventDefault(); card.click();
+      });
+    });
+    bentoApi = mountBento(bento);
+  }
+  function renderCabinet() {
+    const bento = $("cabBento");
+    if (!bento) return;
+    const docs = [...myListingIds].map(id => state.docs.find(d => d.id === id)).filter(Boolean);
+    /* сигнатура: не пересобирать бенто (и не гасить движок) без изменений —
+       автообновление 25с/60с зовёт renderCabinet постоянно */
+    const sig = docs.map(d => [d.id, d.views, d.rateCount, d.rateSum, d.feat ? 1 : 0, d.ver ? 1 : 0,
+      d.expiresAt || 0, state.lang].join(":")).join("|") + "#" + docs.length;
+    if (sig === cabSig && !bento.hidden) return;
+    cabSig = sig;
+    renderCabBento(docs);
+  }
+  /* ============ v5.5.0 · Вкладки кабинета: «Анкеты» / «Подписки» ============
+     Прайсинг (Pricing 1) живёт в секции #subsSec внизу главной (v5.6.0);
+     во вкладке кабинета — список текущих подписок своих анкет (VIP /
+     Проверено / Базовый + срок) и кнопка «Все тарифы» → скролл к секции.
+     Табы переиспользуют .adm-tabs. */
+  function cabSetTab(id) {
+    document.querySelectorAll("#cabTabs .adm-tab").forEach(x => {
+      const on = x.dataset.cabtab === id;
+      x.classList.toggle("on", on);
+      x.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    const pd = $("cabPaneDocs"), ps = $("cabPaneSubs");
+    if (pd) pd.hidden = id !== "docs";
+    if (ps) ps.hidden = id !== "subs";
+    if (id === "subs") renderSubsNow();
+  }
+  $("cabTabs").addEventListener("click", e => {
+    const b = e.target.closest(".adm-tab");
+    if (b) cabSetTab(b.dataset.cabtab);
+  });
+  /* Текущие подписки: реальные анкеты владельца и их статус.
+     v5.5.0: пишем в ДВА контейнера — вкладку «Подписки» кабинета
+     (#cabSubsNow, с сообщением о пустом списке) и блок в секции #subsSec
+     (#spNow, при пустом списке просто скрыт).
+     preDocs — готовый массив (пробы/переиспользование), иначе myListingIds. */
+  function renderSubsNow(preDocs) {
+    const cab = $("cabSubsNow"), sp = $("spNow");
+    if (!cab && !sp) return;
+    let docs;
+    if (Array.isArray(preDocs)) docs = preDocs.slice();
+    else {
+      try { docs = [...myListingIds].map(id => state.docs.find(d => d.id === id)).filter(Boolean); }
+      catch (e) { docs = []; }
+    }
+    if (!docs.length) {
+      if (cab) cab.innerHTML = '<div class="pr-now-none">' + esc(t("cabSubsNone")) + '</div>';
+      if (sp) { sp.innerHTML = ""; sp.hidden = true; }
+      return;
+    }
+    const rows = docs.map(p => {
+      const badge = p.feat ? '<span class="pr-now-badge vipb">VIP</span>'
+        : p.ver ? '<span class="pr-now-badge ver">' + esc(t("prVerName")) + '</span>'
+        : '<span class="pr-now-badge base">' + esc(t("prFreeName")) + '</span>';
+      const left = p.expiresAt ? Math.ceil((Number(p.expiresAt) - Date.now()) / CAB_DAY) : 0;
+      const exp = p.expiresAt
+        ? (left <= 0 ? '<span class="pr-now-exp">' + esc(t("cabExpired")) + '</span>'
+                     : '<span class="ltr-num">' + esc(t("cabExpiresIn").replace("{n}", String(left))) + '</span>')
+        : '<span>' + esc(t("cabNever")) + '</span>';
+      return '<div class="pr-now-row">' + badge + '<b>' + esc(pname(p)) + '</b>' +
+        '<span class="pr-now-meta">' + exp + '</span></div>';
+    }).join("");
+    if (cab) cab.innerHTML = rows;
+    if (sp) { sp.innerHTML = rows; sp.hidden = false; }
+  }
+  /* ============ v5.6.2 · Раздел «Тарифы» — открытие ============
+     Приказ «тарифы убери в раздел тарифы, их не должно быть на
+     главном экране»: секция #subsSec скрыта (hidden) из потока
+     главной страницы. Вкладка bnSubs и «Все тарифы» кабинета
+     снимают hidden и скроллят к ней (как у секции карты);
+     кабинет/оверлеи закрываются (иначе накроют секцию).
+     Авто-открытие после входа/гостя УБРАНО — никаких попапов. */
+  function openSubsSec() {
+    renderSubsNow();                     /* свежий список текущих подписок */
+    closeOv("cabOverlay"); closeOv("settingsOverlay"); closeOv("detailOverlay");
+    const el = document.getElementById("subsSec");
+    if (el) el.hidden = false;           /* v5.6.2: показать раздел (был скрыт) */
+    document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnSubs"));
+    if (el) setTimeout(() => {
+      try { el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      catch (e) { el.scrollIntoView(); }
+    }, 60);
+  }
+  /* v5.3.1 · компактная волна-лента между hero и городами, живущая от скролла:
+     в покое стоит, при появлении — импульс, скорость/направление — за скроллом
+     (меряется каждый кадр: гладкий скролл, прыжки и моментум — всё ловится),
+     после остановки — плавный выбег ~1с */
+  const tlMainApi = mountTextLoop($("tlMain"), {
+    fontSize: 36, ribbonWidth: 62, curviness: 56, speed: 0, scrollBoost: 1.5
+  });
+  /* DalilFx — точка входа для отладки/переиспользования (пробы, консоль) */
+  window.DalilFx = { mountTextLoop, mountBento, renderCabBento, renderSubsNow,
+    openSubsSec, MB_BARS, tlMain: tlMainApi };
+  /* ================= v5.4 · PRICING 1 — тумблер биллинга + CTA =================
+     Месяц↔год: цены меняются ($5↔$39, $10↔$70 — из VIP-модалки), подпись
+     периода — на текущем языке, бейдж выгоды виден только на годовой схеме.
+     CTA: «Базовый» → guardedApply (мастер заявки с гостевым гейтом),
+     «Проверено»/VIP → data-pack (готовый wa.me-wiring по applyLang),
+     «Все пакеты» → VIP-модалка.
+     v5.6.0: прайсинг — в секции #subsSec внизу главной; кабинет
+     закрывается перед открытием гейта/мастера заявки/VIP-модалки,
+     иначе оверлей накроет страницу. */
+  {
+    const prSec = document.getElementById("pricingSec");
+    if (prSec) {
+      const prBtns = [...prSec.querySelectorAll(".pr-toggle button")];
+      const setBill = y => {
+        prBtns.forEach(b => b.classList.toggle("on", (b.dataset.bill === "y") === y));
+        prSec.querySelectorAll(".pr-num[data-m]").forEach(n => { n.textContent = y ? n.dataset.y : n.dataset.m; });
+        prSec.querySelectorAll(".pr-per2").forEach(p => { p.textContent = t(y ? "prPerY" : "prPerM"); });
+        prSec.querySelectorAll(".vip-save").forEach(s => { s.hidden = !y; });
+      };
+      prBtns.forEach(b => b.addEventListener("click", () => setBill(b.dataset.bill === "y")));
+      /* v5.6.0: кабинет закрывается перед гейтом/мастером заявки/VIP-модалкой. */
+      const prFree = document.getElementById("prFreeCta");
+      if (prFree) prFree.addEventListener("click", () => { closeOv("cabOverlay"); guardedApply(); });
+      const prAll = document.getElementById("prAllBtn");
+      if (prAll) prAll.addEventListener("click", () => { closeOv("cabOverlay"); openOv("vipOv"); });
+      /* CTA 13 «Купить VIP» → все пакеты (VIP-модалка) */
+      const c13 = document.getElementById("cta13Btn");
+      if (c13) c13.addEventListener("click", () => openOv("vipOv"));
+      /* «Все тарифы» из кабинета → открыть раздел (v5.6.2: снимает hidden) */
+      const spLook = document.getElementById("spLookBtn");
+      if (spLook) spLook.addEventListener("click", openSubsSec);
+    }
   }
   async function openCabinet() {
     if (!isAuthed()) { askAuth("apply"); return; }
     closeOv("settingsOverlay");
     closeOv("detailOverlay");
     openOv("cabOverlay");
+    cabSetTab("docs");
     renderCabinet();
     try { await loadMyListings(); } catch (e) { /* ids останутся прежними */ }
     renderCabinet();   /* перерисовка после подтяжки свежих ids с сервера */
   }
   $("cabBtn").addEventListener("click", openCabinet);
-  $("cabAddBtn").addEventListener("click", () => { closeOv("cabOverlay"); guardedApply(); });
+  /* v5.3: #cabAddBtn теперь внутри бенто-карточки — биндится в renderCabBento() */
   /* п.28: вкладка «Кабинет» подсвечена, пока открыто окно кабинета; при закрытии
      (крестик/фон/Esc) подсветка возвращается на «Главная» — если та не занята */
   new MutationObserver(() => {
@@ -10767,14 +12278,14 @@ h4{ font-weight:700; }
     return false;
   }
   let lastLt = "";
-  function googleBackProcess(tok, name) {
+  function googleBackProcess(tok, name, prov) {
     try {
       if (!tok || tok === lastLt) return;
       lastLt = tok;
       const nm = String(name || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 60);
-      finishLogin({ p: "google", n: nm, e: "", token: tok }, false);
+      finishLogin({ p: prov || "google", n: nm, e: "", token: tok }, false);
       try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
-      syncMe();   /* п.26: настоящее имя аккаунта Google — с сервера */
+      syncMe();   /* п.26: настоящее имя аккаунта — с сервера */
     } catch {}
   }
   function googleBackScan() {
@@ -10782,14 +12293,17 @@ h4{ font-weight:700; }
       const mu = location.hash.match(/(?:^#|&)un=([^&]+)/) || location.search.match(/[?&]un=([^&]+)/);
       let nm = "";
       if (mu && mu[1]) { try { nm = decodeURIComponent(mu[1]); } catch (e) { nm = mu[1]; } }
+      /* v5.4.3 (перенесено): провайдер в pp= (github-коллбек воркера шлёт pp=github) */
+      const mp = location.hash.match(/(?:^#|&)pp=([a-z]+)/) || location.search.match(/[?&]pp=([a-z]+)/);
+      const prov = (mp && /^[a-z]+$/.test(mp[1]) && mp[1]) || "google";
       const mm = location.hash.match(/(?:^#|&)lt=([A-Za-z0-9_\-.]+)/)
              || location.search.match(/[?&]lt=([A-Za-z0-9_\-.]+)/);
-      if (mm && mm[1]) { googleBackProcess(mm[1], nm); return; }
+      if (mm && mm[1]) { googleBackProcess(mm[1], nm, prov); return; }
       const me = location.hash.match(/(?:^#|&)ea=([A-Za-z0-9_\-]+)/)
              || location.search.match(/[?&]ea=([A-Za-z0-9_\-]+)/);
       if (me && me[1]) {
         lastLt = "ea:" + me[1];
-        toast(t("auOauthFail"));
+        toast(t(prov === "github" ? "ghOauthFail" : "auOauthFail"));
         try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
       }
     } catch {}
@@ -10849,7 +12363,7 @@ h4{ font-weight:700; }
       $("delAccIc").innerHTML = icon("trash", 30);
       $("cabEntryIc").innerHTML = icon("chart", 13);   /* v1.4.5: кабинет */
       $("cabBtnIc").innerHTML = icon("chart", 16);
-      $("cabEmptyIc").innerHTML = icon("chart", 40);
+      /* v5.3: #cabEmptyIc удалён — иконка пустого состояния встроена в renderCabBento() */
       $("searchIcon").innerHTML = lensSVG(18);   /* v1.4.2: фирменная золотая лупа */
       /* v1.3.0: иконки новых блоков */
       $("notifBtnIc").innerHTML = icon("bell", 18);
@@ -10859,6 +12373,7 @@ h4{ font-weight:700; }
       $("bnMapIc").innerHTML = icon("map", 21);
       $("bnCabIc").innerHTML = icon("chart", 21);   /* п.28: кабинет на нижней панели */
       $("bnFavIc").innerHTML = icon("heart", 21);
+      $("bnSubsIc").innerHTML = icon("crown", 21);   /* v5.6.0: вкладка «Подписки» */
       $("fMapBtnIc").innerHTML = icon("pin", 15);
       $("aMapBtnIc").innerHTML = icon("pin", 15);
       $("panelIc").innerHTML = icon("gear", 16);
@@ -10869,6 +12384,10 @@ h4{ font-weight:700; }
       $("appAgreeBox").innerHTML = icon("check", 14);
       $("appDoneIc").innerHTML = icon("check", 30);
       $("appDoneWaIc").innerHTML = icon("chat", 15);
+      /* v5.6.0: секция #subsSec — корона CTA 13, соцкнопки Footer 8 */
+      $("ct13Ic").innerHTML = icon("crown", 16);
+      $("ftIcTg").innerHTML = icon("send", 18);
+      $("ftIcWa").innerHTML = icon("chat", 18);
       document.querySelectorAll(".modal-close").forEach(b => b.innerHTML = icon("x", 18));
 
       state.levelSelected = !catById(state.cat).levels;
