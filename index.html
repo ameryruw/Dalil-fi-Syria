@@ -1757,103 +1757,132 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
 .wv3-link:hover{ text-decoration:underline; }
 .wv3-dot{ color:var(--muted); opacity:.6; }
 .wv3-foot{ font-size:.72rem; color:var(--muted); opacity:.85; line-height:1.55; text-align:center; }
-/* ——— ВТОРАЯ СТОРОНА: витрина РЕАЛЬНЫХ анкет ——— */
-.wv3-show{
-  position:relative; overflow:hidden; display:flex; flex-direction:column;
-  justify-content:center; gap:32px; padding:64px 0;
+/* ——— ВТОРАЯ СТОРОНА: витрина — v5.8.1 перенесена ДОСЛОВНО из auth-1 (1).html
+      (Ctrl+C Ctrl+V, приказ владельца «не меняй не изменяй»). Сознательных
+      отклонений от макета всего 4, все вынужденные:
+      1) Nova-токены объявлены на .showcase-side — изоляция витрины от 7 тем
+         приложения (вне витрины темы живут как жили);
+      2) зелёный цвет → фиолетовый (--success/живая точка, аватары av-3/av-7):
+         зелёный в UI запрещён инвариантом 10 §4 брифа;
+      3) физические свойства заменены логическими ТОЛЬКО там, где RTL ломает
+         бесшовный цикл/стек (padding-inline-end, margin-inline-start); в LTR
+         результат идентичен макету пиксель-в-пиксель;
+      4) Inter не подключаем (в APK/оффлайн его нет) — родные шрифты приложения.
+      Marquee-механика (52s/60s, встречные ленты, пауза по hover, маски,
+      keyframes scroll-left/right) — 1-в-1. Плашки ДВИГАЮТСЯ ВСЕГДА: приказ
+      «двигаться должны» — reduced-motion их не останавливает (rise — можно). ——— */
+.showcase-side{
+  --background:#06060b; --background-2:#0b0b14; --foreground:#f4f4f6;
+  --muted:#9b9ba7; --muted-2:#6d6d7c;
+  --card:rgba(255,255,255,.04); --card-hover:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.16);
+  --primary:#7c5cff; --primary-2:#a78bfa; --ring:rgba(124,92,255,.55);
+  --success:#a78bfa; /* в макете зелёный #34d399 — инвариант 10 §4 */
+  --star:#fbbf24; --radius:14px; --radius-sm:10px;
+
+  position:relative; display:flex; flex-direction:column; justify-content:center;
+  gap:40px; overflow:hidden; padding:64px 0;
   background:
-    radial-gradient(1100px 600px at 85% -10%, rgba(var(--acc-rgb),.18), transparent 60%),
-    radial-gradient(900px 500px at 10% 110%, rgba(var(--acc-rgb),.10), transparent 60%),
-    linear-gradient(180deg, var(--bg2), var(--bg));
+    radial-gradient(1100px 600px at 85% -10%, rgba(124,92,255,.22), transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, rgba(56,189,248,.12), transparent 60%),
+    linear-gradient(180deg, var(--background-2), var(--background));
 }
-/* точечная сетка auth-1 — чистый CSS, движение нет */
-.wv3-show::before{
+/* dot grid texture (дословно auth-1) */
+.showcase-side::before{
   content:""; position:absolute; inset:0; pointer-events:none;
-  background-image:radial-gradient(rgba(var(--acc-rgb),.18) 1px, transparent 1px);
-  background-size:24px 24px;
+  background-image:radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px);
+  background-size:26px 26px;
   -webkit-mask-image:radial-gradient(75% 70% at 50% 45%, #000 30%, transparent 100%);
           mask-image:radial-gradient(75% 70% at 50% 45%, #000 30%, transparent 100%);
 }
-.wv3-head{ position:relative; padding-inline:52px; max-width:780px; animation:wv3Rise .8s .1s ease both; }
-.wv3-badge{
+.showcase-head{ position:relative; padding:0 56px; max-width:760px; animation:rise .8s .1s ease both; }
+.showcase-badge{
   display:inline-flex; align-items:center; gap:8px; padding:7px 14px; border-radius:999px;
-  border:1px solid var(--line-soft); background:var(--surface);
-  box-shadow:var(--raise-xs), var(--sheen);
-  font-size:.72rem; font-weight:700; color:var(--muted); letter-spacing:.02em;
+  border:1px solid var(--border); background:var(--card); backdrop-filter:blur(8px);
+  font-size:12.5px; font-weight:600; color:var(--muted); letter-spacing:.02em;
 }
-.wv3-live{
-  width:7px; height:7px; border-radius:50%; flex:none;
-  background:var(--accent-hi); box-shadow:0 0 10px var(--accent-hi);
-  animation:wv3Pulse 2.2s ease-in-out infinite;
+.showcase-badge .dot{
+  width:7px; height:7px; border-radius:50%;
+  background:var(--success); box-shadow:0 0 10px var(--success);
+  animation:pulse 2.2s ease-in-out infinite;
 }
-.wv3-quote{
-  margin:18px 0 0; font-size:clamp(1.5rem,2.6vw,2.3rem); font-weight:800;
-  line-height:1.22; color:var(--card);
+.showcase-quote{
+  margin:22px 0 0; font-size:clamp(26px,3vw,40px); font-weight:800;
+  letter-spacing:-.03em; line-height:1.18; text-wrap:balance;
 }
-.wv3-qsub{ margin:12px 0 0; font-size:.92rem; color:var(--muted); line-height:1.6; }
-/* marquee: две ленты в противофазе, пауза по hover, в RTL — встречный ход */
-.wv3-marq{
-  position:relative; overflow:hidden; padding:4px 0;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
-          mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+.showcase-quote em{
+  font-style:normal; background:linear-gradient(90deg,var(--primary-2),#60a5fa);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
 }
-.wv3-mtrack{ display:flex; width:max-content; animation:wv3Left var(--spd,56s) linear infinite; }
-.wv3-marq.rev .wv3-mtrack{ animation-name:wv3Right; }
-[dir="rtl"] .wv3-mtrack{ animation-name:wv3Right; }
-[dir="rtl"] .wv3-marq.rev .wv3-mtrack{ animation-name:wv3Left; }
-.wv3-marq:hover .wv3-mtrack{ animation-play-state:paused; }
-.wv3-mgroup{ display:flex; gap:14px; padding-inline-end:14px; }
-/* карточка РЕАЛЬНОЙ анкеты каталога */
-.wv3-tcard{
-  width:330px; flex:none; padding:16px 18px; border-radius:16px;
-  background:var(--surface); border:1px solid var(--line-soft);
-  box-shadow:var(--raise-xs), var(--sheen);
-  transition:transform .25s ease, border-color .25s ease;
+[dir="rtl"] .showcase-quote{ letter-spacing:0; } /* отриц. трекинг рвёт арабскую вязь */
+.showcase-sub{ margin:14px 0 0; font-size:15.5px; color:var(--muted); line-height:1.6; }
+
+/* ---- Marquee (дословно auth-1) ---- */
+.marquee{
+  position:relative; overflow:hidden; padding:6px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
 }
-.wv3-tcard:hover{ transform:translateY(-3px); border-color:var(--line); }
-.wv3-tstars{ color:var(--accent-hi); font-size:.82rem; letter-spacing:.12em; }
-.wv3-tname{
-  margin-top:10px; font-size:.92rem; font-weight:700; color:var(--card);
-  display:flex; align-items:center; gap:6px; min-width:0;
+.marquee-track{ display:flex; width:max-content; animation:scroll-left var(--speed,46s) linear infinite; }
+.marquee.reverse .marquee-track{ animation-name:scroll-right; }
+.marquee:hover .marquee-track{ animation-play-state:paused; }
+.marquee-group{ display:flex; gap:18px; padding-inline-end:18px; } /* макет: padding-right; RTL — логическое */
+/* ---- карточка анкеты (дословно auth-1 .t-card; внутри — РЕАЛЬНЫЕ анкеты) ---- */
+.t-card{
+  width:360px; flex:none; margin:0; padding:22px; border-radius:var(--radius);
+  border:1px solid var(--border); background:var(--card); backdrop-filter:blur(10px);
+  transition:background .25s, border-color .25s, transform .25s;
 }
-.wv3-tname svg{ width:14px; height:14px; flex:none; color:var(--accent); }
-.wv3-tcap{ margin-top:12px; display:flex; align-items:center; gap:10px; min-width:0; }
-.wv3-tcap b{
-  display:block; font-size:.76rem; font-weight:700; color:var(--card);
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:230px;
+.t-card:hover{ background:var(--card-hover); border-color:var(--border-strong); transform:translateY(-3px); }
+.stars{ display:flex; gap:3px; color:var(--star); margin-bottom:13px; }
+.stars.dim{ opacity:.35; } /* честный реальный балл: <5 звёзд — тускло */
+.t-quote{ margin:0; font-size:14.5px; line-height:1.65; color:#dcdce4; }
+.t-author{ margin-top:18px; display:flex; align-items:center; gap:12px; }
+.avatar{
+  width:38px; height:38px; border-radius:50%; flex:none; display:grid; place-items:center;
+  font-size:13px; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,.2);
 }
-.wv3-tcap i{ display:block; font-style:normal; font-size:.7rem; color:var(--muted); margin-top:2px; }
-.wv3-tava{
-  width:34px; height:34px; border-radius:50%; flex:none;
-  display:grid; place-items:center; font-size:.72rem; font-weight:800;
-  color:var(--on-accent); border:1px solid rgba(var(--ink-rgb),.25);
-  font-family:'Space Grotesk','Rubik',sans-serif;
+.av-1{ background:linear-gradient(135deg,#7c5cff,#4f46e5); }
+.av-2{ background:linear-gradient(135deg,#f472b6,#db2777); }
+.av-3{ background:linear-gradient(135deg,#a78bfa,#7c3aed); } /* макет: зелёный — инвариант 10 */
+.av-4{ background:linear-gradient(135deg,#fbbf24,#d97706); }
+.av-5{ background:linear-gradient(135deg,#60a5fa,#2563eb); }
+.av-6{ background:linear-gradient(135deg,#8b5cf6,#6d28d9); }
+.av-7{ background:linear-gradient(135deg,#38bdf8,#0369a1); } /* макет: тил — инвариант 10 */
+.av-8{ background:linear-gradient(135deg,#fb7185,#e11d48); }
+.t-name{ font-size:13.5px; font-weight:600; }
+.t-role{ font-size:12.5px; color:var(--muted-2); margin-top:2px; }
+/* ---- статистика под лентами (дословно auth-1) ---- */
+.showcase-stats{
+  position:relative; display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+  padding:0 56px; animation:rise .8s .25s ease both;
 }
-.wv3a1{ background:linear-gradient(135deg,var(--accent-hi),var(--accent)); }
-.wv3a2{ background:linear-gradient(135deg,var(--accent),var(--accent2)); }
-.wv3a3{ background:linear-gradient(135deg,var(--accent-hi),var(--accent2)); }
-.wv3a4{ background:linear-gradient(135deg,var(--tg),var(--accent)); }
-.wv3a5{ background:linear-gradient(135deg,var(--accent2),var(--accent-lo)); }
-.wv3a6{ background:linear-gradient(135deg,var(--accent-lo),var(--tg)); }
-.wv3-stats{
-  position:relative; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-  padding-inline:52px; animation:wv3Rise .8s .25s ease both;
-}
-.wv3-stack{ display:flex; }
-.wv3-stack .wv3-tava{ width:30px; height:30px; font-size:.62rem; border:2px solid var(--bg2); }
-.wv3-stack .wv3-tava + .wv3-tava{ margin-inline-start:-9px; }
-.wv3-stat{ margin:0; font-size:.8rem; color:var(--muted); }
-.wv3-stat b{ color:var(--card); font-weight:800; }
-/* ——— анимации ——— */
-@keyframes wv3Left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
-@keyframes wv3Right{ from{ transform:translateX(-50%); } to{ transform:translateX(0); } }
-@keyframes wv3Rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
-@keyframes wv3Pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+.stack{ display:flex; }
+.stack .avatar{ width:32px; height:32px; font-size:11px; border:2px solid var(--background-2); }
+.stack .avatar:not(:first-child){ margin-inline-start:-10px; } /* макет: margin-left; RTL — логическое */
+.stat-text{ margin:0; font-size:13.5px; color:var(--muted); }
+.stat-text b{ color:var(--foreground); font-weight:700; }
+.stars-inline{ display:inline-flex; gap:2px; color:var(--star); vertical-align:-2px; }
+/* ---- keyframes (дословно auth-1) ---- */
+@keyframes scroll-left  { from{ transform:translateX(0); }    to{ transform:translateX(-50%); } }
+@keyframes scroll-right { from{ transform:translateX(-50%); } to{ transform:translateX(0); } }
+@keyframes rise { from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+/* ВЛАДЕЛЕЦ: «плашки двигаться должны» → marquee НЕ отключается даже при
+   prefers-reduced-motion (в v5.8.0 из-за этого ленты стояли). Отключаем только rise. */
 @media (prefers-reduced-motion: reduce){
-  .wv3-mtrack{ animation:none !important; }
-  .wv3-live{ animation:none !important; }
-  .wv3-core > *, .wv3-head, .wv3-stats{ animation:none !important; }
+  .showcase-head, .showcase-stats{ animation:none !important; }
 }
+/* ---- адаптив витрины (дословно auth-1: 1080/960/560) ---- */
+@media (max-width:1080px){ .t-card{ width:320px; } }
+@media (max-width:960px){
+  .showcase-side{ padding:48px 0; gap:32px; }
+  .showcase-head, .showcase-stats{ padding:0 24px; }
+}
+@media (max-width:560px){
+  .t-card{ width:280px; padding:18px; }
+  .showcase-quote{ font-size:24px; }
+}
+
 /* ——— адаптив: <1080 витрина уходит ПОД форму (стек, как в auth-1) ——— */
 @media (max-width:1079px){
   .wv3-shell{ grid-template-columns:1fr; }
@@ -1861,15 +1890,10 @@ html[dir="rtl"] .vip-ribbon{ transform:translateX(50%); }
     border-inline-end:none; border-bottom:1px solid var(--line-soft);
     padding:70px 22px 26px; min-height:100dvh;
   }
-  .wv3-show{ padding:44px 0; gap:24px; }
-  .wv3-head, .wv3-stats{ padding-inline:22px; }
-  .wv3-tcard{ width:300px; }
 }
 @media (max-width:560px){
   .wv3-auth{ padding:66px 16px 22px; }
   .wv3-social{ grid-template-columns:1fr; }
-  .wv3-tcard{ width:262px; padding:14px 15px; }
-  .wv3-quote{ font-size:1.32rem; }
 }
 
 
@@ -3759,19 +3783,21 @@ h4{ font-weight:700; }
         <div class="wv3-foot" data-i18n="wReal"></div>
       </div>
     </section>
-    <!-- v5.8.0 · ВТОРАЯ СТОРОНА: витрина РЕАЛЬНЫХ анкет (renderWvMarquee —
-         реальные данные каталога, «самые красивые» вперёд, приказ v5.4.1) -->
-    <section class="wv3-show" aria-label="DALIL SURIYA catalog">
-      <div class="wv3-head">
-        <span class="wv3-badge"><span class="wv3-live" aria-hidden="true"></span><span data-i18n="wv3Trusted"></span></span>
-        <h2 class="wv3-quote" data-i18n="wvTsH"></h2>
-        <p class="wv3-qsub" data-i18n="wvTsS"></p>
+    <!-- v5.8.1 · ВТОРАЯ СТОРОНА: витрина — структура ДОСЛОВНО из auth-1 (1).html
+         (Ctrl+C Ctrl+V, приказ владельца «не меняй не изменяй»). Две ленты
+         .marquee (52s влево / 60s вправо), внутри РЕАЛЬНЫЕ анкеты каталога
+         (renderWvMarquee: «самые красивые» вперёд, приказ v5.4.1). -->
+    <section class="showcase-side" aria-label="DALIL SURIYA catalog">
+      <div class="showcase-head">
+        <span class="showcase-badge"><span class="dot" aria-hidden="true"></span><span data-i18n="wv3Trusted"></span></span>
+        <h2 class="showcase-quote" data-i18n="wvTsH"></h2>
+        <p class="showcase-sub" data-i18n="wvTsS"></p>
       </div>
-      <div class="wv3-marq" style="--spd:56s"><div class="wv3-mtrack" id="wvTrackA"></div></div>
-      <div class="wv3-marq rev" style="--spd:64s"><div class="wv3-mtrack" id="wvTrackB"></div></div>
-      <div class="wv3-stats">
-        <span class="wv3-stack" id="wv3Stack" aria-hidden="true"></span>
-        <p class="wv3-stat" id="wv3Stat"></p>
+      <div class="marquee" style="--speed:52s"><div class="marquee-track" id="wvTrackA"></div></div>
+      <div class="marquee reverse" style="--speed:60s"><div class="marquee-track" id="wvTrackB"></div></div>
+      <div class="showcase-stats">
+        <div class="stack" id="wv3Stack" aria-hidden="true"></div>
+        <p class="stat-text" id="wv3Stat"></p>
       </div>
     </section>
   </div>
@@ -4467,7 +4493,7 @@ h4{ font-weight:700; }
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "5.8.0";
+  const APP_VERSION = "5.8.1";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -8330,14 +8356,16 @@ h4{ font-weight:700; }
     $("emptyActions").hidden = !cityBlocked;
   }
 
-  /* ============ v5.8.0 · AUTH 3 · marquee РЕАЛЬНЫХ анкет (design auth-1) ============
-     Приказ владельца: «пусть там будут реальные наши карточки». Отбор как в
-     v5.4.1 («возьми самые красивые»): верифицированные → средняя оценка → VIP →
-     просмотры → новизна, до 14 штук; чётные — в верхнюю ленту, нечётные — в
-     нижнюю (противофаза); каждая лента дублируется для бесшовного цикла.
-     Пересборка — только по сигнатуре (язык/состав/просмотры/города/балл),
-     анимацию не дёргаем. Заодно заполняются реальная статистика (средний балл,
-     анкеты, города) и стек аватаров топ-5. docs — готовый массив, иначе state.docs. */
+  /* ============ v5.8.1 · marquee РЕАЛЬНЫХ анкет — разметка ДОСЛОВНО из auth-1 (1).html ============
+     Приказ владельца: «не меняй не изменяй просто кнтрл ц кнтрл в». Карточка = .t-card
+     макета: звёзды ★★★★★ (реальный балл: <5 → dim), .t-quote = реальное описание анкеты,
+     .t-author = аватар .avatar av-1..8 + .t-name (имя + верификация + VIP) + .t-role
+     (город · категория · просмотры · балл). Отбор «самые красивые» (приказ v5.4.1):
+     верифицированные → оценка → VIP → просмотры → новизна, до 14; чётные — верхняя
+     лента, нечётные — нижняя; каждая лента = .marquee-group + aria-hidden дубль для
+     бесшовного цикла -50% (scroll-left/right, 52s/60s — из макета). Пересборка —
+     только по сигнатуре (язык/состав/просмотры/города/балл), анимацию не дёргаем.
+     docs — готовый массив, иначе state.docs. */
   let wv3Sig = "";
   const wv3Avg = (p) => { const rc = Number(p.rateCount) || 0; return rc > 0 ? (Number(p.rateSum) || 0) / rc : -1; };
   function renderWvMarquee(docs) {
@@ -8352,9 +8380,13 @@ h4{ font-weight:700; }
     if (sig === wv3Sig) return;
     wv3Sig = sig;
     const st = $("wv3Stat");
-    if (st) st.textContent = avgAll >= 0
-      ? t("wv3Stats").replace("{r}", (Math.round(avgAll * 10) / 10).toFixed(1)).replace("{n}", list.length).replace("{c}", citySet.size)
-      : t("wv3Stats").replace("{r}", "—").replace("{n}", list.length).replace("{c}", citySet.size);
+    if (st) st.innerHTML = '<span class="stars-inline" aria-hidden="true">★★★★★</span> ' + (avgAll >= 0
+      ? t("wv3Stats").replace("{r}", "<b>" + (Math.round(avgAll * 10) / 10).toFixed(1) + "</b>")
+          .replace("{n}", "<b>" + fmtViews(list.length) + "</b>")
+          .replace("{c}", "<b>" + citySet.size + "</b>")
+      : t("wv3Stats").replace("{r}", "<b>—</b>")
+          .replace("{n}", "<b>" + list.length + "</b>")
+          .replace("{c}", "<b>" + citySet.size + "</b>"));
     /* v5.4.1 (владелец: «карточки на фоне регистрации — реальные, возьми самые
        красивые»): верифицированные → средняя оценка → VIP → просмотры → новизна */
     const pool = list.slice().sort((a, b) =>
@@ -8365,11 +8397,12 @@ h4{ font-weight:700; }
       (((b.createdAt || {}).seconds) || 0) - (((a.createdAt || {}).seconds) || 0)).slice(0, 14);
     const stack = $("wv3Stack");
     if (stack) stack.innerHTML = pool.slice(0, 5).map((p, i) =>
-      '<span class="wv3-tava wv3a' + (i % 6 + 1) + '">' +
+      '<span class="avatar av-' + (i % 8 + 1) + '">' +
       esc((pname(p).trim().charAt(0) || "•").toUpperCase()) + '</span>').join("");
     if (!pool.length) {
-      ta.innerHTML = '<figure class="wv3-tcard"><span class="wv3-tstars dim" aria-hidden="true">★★★★★</span>' +
-        '<div class="wv3-tname">' + esc(t("wvLiveNone")) + '</div></figure>';
+      const none = '<article class="t-card"><div class="stars dim" aria-hidden="true">★★★★★</div>' +
+        '<p class="t-quote">' + esc(t("wvLiveNone")) + '</p></article>';
+      ta.innerHTML = '<div class="marquee-group">' + none + '</div><div class="marquee-group" aria-hidden="true">' + none + '</div>';
       tb.innerHTML = "";
       return;
     }
@@ -8377,20 +8410,25 @@ h4{ font-weight:700; }
       const rc = Number(p.rateCount) || 0;
       const avg = wv3Avg(p);
       const full = avg < 0 ? 0 : Math.max(1, Math.min(5, Math.round(avg)));
-      const stars = '<div class="wv-trow"><span class="wv3-tstars' + (full < 5 ? " dim" : "") +
-        '" aria-hidden="true">★★★★★</span>' + (p.feat ? '<span class="vip-badge"><b>VIP</b></span>' : "") + '</div>';
-      const meta2 = '<span class="ltr-num">' + fmtViews(Number(p.views) || 0) + '</span> ' + esc(t("cabViews")) +
+      const d = (p.description || "").trim();
+      const quote = d.length > 150 ? d.slice(0, 150).trimEnd() + "…" : d;
+      const meta = esc(cityName(docCityId(p))) + ' · ' + esc(subName(p.group, p.subcategory)) +
+        ' · <span class="ltr-num">' + fmtViews(Number(p.views) || 0) + '</span> ' + esc(t("cabViews")) +
         (rc > 0 ? ' · <span class="ltr-num">' + (Math.round(avg * 10) / 10).toFixed(1) + '</span> ★' : "");
       const name = pname(p);
       const ini = (name.trim().charAt(0) || "•").toUpperCase();
-      return '<figure class="wv3-tcard">' + stars +
-        '<div class="wv3-tname">' + esc(name) + (p.ver ? " " + cabVrfSvg() : "") + '</div>' +
-        '<figcaption class="wv3-tcap"><span class="wv3-tava wv3a' + (i % 6 + 1) + '">' + esc(ini) +
-        '</span><span><b>' + esc(cityName(docCityId(p))) + ' · ' + esc(subName(p.group, p.subcategory)) +
-        '</b><i>' + meta2 + '</i></span></figcaption></figure>';
+      return '<article class="t-card">' +
+        '<div class="stars' + (full < 5 ? " dim" : "") + '" aria-hidden="true">★★★★★</div>' +
+        (quote ? '<p class="t-quote">' + esc(quote) + '</p>' : "") +
+        '<div class="t-author">' +
+          '<span class="avatar av-' + (i % 8 + 1) + '" aria-hidden="true">' + esc(ini) + '</span>' +
+          '<div><div class="t-name">' + esc(name) + (p.ver ? " " + cabVrfSvg() : "") +
+            (p.feat ? ' <span class="vip-badge"><b>VIP</b></span>' : "") + '</div>' +
+          '<div class="t-role">' + meta + '</div></div>' +
+        '</div></article>';
     };
-    const half = arr => arr.join("") +
-      arr.map(h => h.replace('<figure class="wv3-tcard"', '<figure aria-hidden="true" class="wv3-tcard"')).join("");
+    const half = arr => '<div class="marquee-group">' + arr.join("") + '</div>' +
+      '<div class="marquee-group" aria-hidden="true">' + arr.join("") + '</div>';
     ta.innerHTML = half(pool.filter((_, i) => i % 2 === 0).map(card));
     tb.innerHTML = half(pool.filter((_, i) => i % 2 === 1).map(card));
   }
