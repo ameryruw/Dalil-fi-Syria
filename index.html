@@ -3704,33 +3704,22 @@ h4{ font-weight:700; }
     </a>
     <div class="fa-line fa-addr" data-i18n="footerAddress"></div>
   </div>
+  <nav class="ft8-soc" aria-label="Contacts" style="justify-content:center; margin:14px 0 6px; display:flex; gap:12px;">
+    <a href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener" aria-label="Telegram">
+      <span style="width:42px; height:42px; border-radius:14px; display:inline-flex; align-items:center; justify-content:center; color:var(--card); background:var(--surface); border:1px solid var(--line-soft); box-shadow:var(--raise-xs), var(--sheen);"><span id="ftIcTg"></span></span>
+    </a>
+    <a href="https://wa.me/963939481984" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <span style="width:42px; height:42px; border-radius:14px; display:inline-flex; align-items:center; justify-content:center; color:var(--card); background:var(--surface); border:1px solid var(--line-soft); box-shadow:var(--raise-xs), var(--sheen);"><span id="ftIcWa"></span></span>
+    </a>
+  </nav>
   <div class="footer-note" data-i18n="footer"></div>
+  <p style="text-align:center; color:var(--muted); font-size:.68rem; margin-top:10px; letter-spacing:.06em;">© 2026 DALIL SURIYA · دليل سوريا</p>
   <!-- админ-вход остаётся служебным в футере (с v1.4.9); версия рядом (п.38: одна линия) -->
   <div class="footer-admin"><button class="btn-admin" id="adminBtn" type="button">
     <span class="ic"></span><span class="t" data-i18n="adminBtn"></span>
   </button></div>
   <div class="ver-line" dir="ltr"><span class="ver-badge" id="verBadge"></span></div>
 </footer>
-
-<!-- v5.10.0 · Footer 8 (React Bits Pro → vanilla, блок с v5.5.0) — ПЕРЕНЕСЁН
-     приказом владельца «добавь на страницу вниз вот это» на САМОЕ ДНО главной
-     страницы (жил внутри скрытой вкладки «Тарифы» и был не виден).
-     Разметка/контент 1-в-1: Telegram-канал, WhatsApp-поддержка, агент и офис. -->
-    <!-- v5.5.0 · Footer 8 (React Bits Pro → vanilla): центрированный футер
-         с соцкнопками — наша реальная инфа: Telegram-канал, WhatsApp-
-         поддержка (WA_SUPPORT), агент и офис из футера каталога
-         (footerAgent/footerAddress, уже переведены на 6 языков). -->
-    <footer class="ft8" id="ft8Sec">
-      <span class="ft8-brand">DALIL SURIYA <b aria-hidden="true">✦</b> دليل سوريا</span>
-      <span class="ft8-tag" data-i18n="wTag"></span>
-      <nav class="ft8-soc" aria-label="Contacts">
-        <a href="https://t.me/dalil_syria_offical" target="_blank" rel="noopener" aria-label="Telegram"><span id="ftIcTg"></span></a>
-        <a href="https://wa.me/963939481984" target="_blank" rel="noopener" aria-label="WhatsApp"><span id="ftIcWa"></span></a>
-      </nav>
-      <p class="ft8-line" data-i18n="footerAgent"></p>
-      <p class="ft8-line ft8-addr" data-i18n="footerAddress"></p>
-      <p class="ft8-copy" dir="ltr">© 2026 DALIL SURIYA · دليل سوريا</p>
-    </footer>
 
 <button class="float-panel" id="floatPanel" type="button">
   <span id="panelIc"></span><span data-i18n="admPanelBtn"></span><span class="reqs-badge" id="floatPanelBadge" hidden></span>
