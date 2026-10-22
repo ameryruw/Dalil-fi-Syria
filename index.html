@@ -3410,13 +3410,37 @@ body.subs-mode #welcomeOv{ display:none !important; }
 .ft8-copy{ font-size:.68rem; color:var(--muted); opacity:.8; letter-spacing:.06em; margin:2px 0 0; }
 @media (max-width:920px){
   .subs-sec .pr-grid{ grid-template-columns:1fr; }
-  .cta13{ padding:30px 18px 26px; margin:16px var(--pad) 0; }  /* v5.6.2: боковые поля как у секций */
+  /* v2.0.2: width:auto — ширина 100% + боковые поля выпирали за экран */
+  .cta13{ padding:30px 18px 26px; margin:16px var(--pad) 0; width:auto; }
   .cta13-t{ font-size:1.72rem; }
 }
 @media (max-width:560px){
   .subs-sec{ padding:0 14px 4px; gap:15px; }
   .sp-title{ font-size:1.3rem; }
   .ft8-soc a{ width:38px; height:38px; }
+  /* ============ v2.0.2 · МОБИЛЬНЫЕ КОМПАКТЫ ============
+     Тарифы: 2 плитки РЯДОМ для сравнения (Базовый | VIP),
+     «Проверено» — во всю ширину строкой ниже; компактная типографика,
+     иначе цены ($10) переносятся. Десктоп (3 колонки) не тронут. */
+  .subs-sec .pr-grid{
+    grid-template-columns:repeat(2,1fr); gap:10px;
+    grid-template-areas:"b v" "q q";  /* ряд 1: Базовый|VIP рядом; ряд 2: Проверено на всю ширину */
+  }
+  .subs-sec .pr-card:nth-child(1){ grid-area:b; }
+  .subs-sec .pr-card:nth-child(2){ grid-area:q; }
+  .subs-sec .pr-card:nth-child(3){ grid-area:v; }
+  .subs-sec .pr-card{ padding:14px 12px 12px; }
+  .pr-num{ font-size:1.4rem; }
+  .pr-feats li{ font-size:.72rem; gap:7px; }
+  .pr-cta{ min-height:38px; padding:8px 10px; font-size:.78rem; }
+  /* Подкатегории-«слитки»: 2 в ряд, высота ~вдвое меньше —
+     длинный вертикальный список на телефоне убран. */
+  .level-cards{ grid-template-columns:repeat(2,1fr); gap:9px; }
+  .level-card{ padding:7px 9px 7px 12px; }
+  .lc-title{ font-size:.76rem; }
+  .lc-sub{ font-size:.62rem; }
+  .lc-cnt{ font-size:.7rem; }
+  .level-card::before{ width:3px; }
 }
 /* Marquee заставки: приглушённые звёзды без оценок + VIP-чип реальной анкеты */
 .wv-tstars.dim{ opacity:.4; }
@@ -4589,7 +4613,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "2.0.1";
+  const APP_VERSION = "2.0.2";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
