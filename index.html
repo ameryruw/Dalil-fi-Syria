@@ -10108,7 +10108,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
     });
   }
   async function phCompress(file) {
-    if (!file || !/^image\/(jpeg|png|webp|heic|heif)$/i.test(file.type)) throw new Error("phBad");
+    /* v2.0.4: тип не судим — телефоны отдают jpg с пустым/чужим MIME; решает реальный декод */
+    if (!file) throw new Error("phBad");
     let img;
     try { img = await phDecode(file); }
     catch { throw new Error("phBad"); }
@@ -10148,24 +10149,36 @@ body.subs-mode #welcomeOv{ display:none !important; }
     a: { blob: null, name: null, kb: 0, url: null },
     f: { blob: null, name: null, kb: 0, url: null }
   };
+  /* v2.0.4:Photo-оберег от null — на телефонах разметку могли кешировать без новых блоков */
+  function phBtnBox(side) {
+    const btn = $(side + "PhBtn");
+    return btn ? (btn.querySelector(".ph-btn-t") || btn) : null;
+  }
   function phReset(side) {
     const s = phState[side];
     s.blob = null; s.name = null; s.kb = 0; s.url = null;
     const box = side === "a" ? "a" : "f";
-    $(`${box}PhVal`).hidden = true;
-    $(`${box}PhVal`).innerHTML = "";
-    $(`${box}PhClear`).hidden = true;
-    $(`${box}PhBtn`).querySelector(".ph-btn-t").textContent = t("phPick");
-    $(`${box}PhFile`).value = "";
+    const val = $(`${box}PhVal`);
+    if (val) { val.hidden = true; val.innerHTML = ""; }
+    const clr = $(`${box}PhClear`);
+    if (clr) clr.hidden = true;
+    const b = phBtnBox(side);
+    if (b) b.textContent = t("phPick");
+    const fl = $(`${box}PhFile`);
+    if (fl) fl.value = "";
   }
   function phShow(side, blob, kb) {
     const box = side === "a" ? "a" : "f";
     const val = $(`${box}PhVal`);
     const url = URL.createObjectURL(blob);
-    val.innerHTML = `<img class="ph-pick-thumb" src="${url}" alt=""><span class="ltr-num">${kb} KB</span>`;
-    val.hidden = false;
-    $(`${box}PhClear`).hidden = false;
-    $(`${box}PhBtn`).querySelector(".ph-btn-t").textContent = t("phChange");
+    if (val) {
+      val.innerHTML = `<img class="ph-pick-thumb" src="${url}" alt=""><span class="ltr-num">${kb} KB</span>`;
+      val.hidden = false;
+    }
+    const clr = $(`${box}PhClear`);
+    if (clr) clr.hidden = false;
+    const b = phBtnBox(side);
+    if (b) b.textContent = t("phChange");
   }
   function phSetExisting(side, url) {
     const box = side === "a" ? "a" : "f";
@@ -10173,30 +10186,36 @@ body.subs-mode #welcomeOv{ display:none !important; }
     s.blob = null; s.name = null; s.kb = 0;
     s.url = url || null;
     const val = $(`${box}PhVal`);
+    const b = phBtnBox(side);
+    const clr = $(`${box}PhClear`);
     if (url) {
-      val.innerHTML = `<img class="ph-pick-thumb" src="${esc(url)}" alt=""><span>${esc(t("phSet"))}</span>`;
-      val.hidden = false;
-      $(`${box}PhClear`).hidden = false;
-      $(`${box}PhBtn`).querySelector(".ph-btn-t").textContent = t("phChange");
+      if (val) {
+        val.innerHTML = `<img class="ph-pick-thumb" src="${esc(url)}" alt=""><span>${esc(t("phSet"))}</span>`;
+        val.hidden = false;
+      }
+      if (clr) clr.hidden = false;
+      if (b) b.textContent = t("phChange");
     } else {
-      val.hidden = true; val.innerHTML = "";
-      $(`${box}PhClear`).hidden = true;
-      $(`${box}PhBtn`).querySelector(".ph-btn-t").textContent = t("phPick");
-      $(`${box}PhFile`).value = "";
+      if (val) { val.hidden = true; val.innerHTML = ""; }
+      if (clr) clr.hidden = true;
+      if (b) b.textContent = t("phPick");
+      const fl = $(`${box}PhFile`);
+      if (fl) fl.value = "";
     }
   }
   function phBind(side) {
     const box = side === "a" ? "a" : "f";
-    $(`${box}PhIc`).innerHTML = icon("image", 15);
-    $(`${box}PhBtn`).addEventListener("click", () => $(`${box}PhFile`).click());
-    $(`${box}PhClear`).addEventListener("click", () => phReset(side));
-    $(`${box}PhFile`).addEventListener("change", async e => {
+    const btn = $(`${box}PhBtn`), file = $(`${box}PhFile`), clr = $(`${box}PhClear`), ic = $(`${box}PhIc`);
+    if (!btn || !file || !clr) return;   /* разметки нет (старый кеш) — не роняем страницу */
+    if (ic) ic.innerHTML = icon("image", 15);
+    btn.addEventListener("click", () => file.click());
+    clr.addEventListener("click", () => phReset(side));
+    file.addEventListener("change", async e => {
       const f = e.target.files && e.target.files[0];
       if (!f) return;
-      const boxEl = $(`${box}PhBtn`);
-      const old = boxEl.textContent;
-      boxEl.disabled = true;
-      boxEl.textContent = t("phWait");
+      const old = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = t("phWait");
       try {
         const { blob, name, kb } = await phCompress(f);
         phState[side] = { blob, name, kb, url: null };
@@ -10206,8 +10225,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
         phState[side] = { blob: null, name: null, kb: 0, url: phState[side].url };
         phReset(side);
       } finally {
-        boxEl.disabled = false;
-        boxEl.textContent = old;
+        btn.disabled = false;
+        btn.textContent = old;
       }
     });
   }
