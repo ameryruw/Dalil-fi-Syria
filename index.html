@@ -3263,23 +3263,30 @@ h4{ font-weight:700; }
 .pr-now-badge.base{ color:var(--muted); background:var(--panel); border:1px solid var(--line-soft); }
 .pr-now-badge.ver{ color:var(--accent); background:rgba(var(--acc-rgb),.12); border:1px solid rgba(var(--acc-rgb),.4); }
 .pr-now-badge.vipb{ color:#1A1405; background:var(--vip-grad); }
-/* ============ v5.6.2 · СЕКЦИЯ «ТАРИФЫ» (#subsSec) ============
-   Приказ владельца: «тарифы убери в раздел тарифы, их не должно
-   быть на главном экране» — секция СКРЫТА из потока главной
-   страницы (hidden по умолчанию) и открывается вкладкой «Тарифы»
-   (bnSubs) или «Все тарифы» кабинета — как секция карты.
-   Состав: Pricing 1 + Footer 8 (центр, соцкнопки); CTA 13 «Выделяйся»
-   v5.6.2 переехал НАВЕРХ главной (после волны-ленты, перед городами).
-   display:flex требует явного [hidden]-правила. Всё на токенах —
-   7 тем × 2 моды; RTL — на inline-логике, движение только
-   transform/opacity (WebView-дружелюбно). */
+/* ============ v2.0.1 · ЕДИНЫЙ ПОЛНОЭКРАННЫЙ ЭКРАН ТАРИФОВ (#subsSec) ============
+   Приказ владельца: «тарифы везде отдельным экраном с кнопкой назад».
+   Один экран: body.subs-mode прячет всё, кроме #subsSec (модалки
+   .overlay остаются доступны — CTA с экрана работают); дверь назад —
+   sticky-шапка с кнопкой «назад». Входы: VIP-кнопка шапки, CTA 13
+   «Выделяйся», «Все тарифы и подписки» кабинета. Карта НЕ тронута.
+   Состав: шапка-бар + текущие подписки + Pricing 1 + золотой блок
+   «DALIL VIP» (бывшая vipOv). display:flex требует явного [hidden]-
+   правила. Всё на токенах — 7 тем × 2 моды; RTL — на inline-логике,
+   движение только transform/opacity (WebView-дружелюбно). */
 .subs-sec{
   position:relative; width:100%; max-width:1060px; margin:0 auto;
-  padding:38px var(--pad) 8px;
+  padding:0 var(--pad) 8px;
   display:flex; flex-direction:column; gap:18px; align-items:center;
-  scroll-margin-top:84px;   /* фиксированный topbar не накрывает заголовок */
 }
 .subs-sec[hidden]{ display:none !important; }  /* flex перебивает UA-hidden */
+body.subs-mode .subs-sec{ min-height:100dvh; padding-bottom:34px; }
+/* v2.0.1 · режим экрана: прячем все прямые children body, кроме самого
+   #subsSec, модалок (.overlay — доступны для CTA) и тостов; welcome-экран
+   тоже прячется (#welcomeOv не .overlay, а fixed div — иначе накрыл бы
+   экран у гостя). Сокрытие наследуемое: главная уходит целиком —
+   отдельные её узлы не перечисляются. */
+body.subs-mode > :not(#subsSec):not(.overlay):not(#toastWrap){ display:none !important; }
+body.subs-mode #welcomeOv{ display:none !important; }
 /* Полутоновая подложка сверху секции (наследие фон-декора страницы 2) */
 .subs-sec::before{
   content:""; position:absolute; inset:0 0 auto 0; height:340px;
@@ -3290,7 +3297,32 @@ h4{ font-weight:700; }
           mask-image:linear-gradient(#000 30%, transparent);
 }
 .subs-sec > *{ position:relative; }
-.subs-head{ display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; }
+/* Шапка экрана: sticky-бар — «назад» + корона; фон почти прозрачный
+   (halftone секции слегка просвечивает), fallback — сплошной var(--bg). */
+.subs-topbar{
+  position:sticky; top:0; z-index:60; align-self:stretch; width:100%;
+  margin:0 0 20px; padding:9px max(var(--pad),calc((100% - 1060px)/2));
+  display:flex; align-items:center; gap:10px;
+  background:var(--bg);
+  background:color-mix(in srgb,var(--bg) 86%,transparent);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-soft);
+}
+.subs-back{
+  display:inline-flex; align-items:center; gap:7px;
+  padding:9px 16px 9px 13px; border-radius:999px;
+  border:1px solid var(--line-soft); background:var(--surface);
+  color:var(--card); font:inherit; font-size:.84rem; font-weight:700;
+  cursor:pointer; box-shadow:var(--raise-xs);
+  transition:filter .15s ease, transform .15s ease;
+}
+.subs-back svg{ width:15px; height:15px; flex:none; }
+.subs-back:hover{ filter:brightness(1.12); }
+.subs-back:active{ transform:scale(.96); box-shadow:var(--press-sm); }
+[dir="rtl"] .subs-back svg{ transform:scaleX(-1); }
+.sp-crown{ margin-inline-start:auto; width:34px; height:24px; color:var(--accent); opacity:.9; }
+.sp-crown svg{ width:100%; height:100%; }
+.subs-head{ display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; margin-top:26px; }
 .sp-title{ font-size:1.5rem; color:var(--card); text-align:center; margin:0; }
 .sp-sub{ font-size:.88rem; color:var(--muted); line-height:1.6; text-align:center; max-width:560px; margin:0; }
 .sp-now{ width:100%; max-width:980px; }
@@ -3382,7 +3414,7 @@ h4{ font-weight:700; }
   .cta13-t{ font-size:1.72rem; }
 }
 @media (max-width:560px){
-  .subs-sec{ padding:28px 14px 4px; gap:15px; }
+  .subs-sec{ padding:0 14px 4px; gap:15px; }
   .sp-title{ font-size:1.3rem; }
   .ft8-soc a{ width:38px; height:38px; }
 }
@@ -3620,6 +3652,15 @@ h4{ font-weight:700; }
      Блок «текущие подписки» (#spNow) — те же данные, что во вкладке
      «Подписки» кабинета (renderSubsNow пишет в оба контейнера). -->
 <section class="subs-sec reveal" id="subsSec" aria-label="Subscriptions" hidden>
+  <!-- v2.0.1 · шапка единого экрана: кнопка «назад» + корона VIP.
+       Стрелка отзеркаливается в RTL ([dir="rtl"] .subs-back svg). -->
+  <header class="subs-topbar">
+    <button type="button" class="subs-back" id="subsBackBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      <span data-i18n="subsBack"></span>
+    </button>
+    <span class="sp-crown" aria-hidden="true"><svg viewBox="0 0 48 34" fill="none"><path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="currentColor" opacity=".92"/></svg></span>
+  </header>
   <header class="subs-head">
     <h2 class="sp-title" data-i18n="spTitle"></h2>
     <p class="sp-sub" data-i18n="spSub"></p>
@@ -3679,8 +3720,41 @@ h4{ font-weight:700; }
     </div>
   </div>
   <p class="pr-foot" data-i18n="prFoot"></p>
-  <button type="button" class="pr-all" id="prAllBtn"><span data-i18n="vipAllBtn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
 </section>
+    <!-- v2.0.1 · Золотой блок «DALIL VIP» — перенесён из vipOv (модалка снесена,
+         у экрана больше нет «всех пакетов» LEGO-кнопки). Корона (defs vgold
+         обслуживает и орнамент ниже) + бейджи выгоды наследуют .vip-save.
+         i18n-ключи прежние (vipSub/vipB1..3/vipBV1..2/vipS1..3). -->
+    <div class="vip-bloc">
+<div class="vip-hero">
+  <svg class="vip-crown" viewBox="0 0 48 34" fill="none" aria-hidden="true">
+    <defs><linearGradient id="vgold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EBD9AC"/><stop offset=".5" stop-color="#C9A96A"/><stop offset="1" stop-color="#A5854C"/>
+    </linearGradient></defs>
+    <path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="url(#vgold)" stroke="url(#vgold)" stroke-width="1.4" stroke-linejoin="round"/>
+    <rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="url(#vgold)" opacity=".92"/>
+  </svg>
+  <h3 class="vip-h-title">DALIL <b>VIP</b></h3>
+  <p class="vip-h-sub" data-i18n="vipSub"></p>
+  <svg class="orn-line" viewBox="0 0 240 16" fill="none" stroke="url(#vgold)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+    <path d="M6 8 H98" opacity=".45"/><path d="M142 8 H234" opacity=".45"/>
+    <path d="M109 12.5 L107.4 5.4 L113.8 9.4 L120 3.6 L126.2 9.4 L132.6 5.4 L131 12.5 Z" fill="url(#vgold)" stroke="none"/>
+    <rect x="110" y="13.4" width="20" height="2" rx="1" fill="url(#vgold)" stroke="none" opacity=".92"/>
+  </svg>
+</div>
+<div class="vip-bens">
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB1"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB2"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB3"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV1"></span></div>
+  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV2"></span></div>
+</div>
+<div class="vip-steps">
+  <div class="vip-step"><span class="n">1</span><span data-i18n="vipS1"></span></div>
+  <div class="vip-step"><span class="n">2</span><span data-i18n="vipS2"></span></div>
+  <div class="vip-step"><span class="n">3</span><span data-i18n="vipS3"></span></div>
+</div>
+    </div>
     <!-- v5.6.2: CTA 13 «Выделяйся» переехал НАВЕРХ главной страницы
          (после волны-ленты, перед городами) — приказ «выше, заметнее»;
          из раздела «Тарифы» убран. -->
@@ -3738,69 +3812,6 @@ h4{ font-weight:700; }
 </nav>
 
 <!-- v1.4.2 · Раздел подписок DALIL VIP — оверлей как окно входа: одна кнопка открывает, крестик закрывает -->
-<div class="overlay" id="vipOv" role="dialog" aria-modal="true">
-  <div class="modal vip-modal">
-    <button class="modal-close" type="button" data-close="vipOv" aria-label="Close"></button>
-<div class="vip-hero">
-  <svg class="vip-crown" viewBox="0 0 48 34" fill="none" aria-hidden="true">
-    <defs><linearGradient id="vgold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#EBD9AC"/><stop offset=".5" stop-color="#C9A96A"/><stop offset="1" stop-color="#A5854C"/>
-    </linearGradient></defs>
-    <path d="M6 26 L4 9 L15 17 L24 4 L33 17 L44 9 L42 26 Z" fill="url(#vgold)" stroke="url(#vgold)" stroke-width="1.4" stroke-linejoin="round"/>
-    <rect x="7" y="28.5" width="34" height="3.6" rx="1.8" fill="url(#vgold)" opacity=".92"/>
-  </svg>
-  <h3 class="vip-h-title">DALIL <b>VIP</b></h3>
-  <p class="vip-h-sub" data-i18n="vipSub"></p>
-  <svg class="orn-line" viewBox="0 0 240 16" fill="none" stroke="url(#vgold)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-    <path d="M6 8 H98" opacity=".45"/><path d="M142 8 H234" opacity=".45"/>
-    <path d="M109 12.5 L107.4 5.4 L113.8 9.4 L120 3.6 L126.2 9.4 L132.6 5.4 L131 12.5 Z" fill="url(#vgold)" stroke="none"/>
-    <rect x="110" y="13.4" width="20" height="2" rx="1" fill="url(#vgold)" stroke="none" opacity=".92"/>
-  </svg>
-</div>
-<div class="vip-plans">
-  <a class="vip-plan" data-pack="vipm" href="#" target="_blank" rel="noopener">
-    <span class="vip-plan-badge"><span class="vip-badge"><b>VIP</b></span></span>
-    <span class="vip-plan-per" data-i18n="vipPerM"></span>
-    <span class="vip-plan-price" dir="ltr">$10</span>
-    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-  </a>
-  <a class="vip-plan best" data-pack="vipy" href="#" target="_blank" rel="noopener">
-    <span class="vip-ribbon" data-i18n="vipPopular"></span>
-    <span class="vip-plan-badge"><span class="vip-badge"><b>VIP</b></span></span>
-    <span class="vip-plan-per" data-i18n="vipPerY"></span>
-    <span class="vip-plan-price" dir="ltr">$70</span>
-    <span class="vip-save" data-i18n="vipSave42"></span>
-    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-  </a>
-  <a class="vip-plan" data-pack="verm" href="#" target="_blank" rel="noopener">
-    <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
-    <span class="vip-plan-per" data-i18n="vipPerM"></span>
-    <span class="vip-plan-price" dir="ltr">$5</span>
-    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-  </a>
-  <a class="vip-plan" data-pack="very" href="#" target="_blank" rel="noopener">
-    <span class="vip-plan-badge vrf" data-i18n="verBadge"></span>
-    <span class="vip-plan-per" data-i18n="vipPerY"></span>
-    <span class="vip-plan-price" dir="ltr">$39</span>
-    <span class="vip-save" data-i18n="vipSave35"></span>
-    <span class="vip-plan-cta" data-i18n="vipOrder"></span>
-  </a>
-</div>
-<div class="vip-bens">
-  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB1"></span></div>
-  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB2"></span></div>
-  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipB3"></span></div>
-  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV1"></span></div>
-  <div class="vip-ben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span data-i18n="vipBV2"></span></div>
-</div>
-<div class="vip-steps">
-  <div class="vip-step"><span class="n">1</span><span data-i18n="vipS1"></span></div>
-  <div class="vip-step"><span class="n">2</span><span data-i18n="vipS2"></span></div>
-  <div class="vip-step"><span class="n">3</span><span data-i18n="vipS3"></span></div>
-</div>
-  </div>
-</div>
-
 <div id="toastWrap"></div>
 
 
@@ -4380,10 +4391,9 @@ h4{ font-weight:700; }
     </div>
     <div class="cab-pane" id="cabPaneSubs" hidden>
             <div class="pr-now" id="cabSubsNow" aria-live="polite"></div>
-      <!-- v5.6.0 · Pricing 1 переехал в секцию #subsSec внизу главной
-           страницы (вкладка «Подписки» на нижней панели): здесь — только
-           текущие подписки владельца и кнопка перехода к тарифам
-           (кабинет закрывается, страница скроллится к секции). -->
+      <!-- v2.0.1 · Тарифы — отдельным полноэкранным экраном: здесь — только
+           текущие подписки владельца и кнопка перехода (кабинет закрывается,
+           открывается экран #subsSec с шапкой «назад»). -->
       <button type="button" class="pr-all cab-look" id="spLookBtn"><span data-i18n="spLook"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>    </div>
   </div>
 </div>
@@ -4579,7 +4589,7 @@ h4{ font-weight:700; }
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "2.0.0";
+  const APP_VERSION = "2.0.1";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -4928,6 +4938,7 @@ h4{ font-weight:700; }
       wvTsH: "Живые анкеты каталога",
       wvTsS: "Реальные карточки из DALIL SURIYA — присоединяйтесь к владельцам, которые уже с нами.",
       cabTabSubs: "Подписки",
+      subsBack: "Назад",
       navSubs: "Тарифы",
       wvLiveNone: "Скоро здесь появятся первые анкеты — станьте первым",
       wv3Remember: "Запомнить меня",
@@ -5400,6 +5411,7 @@ h4{ font-weight:700; }
       wvTsH: "إعلانات حقيقية من الدليل",
       wvTsS: "بطاقات حقيقية من دليل سوريا — انضم إلى أصحاب المشاريع الذين معنا بالفعل.",
       cabTabSubs: "الاشتراكات",
+      subsBack: "رجوع",
       navSubs: "الأسعار",
       wvLiveNone: "ستظهر الإعلانات الأولى هنا قريباً — كن أول من ينضم",
       wv3Remember: "تذكّرني",
@@ -5872,6 +5884,7 @@ h4{ font-weight:700; }
       wvTsH: "Agahdarîyên rastîn ji rêberê",
       wvTsS: "Kartên rastîn ji DALIL SURIYA — bi xwediyên ku bi me re ne pêve bikevin.",
       cabTabSubs: "Abone",
+      subsBack: "Vegere",
       navSubs: "Biha",
       wvLiveNone: "Demeke nêzîk de agahdarîyên yekem li vir xuya dibin",
       wv3Remember: "Min bibîne",
@@ -6345,6 +6358,7 @@ h4{ font-weight:700; }
       wvTsH: "Live listings from the catalog",
       wvTsS: "Real cards from DALIL SURIYA — join the owners who are already with us.",
       cabTabSubs: "Subscriptions",
+      subsBack: "Back",
       navSubs: "Pricing",
       wvLiveNone: "First listings will appear here soon — be the first",
       wv3Remember: "Remember me",
@@ -6818,6 +6832,7 @@ h4{ font-weight:700; }
       wvTsH: "Live-Einträge aus dem Katalog",
       wvTsS: "Echte Karten aus DALIL SURIYA – mach bei den Inhabern mit, die schon dabei sind.",
       cabTabSubs: "Abos",
+      subsBack: "Zurück",
       navSubs: "Preise",
       wvLiveNone: "Die ersten Einträge erscheinen bald hier – sei der Erste",
       wv3Remember: "Angemeldet bleiben",
@@ -7291,6 +7306,7 @@ h4{ font-weight:700; }
       wvTsH: "Rehberden canlı ilanlar",
       wvTsS: "DALIL SURIYA'dan gerçek kartlar — aramızda olan işletme sahiplerine katılın.",
       cabTabSubs: "Abonelikler",
+      subsBack: "Geri",
       navSubs: "Fiyatlar",
       wvLiveNone: "İlk ilanlar yakında burada görünecek — ilk siz olun",
       wv3Remember: "Beni hatırla",
@@ -9644,6 +9660,7 @@ h4{ font-weight:700; }
   });
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
+      if (document.body.classList.contains("subs-mode")) { closeSubsSec(); }
       ["loginOverlay", "addOverlay", "confirmOverlay", "detailOverlay", "subOverlay", "settingsOverlay", "cabOverlay", "admOverlay", "repOverlay", "notifOverlay", "authOverlay", "gateOverlay", "delAccOverlay"].forEach(id => closeOv(id));
       state.detailId = null;
     }
@@ -9651,8 +9668,8 @@ h4{ font-weight:700; }
 
   /* ================= Настройки: шестерёнка → тема + языки ================= */
   $("settingsBtn").addEventListener("click", () => openOv("settingsOverlay"));
-  /* v1.4.2: кнопка VIP в шапке — открывает VIP-модалку со всеми пакетами. */
-  $("vipBtn").addEventListener("click", () => openOv("vipOv"));
+  /* v2.0.1: кнопка VIP в шапке — единый полноэкранный экран тарифов. */
+  $("vipBtn").addEventListener("click", () => openSubsSec());
 
   /* v5.1 · СЕМЬ ТЕМ: пять по фото владельца (1 фото = 1 тема) + классические
      чёрная/белая, восстановленные приказом «белую и чёрную не надо удалять —
@@ -12549,23 +12566,27 @@ h4{ font-weight:700; }
     if (cab) cab.innerHTML = rows;
     if (sp) { sp.innerHTML = rows; sp.hidden = false; }
   }
-  /* ============ v5.6.2 · Раздел «Тарифы» — открытие ============
-     Приказ «тарифы убери в раздел тарифы, их не должно быть на
-     главном экране»: секция #subsSec скрыта (hidden) из потока
-     главной страницы. Вкладка bnSubs и «Все тарифы» кабинета
-     снимают hidden и скроллят к ней (как у секции карты);
-     кабинет/оверлеи закрываются (иначе накроют секцию).
-     Авто-открытие после входа/гостя УБРАНО — никаких попапов. */
+  /* ============ v2.0.1 · ЕДИНЫЙ ПОЛНОЭКРАННЫЙ ЭКРАН ТАРИФОВ ============
+     Приказ владельца: «тарифы везде отдельным экраном с кнопкой назад».
+     openSubsSec включает body.subs-mode: CSS прячет всю главную, кроме
+     #subsSec и модалок (.overlay), мгновенный скролл наверх; выход —
+     closeSubsSec по кнопке «назад» в шапке экрана. Входы: VIP-кнопка
+     шапки, CTA 13 «Выделяйся», «Все тарифы и подписки» кабинета.
+     VIP-модалка снесена — её золотой блок живёт на самом экране. */
   function openSubsSec() {
     renderSubsNow();                     /* свежий список текущих подписок */
     closeOv("cabOverlay"); closeOv("settingsOverlay"); closeOv("detailOverlay");
     const el = document.getElementById("subsSec");
-    if (el) el.hidden = false;           /* v5.6.2: показать раздел (был скрыт) */
-    document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnSubs"));
-    if (el) setTimeout(() => {
-      try { el.scrollIntoView({ behavior: "smooth", block: "start" }); }
-      catch (e) { el.scrollIntoView(); }
-    }, 60);
+    if (el) el.hidden = false;
+    document.body.classList.add("subs-mode");
+    document.querySelectorAll(".bn-item").forEach(b => b.classList.remove("on"));
+    window.scrollTo(0, 0);
+  }
+  function closeSubsSec() {
+    document.body.classList.remove("subs-mode");
+    const el = document.getElementById("subsSec");
+    if (el) el.hidden = true;
+    document.querySelectorAll(".bn-item").forEach(b => b.classList.toggle("on", b.id === "bnHome"));
   }
   /* v5.3.1 · компактная волна-лента между hero и городами, живущая от скролла:
      в покое стоит, при появлении — импульс, скорость/направление — за скроллом
@@ -12576,16 +12597,15 @@ h4{ font-weight:700; }
   });
   /* DalilFx — точка входа для отладки/переиспользования (пробы, консоль) */
   window.DalilFx = { mountTextLoop, mountBento, renderCabBento, renderWvMarquee, renderSubsNow,
-    openSubsSec, MB_BARS, tlMain: tlMainApi };
-  /* ================= v5.4 · PRICING 1 — тумблер биллинга + CTA =================
-     Месяц↔год: цены меняются ($5↔$39, $10↔$70 — из VIP-модалки), подпись
-     периода — на текущем языке, бейдж выгоды виден только на годовой схеме.
+    openSubsSec, closeSubsSec, MB_BARS, tlMain: tlMainApi };
+  /* ================= v2.0.1 · PRICING 1 — тумблер биллинга + CTA =================
+     Месяц↔год: цены меняются ($5↔$39, $10↔$70), подпись периода — на
+     текущем языке, бейдж выгоды виден только на годовой схеме.
      CTA: «Базовый» → guardedApply (мастер заявки с гостевым гейтом),
-     «Проверено»/VIP → data-pack (готовый wa.me-wiring по applyLang),
-     «Все пакеты» → VIP-модалка.
-     v5.6.0: прайсинг — в секции #subsSec внизу главной; кабинет
-     закрывается перед открытием гейта/мастера заявки/VIP-модалки,
-     иначе оверлей накроет страницу. */
+     «Проверено»/VIP → data-pack (готовый wa.me-wiring по applyLang).
+     v2.0.1: входы на единый экран тарифов — CTA 13 «Выделяйся» и
+     кабинет «Все тарифы и подписки» (VIP-кнопка шапки — в wiring topbar).
+     Кабинет закрывается перед мастер-заявкой, иначе оверлей накроет экран. */
   {
     const prSec = document.getElementById("pricingSec");
     if (prSec) {
@@ -12597,17 +12617,18 @@ h4{ font-weight:700; }
         prSec.querySelectorAll(".vip-save").forEach(s => { s.hidden = !y; });
       };
       prBtns.forEach(b => b.addEventListener("click", () => setBill(b.dataset.bill === "y")));
-      /* v5.6.0: кабинет закрывается перед гейтом/мастером заявки/VIP-модалкой. */
+      /* кабинет закрывается перед гейтом/мастером заявки. */
       const prFree = document.getElementById("prFreeCta");
       if (prFree) prFree.addEventListener("click", () => { closeOv("cabOverlay"); guardedApply(); });
-      const prAll = document.getElementById("prAllBtn");
-      if (prAll) prAll.addEventListener("click", () => { closeOv("cabOverlay"); openOv("vipOv"); });
-      /* CTA 13 «Купить VIP» → все пакеты (VIP-модалка) */
+      /* CTA 13 «Выделяйся» → единый полноэкранный экран тарифов */
       const c13 = document.getElementById("cta13Btn");
-      if (c13) c13.addEventListener("click", () => openOv("vipOv"));
-      /* «Все тарифы» из кабинета → открыть раздел (v5.6.2: снимает hidden) */
+      if (c13) c13.addEventListener("click", () => openSubsSec());
+      /* «Все тарифы и подписки» из кабинета → единый экран */
       const spLook = document.getElementById("spLookBtn");
       if (spLook) spLook.addEventListener("click", openSubsSec);
+      /* v2.0.1: кнопка «назад» в шапке экрана тарифов */
+      const sb = document.getElementById("subsBackBtn");
+      if (sb) sb.addEventListener("click", closeSubsSec);
     }
   }
   async function openCabinet() {
