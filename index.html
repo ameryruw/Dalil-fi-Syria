@@ -2518,23 +2518,25 @@ html[data-mode="light"] .btn-login{
 
 /* ================= v5 · КРУТИЛКА ГОРОДОВ · drag + колесо + стрелки ================= */
 .cities-head{
-  display:grid; grid-template-columns:1fr auto; align-items:end; gap:2px 18px;
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:2px 18px;
 }
-.cities-head h2{ grid-column:1; }
-.cities-head .cities-sub{ grid-column:1; }
-.ct-nav{ grid-column:2; grid-row:1 / span 2; display:flex; gap:8px; align-self:end; }
+.cities-head h2{ grid-column:1; min-width:0; }
+.cities-head .cities-sub{ grid-column:1; min-width:0; }
+.ct-nav{ grid-column:2; grid-row:1 / span 2; display:flex; gap:8px; align-self:end; justify-self:end; }
 .ct-btn{
-  width:42px; height:42px; flex:none; border-radius:50%;
-  border:1px solid var(--line-soft); background:var(--surface); color:var(--card);
+  width:44px; height:44px; flex:none; border-radius:50%;
+  border:1px solid rgba(var(--acc-rgb),.34); background:var(--panel); color:var(--card);
   display:inline-flex; align-items:center; justify-content:center;
   box-shadow:var(--raise-sm), var(--sheen);
-  transition:box-shadow .15s var(--fl-ease), opacity .25s, transform .15s var(--fl-ease);
+  transition:box-shadow .15s var(--fl-ease), opacity .25s, transform .15s var(--fl-ease),
+             color .15s, border-color .15s;
 }
-.ct-btn svg{ width:17px; height:17px; }
-.ct-btn:hover{ color:var(--accent); }
-.ct-btn:active{ box-shadow:var(--press-sm); transform:scale(.93); }
-.ct-btn.dim{ opacity:.32; pointer-events:none; }
-@media (max-width:560px){ .ct-btn{ width:36px; height:36px; } }
+.ct-btn svg{ width:19px; height:19px; stroke-width:2.4; }
+.ct-btn:hover{ color:var(--accent); border-color:rgba(var(--acc-rgb),.6); }
+.ct-btn:active{ box-shadow:var(--press-sm), var(--glow-accent); transform:scale(.93); }
+.ct-btn.dim{ opacity:.22; pointer-events:none; box-shadow:none; }
+html[dir="rtl"] .ct-btn svg{ transform:scaleX(-1); }
+@media (max-width:560px){ .ct-btn{ width:40px; height:40px; border-width:1.5px; } .ct-btn svg{ width:18px; height:18px; } }
 .city-grid{ cursor:grab; }
 .city-grid.dragging{
   scroll-snap-type:none; cursor:grabbing; user-select:none; -webkit-user-select:none;
@@ -4613,7 +4615,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       <path d="M4.6 14.8 Q9.2 10.6 13.8 14.8 Z" fill="url(#dalilGold${sz})" opacity=".95"/>
       <path d="M13.2 4.9a3.9 3.9 0 1 0 2.6 7.1 4.7 4.7 0 0 1-2.6-7.1z" fill="url(#dalilGold${sz})"/>
     </svg>`;
-  const APP_VERSION = "2.0.2";
+  const APP_VERSION = "2.0.3";
   /* APK-сборка обслуживает файлы с внутреннего домена appassets — под ним
      весь контент лежит в самом приложении (открывается без сайта и даже офлайн). */
   const IS_APK = location.host === "appassets.androidplatform.net";
@@ -11406,8 +11408,35 @@ body.subs-mode #welcomeOv{ display:none !important; }
       e.preventDefault();
       g.scrollLeft += d;
     }, { passive: false });
-    const page = dir => g.scrollBy({ left: dir * Math.max(240, g.clientWidth - 200), behavior: "smooth" });
+    const page = dir => {
+      /* v2.0.3: нативный smooth scrollBy в старых WebView тормозит и спорит
+         со scroll-snap — заменили собственным rAF-твином (easeOutCubic);
+         на время анимации snap отключается классом .dragging.
+         RTL: scrollLeft отрицательный — клампим симметричным диапазоном. */
+      const dist = Math.max(240, g.clientWidth - 200);
+      const pos = g.scrollWidth - g.clientWidth;
+      const lo = Math.min(0, -pos), hi = Math.max(0, pos);
+      /* v2.0.3: в RTL scrollLeft отрицательный — «вперёд» это минус,
+         иначе next-clamp обнулял твин и кнопка не листала (SL=-18 в QA). */
+      const rtl = document.documentElement.getAttribute("dir") === "rtl";
+      const from = g.scrollLeft,
+            to = Math.max(lo, Math.min(hi, from + dir * dist * (rtl ? -1 : 1)));
+      if (to === from) return;
+      const dur = 460, t0 = performance.now();
+      g.classList.add("dragging");
+      const tick = now => {
+        const k = Math.min(1, (now - t0) / dur);
+        const e = 1 - Math.pow(1 - k, 3);
+        g.scrollLeft = from + (to - from) * e;
+        if (k < 1) requestAnimationFrame(tick);
+        else g.classList.remove("dragging");
+      };
+      requestAnimationFrame(tick);
+    };
     const pB = $("ctPrev"), nB = $("ctNext");
+    /* v2.0.3: иконкистрелок НЕ вставлялись — кнопки были пустыми кругами («не видно») */
+    if (pB) pB.innerHTML = icon("back", 19);
+    if (nB) nB.innerHTML = icon("arrow", 19);
     if (pB) pB.addEventListener("click", () => page(-1));
     if (nB) nB.addEventListener("click", () => page(1));
     const upd = () => {
