@@ -4158,15 +4158,13 @@ body.subs-mode #welcomeOv{ display:none !important; }
         <textarea id="aDesc" maxlength="600"></textarea>
         <div class="counter" id="aDescCounter">0 / 600</div>
       </div>
-      <!-- v2.0.4: фото бизнеса / визитки (сжатие WebP на клиенте) -->
+      <!-- v2.0.5: фото магазина (минимализм: только кнопка + превью) -->
       <div class="field">
-        <label data-i18n="phLabel"></label>
         <div class="ph-pick">
           <button type="button" class="btn btn-outline" id="aPhBtn"><span id="aPhIc"></span><span class="ph-btn-t" data-i18n="phPick"></span></button>
           <span class="ph-pick-val" id="aPhVal" hidden></span>
           <button type="button" class="btn btn-outline" id="aPhClear" hidden data-i18n="phClear"></button>
         </div>
-        <p class="map-pick-hint" data-i18n="phHint"></p>
         <input type="file" id="aPhFile" accept="image/*" hidden>
       </div>
       <div class="modal-actions">
@@ -4409,15 +4407,13 @@ body.subs-mode #welcomeOv{ display:none !important; }
       <textarea id="fDesc" maxlength="600"></textarea>
       <div class="counter" id="descCounter">0 / 600</div>
     </div>
-    <!-- v2.0.4: фото бизнеса / визитки (сжатие WebP на клиенте) -->
+    <!-- v2.0.5: фото магазина (минимализм: только кнопка + превью) -->
     <div class="field">
-      <label data-i18n="phLabel"></label>
       <div class="ph-pick">
         <button type="button" class="btn btn-outline" id="fPhBtn"><span id="fPhIc"></span><span class="ph-btn-t" data-i18n="phPick"></span></button>
         <span class="ph-pick-val" id="fPhVal" hidden></span>
         <button type="button" class="btn btn-outline" id="fPhClear" hidden data-i18n="phClear"></button>
       </div>
-      <p class="map-pick-hint" data-i18n="phHint"></p>
       <input type="file" id="fPhFile" accept="image/*" hidden>
     </div>
     <div class="modal-actions">
@@ -5073,8 +5069,9 @@ body.subs-mode #welcomeOv{ display:none !important; }
       appSending: "Отправка…",
       appSend: "Опубликовать анкету",
       /* v2.0.4 · фото анкеты */
-      phLabel: "Фото фирмы или визитки",
-      phPick: "Выбрать фото",
+      phLabel: "Фото магазина",
+      phPick: "Фото магазина",
+      phUploading: "Фото магазина грузится…",
       phChange: "Заменить",
       phClear: "Убрать",
       phWait: "Сжатие…",
@@ -5082,7 +5079,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
       phHint: "Фото вывески или визитки — по желанию. В браузере сжимается в WebP (~50 КБ), мобильный трафик не съест. Публикуется после проверки админом: только ваше фото, без материалов 18+.",
       phBad: "Файл не распознан как изображение",
       phTooBig: "Фото слишком большое — попробуйте другое",
-      phSoon: "Загрузка фото пока недоступна — анкета сохранится без неё",
+      phSoon: "Фото временно не грузится — подожди пару минут и жми «Отправить» ещё раз",
+      phHold: "Фото не загрузилось — анкета пока не уйдёт. Жди пару минут и жми «Отправить» ещё раз",
       phSkip: "Фото не загрузилось — анкета публикуется без неё",
       phAuth: "Войдите в аккаунт, чтобы загрузить фото",
       appRule1: "Имя в анкете должно быть вашим настоящим именем — так карточке доверяют клиенты, и анкету легко проверить.",
@@ -5559,8 +5557,9 @@ body.subs-mode #welcomeOv{ display:none !important; }
       appSending: "جارٍ الإرسال…",
       appSend: "نشر البطاقة",
       /* v2.0.4 · صورة البطاقة */
-      phLabel: "صورة المحل أو البطاقة التعريفية",
-      phPick: "اختر صورة",
+      phLabel: "صورة المتجر",
+      phPick: "صورة المتجر",
+      phUploading: "جارٍ رفع صورة المتجر…",
       phChange: "تغيير",
       phClear: "إزالة",
       phWait: "ضغط…",
@@ -5568,7 +5567,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
       phHint: "صورة الواجهة أو البطاقة — اختيارية. تُضغط في المتصفح إلى WebP (~50 كيلوبايت) ولا تستهلك بيانات الجوال. تُنشر بعد موافقة المشرف: صورك فقط، بلا محتوى 18+.",
       phBad: "الملف ليس صورة معروفة",
       phTooBig: "الصورة كبيرة جداً — جرّب صورة أخرى",
-      phSoon: "رفع الصور غير متاح حالياً — ستُحفظ البطاقة بدون صورة",
+      phSoon: "الصورة لا تُرفع مؤقتاً — انتظر دقيقتين واضغط «إرسال» مجدداً",
+      phHold: "لم تُرفع الصورة — البطاقة لن تُرسل الآن. انتظر دقيقتين واضغط «إرسال» مجدداً",
       phSkip: "لم تُرفع الصورة — تُنشر البطاقة بدونها",
       phAuth: "سجّل الدخول لرفع صورة",
       appRule1: "يجب أن يكون الاسم في الاستمارة اسمك الحقيقي — هكذا يثق العملاء بالبطاقة ويسهل التحقق من البطاقة.",
@@ -6045,8 +6045,9 @@ body.subs-mode #welcomeOv{ display:none !important; }
       appSending: "Tê şandin…",
       appSend: "Kartê weşîne",
       /* v2.0.4 · wêneya kartê */
-      phLabel: "Wêneya dikanê an karta pêşkêşî",
-      phPick: "Wêneyê hilbijêre",
+      phLabel: "Wêneya dikanê",
+      phPick: "Wêneya dikanê",
+      phUploading: "Wêneya dikanê bar dibe…",
       phChange: "Biguherîne",
       phClear: "Rake",
       phWait: "Pêçanîn…",
@@ -6054,7 +6055,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
       phHint: "Wêneya rûyê dikanê — azad e. Di gerokê de te bi WebP tê qutkirin (~50 KB) û tora mobîl naxweze. Piştî kontrola rêveber tê weşandin: tenê wêneyê te, bê marî 18+.",
       phBad: "Dosya wêne nînine an nizê naskirin",
       phTooBig: "Wêne pir mezin e — yê din biceribîne",
-      phSoon: "Barîna wêneyan hîn nîne — kart bê wêne tê qeydkirin",
+      phSoon: "Wêne niha bar nabe — çend xule raweste û dîsa «weşîne» bike",
+      phHold: "Wêne ne ba — kart niha nayê weşandin. Çend xule raweste û dîsa bike",
       phSkip: "Wêne ne barî — kart bê wêne tê weşandin",
       phAuth: "Ji bo barîna wêneyê têkeve hesabê",
       appRule1: "Nav di forma de divê navê rastîn yê we be — wisa xerîdar li kartê bawer dikin û kontrol hêsan dibe.",
@@ -6532,8 +6534,9 @@ body.subs-mode #welcomeOv{ display:none !important; }
       appSending: "Sending…",
       appSend: "Publish listing",
       /* v2.0.4 · listing photo */
-      phLabel: "Business / card photo",
-      phPick: "Choose photo",
+      phLabel: "Shop photo",
+      phPick: "Shop photo",
+      phUploading: "Shop photo is uploading…",
       phChange: "Replace",
       phClear: "Remove",
       phWait: "Compressing…",
@@ -6541,7 +6544,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
       phHint: "Storefront or business-card photo, optional. Compressed to WebP (~50 KB) in your browser — no heavy mobile traffic. Published after admin review: only your own photo, no 18+ content.",
       phBad: "File is not a recognised image",
       phTooBig: "Photo is too large — try another one",
-      phSoon: "Photo upload is not available yet — listing is saved without it",
+      phSoon: "Photo upload is temporarily down — wait a couple of minutes and press Send again",
+      phHold: "Photo failed to upload — listing is not sent yet. Wait a couple of minutes and press Send again",
       phSkip: "Photo failed to upload — listing is published without it",
       phAuth: "Sign in to upload a photo",
       appRule1: "The name in the form must be your real name — this builds customer trust and makes verification easy.",
@@ -7019,8 +7023,9 @@ body.subs-mode #welcomeOv{ display:none !important; }
       appSending: "Wird gesendet…",
       appSend: "Eintrag veröffentlichen",
       /* v2.0.4 · Foto */
-      phLabel: "Foto des Geschäfts / der Visitenkarte",
-      phPick: "Foto wählen",
+      phLabel: "Geschäftsfoto",
+      phPick: "Geschäftsfoto",
+      phUploading: "Geschäftsfoto wird hochgeladen…",
       phChange: "Ersetzen",
       phClear: "Entfernen",
       phWait: "Komprimieren…",
@@ -7028,7 +7033,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
       phHint: "Foto des Ladenschildes oder der Visitenkarte — optional. Wird im Browser auf WebP (~50 KB) komprimiert, spart mobiles Datenvolumen. Erscheint nach Prüfung durch den Admin: nur eigene Fotos, keine 18+-Inhalte.",
       phBad: "Datei ist kein erkennbares Bild",
       phTooBig: "Foto ist zu groß — bitte anderes versuchen",
-      phSoon: "Foto-Upload noch nicht verfügbar — Eintrag wird ohne Foto gespeichert",
+      phSoon: "Foto-Upload momentan nicht möglich — warte ein paar Minuten und drücke erneut auf Senden",
+      phHold: "Foto konnte nicht hochgeladen werden — Eintrag wird noch nicht gesendet. Warte ein paar Minuten und drücke erneut auf Senden",
       phSkip: "Foto-Upload fehlgeschlagen — Eintrag erscheint ohne Foto",
       phAuth: "Zum Foto-Upload bitte anmelden",
       appRule1: "Der Name im Formular muss Ihr echter Name sein — so vertrauen Ihnen Kunden und die Prüfung fällt leicht.",
@@ -7506,8 +7512,9 @@ body.subs-mode #welcomeOv{ display:none !important; }
       appSending: "Gönderiliyor…",
       appSend: "İlanı yayınla",
       /* v2.0.4 · kart fotoğrafı */
-      phLabel: "İşletme / kartvizit fotoğrafı",
-      phPick: "Fotoğraf seç",
+      phLabel: "Mağaza fotoğrafı",
+      phPick: "Mağaza fotoğrafı",
+      phUploading: "Mağaza fotoğrafı yükleniyor…",
       phChange: "Değiştir",
       phClear: "Kaldır",
       phWait: "Sıkıştırılıyor…",
@@ -7515,7 +7522,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
       phHint: "Dükkan tabelası veya kartvizit fotoğrafı — isteğe bağlı. Tarayıcıda WebP'ye sıkıştırılır (~50 KB), mobil veriyi tüketmez. Yönetici onayından sonra yayınlanır: yalnızca sizin fotoğrafınız, 18+ içerik yok.",
       phBad: "Dosya tanımlanabilir bir görsel değil",
       phTooBig: "Fotoğraf çok büyük — başka birini deneyin",
-      phSoon: "Fotoğraf yükleme henüz yok — kart fotosuz kaydedilir",
+      phSoon: "Foto yükleme geçici kesinti — birkaç dakika bekle ve Gönder'e tekrar bas",
+      phHold: "Foto yüklenemedi — anket henüz gönderilmiyor. Birkaç dakika bekle ve Gönder'e tekrar bas",
       phSkip: "Fotoğraf yüklenemedi — kart fotosuz yayınlanır",
       phAuth: "Fotoğraf yüklemek için giriş yapın",
       appRule1: "Formdaki ad gerçek adınız olmalıdır — böylece müşteriler kartınıza güvenir ve onay kolaylaşır.",
@@ -10162,8 +10170,6 @@ body.subs-mode #welcomeOv{ display:none !important; }
     if (val) { val.hidden = true; val.innerHTML = ""; }
     const clr = $(`${box}PhClear`);
     if (clr) clr.hidden = true;
-    const b = phBtnBox(side);
-    if (b) b.textContent = t("phPick");
     const fl = $(`${box}PhFile`);
     if (fl) fl.value = "";
   }
@@ -10172,13 +10178,11 @@ body.subs-mode #welcomeOv{ display:none !important; }
     const val = $(`${box}PhVal`);
     const url = URL.createObjectURL(blob);
     if (val) {
-      val.innerHTML = `<img class="ph-pick-thumb" src="${url}" alt=""><span class="ltr-num">${kb} KB</span>`;
+      val.innerHTML = `<img class="ph-pick-thumb" src="${url}" alt="">`;
       val.hidden = false;
     }
     const clr = $(`${box}PhClear`);
     if (clr) clr.hidden = false;
-    const b = phBtnBox(side);
-    if (b) b.textContent = t("phChange");
   }
   function phSetExisting(side, url) {
     const box = side === "a" ? "a" : "f";
@@ -10186,19 +10190,16 @@ body.subs-mode #welcomeOv{ display:none !important; }
     s.blob = null; s.name = null; s.kb = 0;
     s.url = url || null;
     const val = $(`${box}PhVal`);
-    const b = phBtnBox(side);
     const clr = $(`${box}PhClear`);
     if (url) {
       if (val) {
-        val.innerHTML = `<img class="ph-pick-thumb" src="${esc(url)}" alt=""><span>${esc(t("phSet"))}</span>`;
+        val.innerHTML = `<img class="ph-pick-thumb" src="${esc(url)}" alt="">`;
         val.hidden = false;
       }
       if (clr) clr.hidden = false;
-      if (b) b.textContent = t("phChange");
     } else {
       if (val) { val.hidden = true; val.innerHTML = ""; }
       if (clr) clr.hidden = true;
-      if (b) b.textContent = t("phPick");
       const fl = $(`${box}PhFile`);
       if (fl) fl.value = "";
     }
@@ -10348,17 +10349,29 @@ body.subs-mode #welcomeOv{ display:none !important; }
     };
     if (aCoord.lat != null && aCoord.lng != null) { payload.lat = aCoord.lat; payload.lng = aCoord.lng; }
     if (titleEn) payload.names.en = titleEn;
-    /* v2.0.4: фото анкеты — грузим ДО заявки; если воркер не готов — не блокируем */
+    /* v2.0.5: фото обязательно-soft: качаем ДО заявки с ретраями (0/3/8с);
+       не скачалось — анкета НЕ уходит, кнопка гаснет и предлагает жать ещё раз */
+    let imgOk = true, imgStop = false;
     if (phState.a.blob) {
-      if (!(await phProbe())) {
-        toast(t("phSoon"), "err", 5000);
-      } else {
-        try {
-          payload.img = await phUpload(phState.a.blob, phState.a.name);
-        } catch (e1) {
-          console.error(e1);
-          toast(t(e1 && e1.code === "phAuth" ? "phAuth" : "phSkip"), "err", 5000);
+      const btnUp = $("appSendBtn");
+      const upPrev = btnUp.textContent;
+      btnUp.disabled = true;
+      btnUp.textContent = t("phUploading");
+      if (await phProbe()) {
+        for (const mv of [0, 3000, 8000]) {
+          if (mv) await new Promise(r => setTimeout(r, mv));
+          try { payload.img = await phUpload(phState.a.blob, phState.a.name); break; }
+          catch (e1) {
+            console.error(e1);
+            if (e1 && e1.code === "phAuth") { toast(t("phAuth"), "err", 6000); imgStop = true; break; }
+          }
         }
+      }
+      btnUp.disabled = false;
+      btnUp.textContent = upPrev;
+      if (!payload.img) {
+        if (!imgStop) toast(t("phHold"), "err", 9000);
+        return;
       }
     }
 
@@ -10796,22 +10809,28 @@ body.subs-mode #welcomeOv{ display:none !important; }
       const fCoord = fPick.get();
       payload.lat = (fCoord.lat != null) ? fCoord.lat : null;
       payload.lng = (fCoord.lng != null) ? fCoord.lng : null;
-      /* v2.0.4: фото анкеты — новое грузим, старое сохраняем; провал — не блокирует */
+      /* v2.0.5: новое фото грузим с ретраями; не скачалось — при правке
+         остаётся старое фото, при новой карте сохранение блокируется */
+      payload.img = phState.f.url || "";
       if (phState.f.blob) {
+        const saveBtn = $("saveBtn");
+        const upPrev = saveBtn.textContent;
+        saveBtn.disabled = true;
+        saveBtn.textContent = t("phUploading");
+        let newUrl = "";
         if (await phProbe()) {
-          try {
-            payload.img = await phUpload(phState.f.blob, phState.f.name);
-          } catch (e1) {
-            console.error(e1);
-            toast(t(e1 && e1.code === "phAuth" ? "phAuth" : "phSkip"), "err", 5000);
-            payload.img = phState.f.url || "";
+          for (const mv of [0, 3000, 8000]) {
+            if (mv) await new Promise(r => setTimeout(r, mv));
+            try { newUrl = await phUpload(phState.f.blob, phState.f.name); break; }
+            catch (e1) {
+              console.error(e1);
+              if (e1 && e1.code === "phAuth") { toast(t("phAuth"), "err", 6000); break; }
+            }
           }
-        } else {
-          toast(t("phSoon"), "err", 5000);
-          payload.img = phState.f.url || "";
         }
-      } else {
-        payload.img = phState.f.url || "";
+        saveBtn.disabled = true;
+        saveBtn.textContent = upPrev;
+        if (newUrl) payload.img = newUrl;
       }
       if (editingId) {
         /* Правка: активную карточку не пересоздаём. v1.4.2: анкеты бессрочные —
