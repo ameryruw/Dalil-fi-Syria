@@ -4945,6 +4945,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       editTitle: "Редактирование записи",
       confirmTitle: "Удалить карточку?",
       confirmDesc: "«{title}» будет удалена безвозвратно.",
+      holdDelHint: "Удерживай кнопку, чтобы удалить",
       fillRequired: "Заполните обязательные поля",
       locRequired: "Для магазина, аптеки, мастерской, отеля, ресторана, кафе или ремонта машин локация обязательна",
       carMakeRequired: "Для перевозок укажите марку машины (до 60 символов)",
@@ -5433,6 +5434,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       editTitle: "تعديل البطاقة",
       confirmTitle: "حذف البطاقة؟",
       confirmDesc: "سيتم حذف «{title}» نهائياً.",
+      holdDelHint: "استمر بالضغط على الزر للحذف",
       fillRequired: "يرجى تعبئة الحقول المطلوبة",
       locRequired: "الموقع إلزامي للمتاجر والصيدليات وورشات التصليح والفنادق والمطاعم والمقاهي وتصليح السيارات",
       carMakeRequired: "للنقل بين المدن حدد ماركة السيارة (حتى 60 حرفاً)",
@@ -5921,6 +5923,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       editTitle: "Guherandina kartê",
       confirmTitle: "Jêbirina kartê?",
       confirmDesc: "«{title}» bê vegerê dê were jêbirin.",
+      holdDelHint: "Biçiloke girtî bigire bo jêbirinê",
       fillRequired: "Qadên pêwîst tijî bike",
       locRequired: "Ji bo firotgeh, dermanxane, tamîrxane, otêl, xwaringeh, kafe û tamîrkirina erebeyê cih pêwîst e",
       carMakeRequired: "Ji bo barkirina nav bajaran marka erebeyê diyar bike (heya 60 tîp)",
@@ -6410,6 +6413,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       editTitle: "Edit entry",
       confirmTitle: "Delete this card?",
       confirmDesc: "“{title}” will be permanently deleted.",
+      holdDelHint: "Press and hold to delete",
       fillRequired: "Please fill in the required fields",
       locRequired: "Location is required for shops, pharmacies, workshops, hotels, restaurants, cafés and car repair",
       carMakeRequired: "For intercity transport specify the car make (up to 60 characters)",
@@ -6899,6 +6903,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       editTitle: "Eintrag bearbeiten",
       confirmTitle: "Karte löschen?",
       confirmDesc: "„{title}“ wird endgültig gelöscht.",
+      holdDelHint: "Zum Löschen gedrückt halten",
       fillRequired: "Bitte füllen Sie die Pflichtfelder aus",
       locRequired: "Für Geschäfte, Apotheken, Werkstätten, Hotels, Restaurants, Cafés und Autoreparatur ist der Standort erforderlich",
       carMakeRequired: "Geben Sie für Ferntransporte die Automarke an (max. 60 Zeichen)",
@@ -7388,6 +7393,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       editTitle: "Kaydı düzenle",
       confirmTitle: "Kart silinsin mi?",
       confirmDesc: "“{title}” kalıcı olarak silinecek.",
+      holdDelHint: "Silmek için basılı tutun",
       fillRequired: "Lütfen zorunlu alanları doldurun",
       locRequired: "Mağaza, eczane, tamirci, otel, restoran, kafe ve oto tamiri için konum zorunludur",
       carMakeRequired: "Şehirler arası nakliyat için araç markasını belirtin (en fazla 60 karakter)",
@@ -8834,12 +8840,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
     const body = $("detailBody");
 
     const del = body.querySelector(".detail-del");
-    if (del) del.addEventListener("click", () => {
-      pendingDeleteId = del.dataset.id;
-      const doc0 = state.docs.find(d => d.id === pendingDeleteId);
-      $("confirmText").textContent = t("confirmDesc").replace("{title}", doc0 ? pname(doc0) : "");
-      openOv("confirmOverlay");
-    });
+    if (del) armDeleteHold(del, del.dataset.id);
 
     const ed = body.querySelector(".detail-edit");
     if (ed) ed.addEventListener("click", () => {
@@ -10864,16 +10865,38 @@ body.subs-mode #welcomeOv{ display:none !important; }
 
   /* ================= Удаление / редактирование ================= */
   $("list").addEventListener("click", e => {
-    const del = e.target.closest(".row-del");
-    if (del) {
-      pendingDeleteId = del.dataset.id;
-      const p = state.docs.find(d => d.id === pendingDeleteId);
-      $("confirmText").textContent = t("confirmDesc").replace("{title}", p ? pname(p) : "");
-      openOv("confirmOverlay");
-      return;
-    }
     const editBtn = e.target.closest(".row-edit");
     if (editBtn) openEditModal(editBtn.dataset.id);
+  });
+
+  /* v2.0.6: confirm-оверлей упразднён — удаление по удержанию 1.2 с */
+  async function doDelete(id) {
+    pendingDeleteId = id;
+    try {
+      await dbRemove(id);
+      toast(t("toastDeleted"));
+      if (state.detailId === id) { closeOv("detailOverlay"); state.detailId = null; }
+    } catch (err) {
+      console.error(err);
+      toast(writeErrText(err), "err", 7000);
+    }
+  }
+  let delHold = null;
+  function armDeleteHold(btn, id) {
+    if (!btn || btn._delArmed) return;
+    btn._delArmed = true;
+    const start = () => { delHold = setTimeout(() => { delHold = null; doDelete(id); }, 1200); };
+    const stop = () => { if (delHold) { clearTimeout(delHold); delHold = null; toast(t("holdDelHint"), "warn", 2500); } };
+    btn.addEventListener("pointerdown", start);
+    btn.addEventListener("pointerup", stop);
+    btn.addEventListener("pointerleave", stop);
+  }
+  ["list", "admDocsList"].forEach(cid => {
+    const lst = $(cid);
+    if (lst) lst.addEventListener("pointerdown", e => {
+      const b = e.target.closest(".row-del") || e.target.closest(".adm-del");
+      if (b) armDeleteHold(b, b.dataset.id);
+    }, { passive: true });
   });
 
   $("confirmDeleteBtn").addEventListener("click", async () => {
@@ -11576,13 +11599,6 @@ body.subs-mode #welcomeOv{ display:none !important; }
   $("admDocsList").addEventListener("click", e => {
     const ed = e.target.closest(".adm-edit");
     if (ed) { closeOv("admOverlay"); openEditModal(ed.dataset.id); return; }
-    const del = e.target.closest(".adm-del");
-    if (del) {
-      pendingDeleteId = del.dataset.id;
-      const p = state.docs.find(d => d.id === pendingDeleteId);
-      $("confirmText").textContent = t("confirmDesc").replace("{title}", p ? pname(p) : "");
-      openOv("confirmOverlay");
-    }
   });
 
   $("admSearch").addEventListener("input", e => {
