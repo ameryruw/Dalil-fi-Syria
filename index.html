@@ -1309,6 +1309,10 @@ footer{ padding:26px var(--pad) 34px; max-width:1180px; margin:0 auto; }
 .footer-phone svg{ color:var(--accent); }
 .fa-addr{ margin-top:4px; }
 .footer-note{ text-align:center; color:var(--muted); font-size:.74rem; margin-top:14px; line-height:1.6; }
+.footer-legal{ display:flex; justify-content:center; align-items:center; gap:10px; margin-top:14px; font-size:.78rem; color:var(--muted); flex-wrap:wrap; }
+.footer-legal a{ color:var(--muted); text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(183,201,177,.35); }
+.footer-legal a:hover{ color:var(--accent); text-decoration-color:currentColor; }
+.footer-legal .lsep{ opacity:.55; user-select:none; }
 .footer-admin{ display:flex; justify-content:center; margin-top:14px; }
 .ver-line{ display:flex; justify-content:center; margin-top:10px; }
 .ver-badge{
@@ -3846,6 +3850,11 @@ body.subs-mode #welcomeOv{ display:none !important; }
       <span style="width:42px; height:42px; border-radius:14px; display:inline-flex; align-items:center; justify-content:center; color:var(--card); background:var(--surface); border:1px solid var(--line-soft); box-shadow:var(--raise-xs), var(--sheen);"><span id="ftIcWa"></span></span>
     </a>
   </nav>
+  <div class="footer-legal" dir="auto">
+    <a href="privacy.html" data-i18n="footPriv"></a>
+    <span class="lsep" aria-hidden="true">·</span>
+    <a href="terms.html" data-i18n="footTerms"></a>
+  </div>
   <div class="footer-note" data-i18n="footer"></div>
   <p style="text-align:center; color:var(--muted); font-size:.68rem; margin-top:10px; letter-spacing:.06em;">© 2026 DALIL SURIYA · دليل سوريا</p>
   <!-- админ-вход остаётся служебным в футере (с v1.4.9); версия рядом (п.38: одна линия) -->
@@ -4975,6 +4984,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       subWaMsg: "Здравствуйте! Хочу разместить карточку в «دليلك في سوريا».",
       subContact: "Ответственный за приём анкет: عمّار المصطفى الحسن",
       footer: "DALIL SURIYA — народный справочник городов Сирии. Данные хранятся на нашем сервере.",
+      footPriv: "Конфиденциальность", footTerms: "Условия использования",
       /* v1.4.2 · бесплатная модель + VIP-статус */
       featBadge: "VIP",
       verBadge: "Проверено",
@@ -5464,6 +5474,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       subWaMsg: "مرحباً! أريد إدراج بطاقة في دليلك في سوريا.",
       subContact: "المسؤول عن استقبال الطلبات: عمّار المصطفى الحسن",
       footer: "دليلك في سوريا — دليل شعبي لمدن سوريا. تُخزَّن البيانات على خادمنا.",
+      footPriv: "سياسة الخصوصية", footTerms: "شروط الاستخدام",
       /* v1.4.2 · النموذج المجاني + حالة VIP */
       featBadge: "VIP",
       verBadge: "موثّق",
@@ -5953,6 +5964,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       subWaMsg: "Silav! Ez dixwazim karta xwe di «Rêbera te li Sûriyê» de tomar bikim.",
       subContact: "Berkarê wergirtina forman: عمّار المصطفى الحسن",
       footer: "Rêznama Sûriyê — rêznenameya gelêrî ya bajarên Sûriyê. Dane li ser servera me tên hilanîn.",
+      footPriv: "Taybetî", footTerms: "Mercên bikaranînê",
       /* v1.4.2 · modela belaş + VIP */
       featBadge: "VIP",
       verBadge: "Verîfkirî",
@@ -6443,6 +6455,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       subWaMsg: "Hello! I want to list my card on Dalil Suriya.",
       subContact: "Applications manager: Ammar Al-Mustafa Al-Hasan",
       footer: "Dalil Suriya — the people's directory of Syrian cities. Data is stored on our own server.",
+      footPriv: "Privacy", footTerms: "Terms of use",
       /* v1.4.2 · free model + VIP status */
       featBadge: "VIP",
       verBadge: "Verified",
@@ -6933,6 +6946,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       subWaMsg: "Hallo! Ich möchte meine Karte bei Dalil Suriya eintragen.",
       subContact: "Antragsverwaltung: Ammar Al-Mustafa Al-Hasan",
       footer: "Dalil Suriya — das Volksverzeichnis der Städte Syriens. Daten werden auf unserem eigenen Server gespeichert.",
+      footPriv: "Datenschutz", footTerms: "AGB",
       /* v1.4.2 · kostenloses Modell + VIP-Status */
       featBadge: "VIP",
       verBadge: "Verifiziert",
@@ -7423,6 +7437,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       subWaMsg: "Merhaba! Kartımı Dalil Suriya'ya kaydetmek istiyorum.",
       subContact: "Başvuru sorumlusu: Ammar Al-Mustafa Al-Hasan",
       footer: "Dalil Suriya — Suriye şehirlerinin halk rehberi. Veriler kendi sunucumuzda saklanır.",
+      footPriv: "Gizlilik", footTerms: "Kullanım şartları",
       /* v1.4.2 · ücretsiz model + VIP durumu */
       featBadge: "VIP",
       verBadge: "Doğrulandı",
