@@ -4159,7 +4159,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
         <div class="counter" id="aDescCounter">0 / 600</div>
       </div>
       <!-- v2.0.5: фото магазина (минимализм: только кнопка + превью) -->
-      <div class="field">
+      <!-- v2.0.7: скрыто из UI (код сохранён для возврата) -->
+      <div class="field" hidden>
         <div class="ph-pick">
           <button type="button" class="btn btn-outline" id="aPhBtn"><span id="aPhIc"></span><span class="ph-btn-t" data-i18n="phPick"></span></button>
           <span class="ph-pick-val" id="aPhVal" hidden></span>
@@ -4408,7 +4409,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
       <div class="counter" id="descCounter">0 / 600</div>
     </div>
     <!-- v2.0.5: фото магазина (минимализм: только кнопка + превью) -->
-    <div class="field">
+    <!-- v2.0.7: скрыто из UI (код сохранён для возврата) -->
+    <div class="field" hidden>
       <div class="ph-pick">
         <button type="button" class="btn btn-outline" id="fPhBtn"><span id="fPhIc"></span><span class="ph-btn-t" data-i18n="phPick"></span></button>
         <span class="ph-pick-val" id="fPhVal" hidden></span>
@@ -10097,6 +10099,8 @@ body.subs-mode #welcomeOv{ display:none !important; }
      В анкете хранится просто URL. Карточки: <img loading="lazy">; воркер отдаёт
      Cache-Control: immutable, max-age=31536000 — фото НЕ дёргает ни базу,
      ни каталог повторно. Проверка 18+ — ручная: админ видит превью в заявке. */
+  /* v2.0.7: фото временно скрыто в интерфейсе (код сохранён для возврата) */
+  const PHOTO_UI = false;
   const PH_MAX_DIM = 1280, PH_Q = 0.8, PH_BYTES = 266240;
   let phProbeOk = null;
   async function phProbe() {
@@ -10232,7 +10236,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       }
     });
   }
-  phBind("a"); phBind("f");
+  if (PHOTO_UI) { phBind("a"); phBind("f"); }
 
   /* ================= v1.4.3 (п.19г) · ОЧЕРЕДЬ ЗАЯВОК dalil_appq =================
      «Некоторые теряются»: сеть пропала в момент отправки — раньше заявка
@@ -10353,7 +10357,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
     /* v2.0.5: фото обязательно-soft: качаем ДО заявки с ретраями (0/3/8с);
        не скачалось — анкета НЕ уходит, кнопка гаснет и предлагает жать ещё раз */
     let imgOk = true, imgStop = false;
-    if (phState.a.blob) {
+    if (PHOTO_UI && phState.a.blob) {
       const btnUp = $("appSendBtn");
       const upPrev = btnUp.textContent;
       btnUp.disabled = true;
@@ -10743,7 +10747,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
     if (d.subcategory === "transport") $("fCar").value = d.carMake || "";
     $("fDesc").value = d.description || "";
     /* v2.0.4: существующее фото анкеты */
-    phSetExisting("f", d.img || "");
+    if (PHOTO_UI) phSetExisting("f", d.img || "");
     /* v1.4.2: VIP-статус и верификация из карточки */
     $("fFeat").checked = !!d.feat;
     $("fVer").checked = !!d.ver;
@@ -10813,7 +10817,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
       /* v2.0.5: новое фото грузим с ретраями; не скачалось — при правке
          остаётся старое фото, при новой карте сохранение блокируется */
       payload.img = phState.f.url || "";
-      if (phState.f.blob) {
+      if (PHOTO_UI && phState.f.blob) {
         const saveBtn = $("saveBtn");
         const upPrev = saveBtn.textContent;
         saveBtn.disabled = true;
@@ -11207,7 +11211,7 @@ body.subs-mode #welcomeOv{ display:none !important; }
           <span class="req-date">${esc(fmtTs(r.createdAt))}</span>
         </div>
         <div class="req-name">${esc(r.title || "")}</div>
-        ${r.img ? `<img class="req-ph" src="${esc(r.img)}" alt="" loading="lazy" decoding="async">` : ""}
+        ${PHOTO_UI && r.img ? `<img class="req-ph" src="${esc(r.img)}" alt="" loading="lazy" decoding="async">` : ""}
         <div class="req-meta">
           ${tel ? `<span class="ltr-num">${icon("phone", 13)}${esc(r.phone)}</span>` : ""}
           <span>${icon("city", 13)}${esc(cityName(r.city))}</span>
