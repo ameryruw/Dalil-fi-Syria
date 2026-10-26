@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ameryruw.github.io/Dalil-fi-Syria/sitemap.xml
